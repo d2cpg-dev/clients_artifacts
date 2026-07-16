@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DTCPG · Client Artifacts</title>
+<meta name="description" content="Interactive client artifacts by DTCPG.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F3E7; --card:#FFFFFF; --ink:#2A211C;
+  --brand:#F9982F; --brand-web:#EC8E28; --blue:#3636CC;
+  --orange-tint:#FBE6CE;
+  --muted:#7A7168; --line:#E5DFCF; --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:14px;line-height:1.45}
+.wrap{max-width:920px;margin:0 auto;padding:clamp(16px,3vw,40px) clamp(16px,2.5vw,28px) 72px}
+
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding-bottom:18px;border-bottom:2px solid var(--ink);margin-bottom:28px;flex-wrap:wrap}
+.brandrow{display:flex;align-items:center;gap:12px}
+.logo-wrap{background:var(--ink);border-radius:8px;padding:8px 14px;display:inline-flex;align-items:center;flex:none}
+.logo{display:block}
+.brand h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(21px,2.4vw,29px);letter-spacing:-.01em;line-height:1.1;margin-top:2px}
+.brand h1 em{font-style:normal;color:var(--brand-web)}
+.brand p{color:var(--muted);margin-top:8px;font-size:12.5px}
+
+.section-label{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--brand-web);border-left:3px solid var(--brand);padding-left:8px;margin-bottom:16px}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-top:4px solid var(--brand);border-radius:var(--radius);padding:20px 22px;text-decoration:none;color:inherit;transition:border-color .15s,transform .15s,box-shadow .15s}
+.card:hover{border-color:var(--ink);border-top-color:var(--brand);transform:translateY(-2px);box-shadow:0 6px 20px rgba(42,33,28,.08)}
+.card:focus-visible{outline:2px solid var(--brand-web);outline-offset:2px}
+.card .client{display:inline-block;background:var(--orange-tint);color:var(--ink);border-radius:12px;padding:2px 10px;font-size:10.5px;font-weight:600;letter-spacing:.03em;margin-bottom:12px;align-self:flex-start}
+.card h2{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:19px;margin-bottom:6px}
+.card p{color:var(--muted);font-size:13px;margin-bottom:16px;flex:1}
+.card .go{font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:500;color:var(--brand-web);display:inline-flex;align-items:center;gap:6px}
+.card:hover .go{color:var(--ink)}
+
+footer{margin-top:48px;padding-top:16px;border-top:1px dashed var(--line);color:var(--muted);font-size:11.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="brandrow">
+        <span class="logo-wrap">
+          <svg class="logo" width="150" height="32" viewBox="0 0 751 161" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DTCPG logo">
+            <path d="M0 156.584V2.17384H62.4926C118.314 2.17384 148.267 30.162 148.267 78.7338C148.267 127.306 110.826 156.584 62.4926 156.584H0ZM40.3002 127.917H66.2367C88.1567 127.917 107.218 112.021 107.218 80.0245C107.218 48.0283 90.6074 33.0152 66.2367 33.0152H40.3002V127.917Z" fill="#F7F3E7"/>
+            <path d="M196.736 35.257H148.675V2.17384H284.688V35.257H236.628V156.584H196.736V35.257Z" fill="#F7F3E7"/>
+            <path d="M489.934 98.3663V156.584H449.633V2.17384H533.365C568.151 2.17384 586.532 21.127 586.532 50.4738C586.532 79.8207 569.445 98.3663 530.438 98.3663H489.934ZM489.934 67.5249H530.438C537.314 67.5249 545.755 62.7017 545.755 50.5418C545.755 39.9443 539.56 33.1511 529.349 33.1511H489.934V67.5928V67.5249Z" fill="#F7F3E7"/>
+            <path d="M592.999 80.0924C592.999 30.0262 626.015 0 675.641 0C717.507 0 745.69 22.7574 751 54.0063L716.69 62.8376C714.24 43.2051 698.991 31.0452 678.569 31.0452C651.066 31.0452 634.048 49.7945 634.048 80.2283C634.048 110.662 651.543 130.091 679.249 130.091C693.681 130.091 709.202 122.143 712.265 105.092H682.108V76.0165H750.796V156.584H715.329V143.338C703.824 154.139 687.827 161 668.357 161C622.271 161 592.999 130.091 592.999 80.0245V80.0924Z" fill="#F7F3E7"/>
+            <path d="M393.54 2.44557H366.038C322.129 3.12489 288.909 31.7245 288.909 80.7717C288.909 129.819 318.794 156.992 364.336 156.992C364.948 156.992 365.493 156.992 366.106 156.992H393.54V127.17H366.106C343.301 126.015 328.46 107.809 328.46 79.5489C328.46 51.289 343.777 32.7435 366.038 32.4038H393.54V2.44557Z" fill="#F9982F"/>
+            <path d="M435.338 2.44557H402.798V32.2679H435.338V2.44557Z" fill="#F7F3E7"/>
+            <path d="M435.338 127.305H402.798V156.992H435.338V127.305Z" fill="#F7F3E7"/>
+          </svg>
+        </span>
+        <div class="brandtext">
+          <h1>Client <em>Artifacts</em></h1>
+        </div>
+      </div>
+      <p>Interactive models &amp; planners &mdash; built by DTCPG for client engagements</p>
+    </div>
+  </header>
+
+  <div class="section-label">Available artifacts</div>
+  <div class="cards">
+    <a class="card" href="book-box-growth-model.html">
+      <span class="client">Client · Books are Fun</span>
+      <h2>Book Box Growth Model</h2>
+      <p>Subscription revenue planner &mdash; models the funnel from school events and donations through to recurring book-box revenue, with scenarios, monthly overrides and a paid-media gap analysis.</p>
+      <span class="go">Open model &rarr;</span>
+    </a>
+  </div>
+
+  <footer>
+    DTCPG &middot; Client Artifacts. Interactive artifacts are self-contained and run entirely in your browser.
+  </footer>
+</div>
+</body>
+</html>
