@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="description" content="Subscription opt-in, cadence mix and order value across the Heart & Soil catalogue since the Sep 3 2026 buy-box change.">
+<title>Subscription Buy-Box Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;900&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --core-black:#2A211C; --base-white:#F7F3E7; --card:#FFFFFF;
+    --orange:#EC8E28; --blue:#3636CC; --retention:#3E9BC9; --deep:#26268F;
+    --ink:#2A211C; --ink-2:rgba(42,33,28,0.72); --ink-3:rgba(42,33,28,0.52);
+    --rule:rgba(42,33,28,0.18); --grid:rgba(42,33,28,0.10);
+    --tint-orange:#FCE2BF; --tint-blue:#D6E9F8; --surface:#F7F3E7;
+    --shadow-sm:0 1px 2px rgba(42,33,28,0.06);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --core-black:#F7F3E7; --base-white:#211A16; --card:#2A211C;
+      --orange:#F9982F; --blue:#8C8CF0; --retention:#6FB9DE; --deep:#B4ABFA;
+      --ink:#F7F3E7; --ink-2:rgba(247,243,231,0.76); --ink-3:rgba(247,243,231,0.56);
+      --rule:rgba(247,243,231,0.20); --grid:rgba(247,243,231,0.12);
+      --tint-orange:#4A3620; --tint-blue:#22354A; --surface:#211A16;
+      --shadow-sm:0 1px 2px rgba(0,0,0,0.3);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --core-black:#F7F3E7; --base-white:#211A16; --card:#2A211C;
+    --orange:#F9982F; --blue:#8C8CF0; --retention:#6FB9DE; --deep:#B4ABFA;
+    --ink:#F7F3E7; --ink-2:rgba(247,243,231,0.76); --ink-3:rgba(247,243,231,0.56);
+    --rule:rgba(247,243,231,0.20); --grid:rgba(247,243,231,0.12);
+    --tint-orange:#4A3620; --tint-blue:#22354A; --surface:#211A16;
+    --shadow-sm:0 1px 2px rgba(0,0,0,0.3);
+    color-scheme: dark;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--surface); color:var(--ink);
+    font-family:'Public Sans',system-ui,sans-serif; font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:1120px; margin:0 auto; padding:40px clamp(20px,5vw,52px) 88px; }
+  .mast { display:flex; justify-content:space-between; align-items:baseline; gap:20px; flex-wrap:wrap;
+    padding-bottom:14px; border-bottom:1.5px solid var(--rule); }
+  .mast .doc { font-family:'Archivo',sans-serif; font-weight:900; font-size:14px; letter-spacing:.16em; text-transform:uppercase; margin:0; }
+  .kicker { font-family:'Archivo',sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); }
+  h1 { font-family:'Anton',Impact,sans-serif; font-weight:400; font-size:clamp(28px,4vw,50px); line-height:1.02;
+    text-transform:uppercase; margin:32px 0 0; max-width:24ch; letter-spacing:-.005em; }
+  h1 em { font-style:normal; color:var(--orange); }
+  h2 { font-family:'Anton',Impact,sans-serif; font-weight:400; font-size:clamp(22px,2.6vw,30px); line-height:1.0;
+    text-transform:uppercase; margin:56px 0 8px; letter-spacing:.005em; }
+  h3 { font-family:'Archivo',sans-serif; font-weight:700; font-size:18px; line-height:1.2; margin:0 0 5px; }
+  .lede { color:var(--ink-2); font-size:17px; max-width:74ch; margin:0 0 18px; }
+  p { max-width:74ch; margin:0 0 12px; }
+  .open { font-size:17px; line-height:1.6; max-width:76ch; margin:20px 0 0; }
+  .open b { font-family:'Archivo',sans-serif; font-weight:700; }
+  .strip { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); border-top:1.5px solid var(--core-black); margin:30px 0 0; }
+  .cell { padding:18px 24px 18px 0; border-right:1px solid var(--rule); }
+  .cell:last-child { border-right:none; }
+  .cell .lbl { font-family:'Archivo',sans-serif; font-weight:900; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); }
+  .cell .val { font-family:'Archivo',sans-serif; font-weight:900; font-size:34px; line-height:1.05; margin:8px 0 3px; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+  .cell .val.o { color:var(--orange); }
+  .cell .unit { font-size:14px; font-weight:600; color:var(--ink-3); margin-left:3px; }
+  .cell .sup { font-size:13px; color:var(--ink-2); max-width:30ch; }
+  figure { margin:8px 0 10px; background:var(--card); border:1px solid var(--rule); border-radius:18px; padding:22px 22px 14px; box-shadow:var(--shadow-sm); }
+  .ch-t { font-family:'Archivo',sans-serif; font-weight:700; font-size:18px; margin:0 0 3px; }
+  .ch-s { color:var(--ink-2); font-size:14px; margin:0 0 16px; max-width:84ch; }
+  .ch-scroll { overflow-x:auto; }
+  svg { display:block; width:100%; height:auto; min-width:560px; }
+  figcaption { font-size:14px; color:var(--ink-2); margin-top:14px; padding-top:13px; border-top:1px solid var(--rule); max-width:88ch; }
+  .legend { display:flex; flex-wrap:wrap; gap:18px; margin:0 0 14px; }
+  .legend span { display:inline-flex; align-items:center; gap:7px; font-family:'Archivo',sans-serif; font-weight:600; font-size:13px; color:var(--ink-2); }
+  .sw { width:13px; height:13px; border-radius:3px; display:inline-block; border:1.5px solid var(--core-black); }
+  .sw.line { height:4px; border-radius:2px; border:none; width:18px; }
+  .sw.dash { height:0; border:none; border-top:2.5px dashed var(--ink-3); width:18px; }
+  .tbl-wrap { overflow-x:auto; margin:16px 0 4px; background:var(--card); border:1px solid var(--rule); border-radius:18px; }
+  table { border-collapse:collapse; width:100%; font-size:14.5px; min-width:620px; }
+  th { text-align:right; font-family:'Archivo',sans-serif; font-weight:900; font-size:11px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--ink-3); padding:16px 18px 10px; border-bottom:2px solid var(--core-black); }
+  th:first-child, td:first-child { text-align:left; }
+  td { text-align:right; padding:11px 18px; border-bottom:1px solid var(--rule); font-variant-numeric:tabular-nums; }
+  td:first-child { font-weight:600; }
+  tbody tr:last-child td { border-bottom:none; }
+  .grp td { font-family:'Archivo',sans-serif; font-weight:900; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); padding-top:18px; }
+  .up { color:var(--blue); font-weight:700; } .dn { color:var(--orange); font-weight:700; } .nc { color:var(--ink-3); font-weight:600; }
+  .callout { background:var(--card); border:1px solid var(--rule); border-left:5px solid var(--orange);
+    border-radius:0 18px 18px 0; padding:18px 24px; margin:20px 0; max-width:88ch; box-shadow:var(--shadow-sm); }
+  .callout p { margin:0; font-size:15px; max-width:none; color:var(--ink-2); }
+  .callout.b { border-left-color:var(--blue); }
+  .cols { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; margin:18px 0; }
+  ul { max-width:82ch; padding-left:22px; margin:0 0 12px; }
+  li { margin:9px 0; color:var(--ink-2); }
+  li::marker { color:var(--orange); font-weight:700; }
+  .seg { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 14px; }
+  .seg button { font-family:'Archivo',sans-serif; font-weight:900; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    padding:9px 14px; border-radius:999px; cursor:pointer; background:transparent; color:var(--ink-2);
+    border:1.5px solid var(--rule); transition:background 160ms cubic-bezier(0.2,0.7,0.2,1), color 160ms, border-color 160ms; }
+  .seg button:hover { border-color:var(--core-black); color:var(--ink); }
+  .seg button[aria-pressed="true"] { background:var(--core-black); color:var(--base-white); border-color:var(--core-black); }
+  #tip { position:fixed; pointer-events:none; opacity:0; transition:opacity 140ms cubic-bezier(0.2,0.7,0.2,1);
+    background:var(--core-black); color:var(--base-white); font-family:'Public Sans',sans-serif; font-size:13px;
+    font-weight:500; line-height:1.5; padding:9px 12px; border-radius:12px; z-index:99; white-space:nowrap; }
+  #tip b { font-family:'Archivo',sans-serif; font-weight:700; }
+  footer { margin-top:70px; padding-top:22px; border-top:3px solid var(--core-black); color:var(--ink-3); font-size:13.5px; }
+  footer p { max-width:none; margin:0 0 6px; }
+  :focus-visible { outline:3px solid rgba(54,54,204,0.15); outline-offset:2px; }
+  @media (prefers-reduced-motion:reduce) { #tip { transition:none; } }
+</style>
+<style>[hidden]{display:none!important} img{max-width:100%}</style>
+</head>
+<body>
+<div id="tip" role="status" aria-live="polite"></div>
+
+<div class="wrap">
+  <header>
+    <div class="mast">
+      <p class="doc">Subscription Buy-Box Review</p>
+      <div class="kicker">Heart &amp; Soil · all products · launched Thu Sep 3, 2026</div>
+    </div>
+    <h1>
+      The new buy box changed what subscribers buy. Whether it changed how many subscribe
+      is <em>not yet visible</em> underneath the Labor Day promotion.
+    </h1>
+    <p class="open">
+      Store-wide subscription opt-in ran <b>52.1%</b> in launch week against <b>48.9%</b> over the previous four weeks.
+      The 60% figure is Labor Day itself, at 59.9%; on the other six days the rate sat level with the pre-launch
+      average. Of subscriptions started in launch week, <b>50% chose monthly, 15% bi-monthly, 32% quarterly</b>,
+      with quarterly nearly doubling from 17%. On single products, revenue per order rose <b>30%</b>, driven by units
+      per new subscription climbing from 1.15 to 1.92 rather than by price. List price per unit did not move.
+    </p>
+    <div class="strip">
+      <div class="cell">
+        <div class="lbl">Opt-in, launch week</div>
+        <div class="val">52.1<span class="unit">%</span></div>
+        <div class="sup">49.2% excluding Labor Day · 48.9% the four weeks before</div>
+      </div>
+      <div class="cell">
+        <div class="lbl">Quarterly share of new subs</div>
+        <div class="val">31.9<span class="unit">%</span></div>
+        <div class="sup">from 16.7%. Monthly fell 65.8% → 50.4%</div>
+      </div>
+      <div class="cell">
+        <div class="lbl">Revenue per order, singles</div>
+        <div class="val o">+30.5<span class="unit">%</span></div>
+        <div class="sup">$56.89 → $74.25 net, orders containing the product</div>
+      </div>
+      <div class="cell">
+        <div class="lbl">Units per new subscription</div>
+        <div class="val">1.92</div>
+        <div class="sup">from 1.15 on single products · list price per unit flat at ~$59</div>
+      </div>
+    </div>
+  </header>
+
+  <h2>How Many Subscribed</h2>
+  <p class="lede">
+    Share of checkout orders, store-wide, that started a subscription. Renewal orders and zero-revenue service
+    channels are out of the denominator. Aug 6 to Sep 9, one point per day.
+  </p>
+  <figure>
+    <p class="ch-t">Daily subscription opt-in, % of checkout orders</p>
+    <p class="ch-s">The dashed line is the pre-launch average, 48.9%. Launch day is marked. Labor Day is shaded.</p>
+    <div class="legend">
+      <span><i class="sw line" style="background:var(--core-black)"></i> Daily opt-in (%)</span>
+      <span><i class="sw dash"></i> Pre-launch average 48.9%</span>
+    </div>
+    <div class="ch-scroll"><svg id="c1" viewBox="0 0 880 340" role="img" aria-label="Daily subscription opt-in rate, August 6 to September 9. The line moves between 41 and 55 percent through August, averaging 48.9. After the September 3 launch it sits near the same level, then spikes to 59.9 percent on Labor Day, September 7, and falls to 46.2 and 44.0 on the two days after."></svg></div>
+    <figcaption>
+      Labor Day contributed 1,785 checkout orders and 1,070 sign-ups, 27% of the week's volume and the only day
+      above the pre-launch range. Take that day out and launch week reads 49.2%, against 48.9% before. The two
+      days after the holiday, 46.2% and 44.0%, are the lowest since Aug 10. Post-holiday troughs are ordinary;
+      there is no comparable holiday in the pre-period to check against.
+    </figcaption>
+  </figure>
+  <div class="callout b">
+    <p>
+      Returning customers moved. Their opt-in went from 38.0% to 43.0% across the week. New customers held at
+      57.8% → 56.7%. The buy box is a decision a customer meets at the product page, so the returning-customer
+      segment is where an effect would appear first. Still inside a promotion week, so read it as a direction.
+    </p>
+  </div>
+
+  <h2>Which Cadence They Chose</h2>
+  <p class="lede">
+    Every new subscription across the catalogue, grouped by the delivery cycle it started on. Shares sum to 100%.
+  </p>
+  <figure>
+    <p class="ch-t">Cadence mix of new subscriptions, % of subscriptions started</p>
+    <p class="ch-s">Before: 8,516 subscriptions over 28 days. After: 3,917 over 7 days. Shipping Protection add-on excluded from both.</p>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--retention)"></i> Monthly · 30-day</span>
+      <span><i class="sw" style="background:var(--orange)"></i> Bi-monthly · 60-day</span>
+      <span><i class="sw" style="background:var(--blue)"></i> Quarterly · 90-day</span>
+      <span><i class="sw" style="background:var(--deep)"></i> 120 / 180-day</span>
+    </div>
+    <div class="ch-scroll"><svg id="c2" viewBox="0 0 880 250" role="img" aria-label="Cadence mix before and after. Before: monthly 65.8 percent, bi-monthly 17.5, quarterly 16.7. After: monthly 50.4, bi-monthly 15.0, quarterly 31.9, and 2.6 percent on 120 or 180-day cycles."></svg></div>
+    <figcaption>
+      Quarterly rose 15.2 points, almost all of it out of monthly. Bi-monthly barely moved. The 2.6% on 120- and
+      180-day cycles belongs to Grass-Fed Colostrum and Bone Matrix, which sell on a 60-day base unit, so their
+      three tiers run 60 / 120 / 180 rather than 30 / 60 / 90. First quarterly renewals fall around Dec 3.
+    </figcaption>
+  </figure>
+
+  <h2>Cadence Day By Day</h2>
+  <p class="lede">
+    The same split as above, one point per day, measured against checkout orders so the lines are comparable
+    across time. Pick a line to see it alone with its period averages.
+  </p>
+  <figure>
+    <p class="ch-t">Subscriptions started per 100 checkout orders, by cadence</p>
+    <p class="ch-s">All products, Skio subscription records over Shopify checkout orders. A checkout can start more than one subscription, so this runs higher than the share of orders in the first chart.</p>
+    <div class="seg" role="group" aria-label="Choose a line">
+      <button data-series="all" aria-pressed="true">All lines</button>
+      <button data-series="tot" aria-pressed="false">All subscriptions</button>
+      <button data-series="c30" aria-pressed="false">Monthly</button>
+      <button data-series="c60" aria-pressed="false">Bi-monthly</button>
+      <button data-series="c90" aria-pressed="false">Quarterly</button>
+      <button data-series="c120" aria-pressed="false">120 / 180-day</button>
+    </div>
+    <div class="ch-scroll"><svg id="c4" viewBox="0 0 880 380" role="img" aria-label="Subscriptions started per 100 checkout orders by cadence, daily, August 6 to September 9. All subscriptions run near 37 per 100 orders through August and near 58 after launch. Monthly stays near 25 throughout. Quarterly rises from about 7 to about 19 after launch. Bi-monthly holds near 7. The 120 and 180-day line appears only after launch, under 3."></svg></div>
+    <figcaption>
+      Monthly holds its level across the launch. The rise is quarterly, from roughly 7 per 100 orders before to
+      roughly 19 after. Sep 8 reads high on every line because Skio stamps in UTC and Shopify in store time, so
+      Labor Day evening subscriptions land on the following day; Sep 7 and Sep 8 together sit in line with the week.
+    </figcaption>
+  </figure>
+
+  <h2>What It Did To Value</h2>
+  <p class="lede">
+    Single products only, since that is where the three-tier box lives. Three measures, each on its own scale.
+  </p>
+  <figure>
+    <p class="ch-t">Single products, before and after</p>
+    <p class="ch-s">Revenue per order is Shopify net sales for the product divided by checkout orders containing it. Units and first charge come from Skio subscription records at list price.</p>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--orange)"></i> Before · Aug 6 – Sep 2</span>
+      <span><i class="sw" style="background:var(--blue)"></i> After · Sep 3 – 9</span>
+    </div>
+    <div class="ch-scroll"><svg id="c3" viewBox="0 0 880 300" role="img" aria-label="Single products before and after. Net revenue per order 56.89 to 74.25 dollars, plus 30.5 percent. Units per new subscription 1.15 to 1.92, plus 67 percent. List first charge per subscription 67.81 to 112.31 dollars, plus 65.6 percent. List price per unit 59.14 to 58.43 dollars, unchanged."></svg></div>
+    <figcaption>
+      Units per subscription rose 67% and the first charge rose 66% with it. List price per unit stayed at $59.
+      The new tiers discount 10 / 20 / 30% against a flat 25% before, so a monthly subscriber now pays 90% of list
+      where they paid 75%, and a quarterly subscriber pays 70%. Weighted by the after-period mix across the three tiers, subscribers pay
+      about 80% of list against 75% before. The order-value gain is volume, at a net price per unit that did not
+      fall. Revenue per order rose less than the first charge because one-time orders sit in that figure too.
+    </figcaption>
+  </figure>
+
+  <h2>What We Are Watching</h2>
+  <div class="cols">
+    <div class="callout">
+      <h3>Two boxes went live, with two different offers</h3>
+      <p>
+        Single products received the three supply tiers at 10 / 20 / 30% off, sustained on every order, with Buy Once
+        reduced to a text link. Stack products received a single monthly option at 30% off the first order and 10% on
+        renewals, with Buy Once kept as a full button. Both groups gained subscribers. Singles went from 26.5% to 37.6%
+        of product orders, +11.1 pt, while their monthly discount fell from 25% to 10%. Stacks went from 36.3% to 62.0%,
+        +25.7 pt, with a first-order discount that rose from 25% to 30% and roughly twice the traffic lift. The gap
+        between the two tracks the discount depth on the first order, which is what a promotion week measures.
+        The singles figure is the one carrying a price increase on its most popular tier and still rising.
+      </p>
+    </div>
+    <div class="callout b">
+      <h3>Where the store-wide rate goes next</h3>
+      <p>
+        The launch-week rate is a promotion reading. The first clean measurement is the two weeks from Sep 14 to
+        Sep 27, with no holiday and no sale traffic. If opt-in holds near 49% there, the box did not move it.
+        If it sits above the pre-launch band, it did. Either answer is useful and neither is available yet.
+      </p>
+    </div>
+  </div>
+
+  <h2>Figures</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Measure</th><th>Unit</th><th>Before</th><th>After</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="5">Opt-in, store-wide, order level</td></tr>
+        <tr><td>Checkout orders</td><td>orders</td><td>22,765</td><td>6,724</td><td class="nc">813 → 961 /day</td></tr>
+        <tr><td>Orders that started a subscription</td><td>orders</td><td>11,136</td><td>3,501</td><td class="nc">398 → 500 /day</td></tr>
+        <tr><td>Opt-in rate</td><td>%</td><td>48.9</td><td>52.1</td><td class="up">+3.2 pt</td></tr>
+        <tr><td>Opt-in rate, excluding Labor Day</td><td>%</td><td>48.9</td><td>49.2</td><td class="nc">+0.3 pt</td></tr>
+        <tr><td>Opt-in rate, Labor Day only</td><td>%</td><td>—</td><td>59.9</td><td class="nc">—</td></tr>
+        <tr><td>Opt-in, new customers</td><td>%</td><td>57.8</td><td>56.7</td><td class="nc">−1.1 pt</td></tr>
+        <tr><td>Opt-in, returning customers</td><td>%</td><td>38.0</td><td>43.0</td><td class="up">+5.0 pt</td></tr>
+
+        <tr class="grp"><td colspan="5">Cadence mix, all products, share of new subscriptions</td></tr>
+        <tr><td>New subscriptions</td><td>subs</td><td>8,516</td><td>3,917</td><td class="up">304 → 560 /day</td></tr>
+        <tr><td>Monthly</td><td>%</td><td>65.8</td><td>50.4</td><td class="dn">−15.4 pt</td></tr>
+        <tr><td>Bi-monthly</td><td>%</td><td>17.5</td><td>15.0</td><td class="nc">−2.5 pt</td></tr>
+        <tr><td>Quarterly</td><td>%</td><td>16.7</td><td>31.9</td><td class="up">+15.2 pt</td></tr>
+        <tr><td>120 / 180-day</td><td>%</td><td>0.0</td><td>2.6</td><td class="nc">+2.6 pt</td></tr>
+
+        <tr class="grp"><td colspan="5">Product take rate, subscriptions ÷ storefront orders containing the product</td></tr>
+        <tr><td>Single products, three tiers</td><td>%</td><td>26.5</td><td>37.6</td><td class="up">+11.1 pt</td></tr>
+        <tr><td>Stacks, monthly or one-time</td><td>%</td><td>36.3</td><td>62.0</td><td class="up">+25.7 pt</td></tr>
+        <tr><td>Single products, orders per day</td><td>orders</td><td>1,011</td><td>1,257</td><td class="nc">+24%</td></tr>
+        <tr><td>Stacks, orders per day</td><td>orders</td><td>85</td><td>131</td><td class="nc">+54%</td></tr>
+
+        <tr class="grp"><td colspan="5">Value, single products</td></tr>
+        <tr><td>Net revenue per order containing the product</td><td>$</td><td>56.89</td><td>74.25</td><td class="up">+30.5%</td></tr>
+        <tr><td>Units per new subscription</td><td>units</td><td>1.15</td><td>1.92</td><td class="up">+67%</td></tr>
+        <tr><td>First charge per subscription, list</td><td>$</td><td>67.81</td><td>112.31</td><td class="up">+65.6%</td></tr>
+        <tr><td>List price per unit</td><td>$</td><td>59.14</td><td>58.43</td><td class="nc">−1.2%</td></tr>
+        <tr><td>Stacks, net revenue per order</td><td>$</td><td>130.64</td><td>131.12</td><td class="nc">+0.4%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Open Items</h2>
+  <ul>
+    <li>Cost of goods per unit and shipping cost per shipment. With the discount table confirmed and units per subscription known, these two inputs turn the value picture into margin.</li>
+    <li>First clean read of the store-wide rate: Sep 14 to Sep 27, no holiday and no sale traffic in the window.</li>
+    <li>Stack subscribers joined at 30% off and renew at 10%. The first renewals on those subscriptions fall in early October and will show whether the 20-point step-down holds them.</li>
+    <li>First quarterly renewals on single products land around Dec 3. That is the earliest date the retention question on 90-day cycles has an answer.</li>
+  </ul>
+
+  <h2>Method</h2>
+  <ul>
+    <li>Store-wide opt-in is orders tagged as a subscription's first order divided by checkout orders. Checkout orders exclude renewals, identified by the Skio and LUNA recurring tags, and exclude zero-revenue service channels: Gorgias, Corso, The Lobby, Trybe UGC, Superfiliate, DigitalGenius, Shopify Mobile, Draft Orders, GOAFFPRO.</li>
+    <li>Product take rate is Skio subscriptions created for the product divided by Shopify checkout orders containing it on Online Store and Shop, the two channels where the buy box renders. TikTok Shop and Meta shops carry no buy box and are excluded from this measure; including them shifts the singles figure by 0.2 pt.</li>
+    <li>An order with two products counts once toward each product's denominator. This is correct for product-scoped rates and inflates the singles group total relative to stacks, since singles dominate mixed carts. Correcting for it moves the singles take rate up about 2 pt.</li>
+    <li>Discounts are taken from the live storefront on Sep 11. Single products: 10% on 30-day supply, 20% on 60-day, 30% on 90-day, applied to every order. Stacks: 30% on the first order, 10% on renewals. Before Sep 3 all subscriptions ran a flat 25%.</li>
+    <li>Cadence is the delivery cycle recorded at opt-in. The 9,970 subscriptions written by the LUNA-to-Skio migration on Aug 6 and 7 are excluded; they carry a migration flag and were never sign-ups.</li>
+    <li>Shipping Protection is an add-on, not a product. It collapsed from about 110 to 12 per day on launch day through a configuration change and is excluded from every count.</li>
+    <li>Skio timestamps in UTC while Shopify uses store time. Daily points can shift by a few hours between sources; period totals are unaffected. Labor Day's evening orders appear on Sep 8 in Skio and Sep 7 in Shopify.</li>
+    <li>New versus returning is Shopify's classification at order time, summed across products, so a mixed cart appears once per product it contains.</li>
+    <li>After-period figures cover 7 days including a holiday. Volume is compared per day; rates and shares are proportions.</li>
+  </ul>
+
+  <footer>
+    <p>Heart &amp; Soil · Shopify order data and Skio subscription records · Aug 6 – Sep 9, 2026 · prepared by DTCPG</p>
+    <p>Type substitution: Wosker, Artlab and Buvera are not web-servable here, so the page is set in Anton, Archivo and Public Sans. Swap them on the production build.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var tip = document.getElementById('tip');
+  function showTip(e, html) {
+    tip.innerHTML = html; tip.style.opacity = '1';
+    var x = e.clientX + 16, y = e.clientY - 12;
+    if (x + 250 > window.innerWidth) x = e.clientX - 240;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
+  function hideTip() { tip.style.opacity = '0'; }
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(n, a) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); return e; }
+  function txt(x, y, s, o) {
+    o = o || {};
+    var t = el('text', { x: x, y: y, 'text-anchor': o.anchor || 'middle', 'font-size': o.size || 12,
+      'font-weight': o.weight || 500, fill: o.fill || 'var(--ink-3)', 'font-family': o.fam || "'Archivo', sans-serif" });
+    if (o.ls) t.setAttribute('letter-spacing', o.ls);
+    t.textContent = s; return t;
+  }
+  function hoverable(node, label) {
+    node.addEventListener('mousemove', function (e) { showTip(e, label); });
+    node.addEventListener('mouseleave', hideTip);
+    var ti = el('title', {}); ti.textContent = label.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    node.appendChild(ti);
+  }
+  function bar(g, x, y, w, h, fill, label) {
+    var r = el('rect', { x: x, y: y, width: w, height: Math.max(h, 1), fill: fill, rx: h < 10 ? 2 : 4 });
+    if (label) hoverable(r, label); g.appendChild(r); return r;
+  }
+  function hgrid(g, L, R, y, label) {
+    g.appendChild(el('line', { x1: L, x2: R, y1: y, y2: y, stroke: 'var(--grid)', 'stroke-width': 1 }));
+    g.appendChild(txt(L - 10, y + 4, label, { anchor: 'end', size: 11.5, weight: 600 }));
+  }
+
+  /* Chart 1 — daily opt-in, store-wide */
+  (function () {
+    var s = document.getElementById('c1'); if (!s) return;
+    var DAYS = ['Aug 6','Aug 7','Aug 8','Aug 9','Aug 10','Aug 11','Aug 12','Aug 13','Aug 14','Aug 15','Aug 16','Aug 17','Aug 18','Aug 19','Aug 20','Aug 21','Aug 22','Aug 23','Aug 24','Aug 25','Aug 26','Aug 27','Aug 28','Aug 29','Aug 30','Aug 31','Sep 1','Sep 2','Sep 3','Sep 4','Sep 5','Sep 6','Sep 7','Sep 8','Sep 9'];
+    var RATE = [51.1,44.6,41.3,44.9,41.9,45.9,55.0,48.0,51.9,53.0,48.9,49.6,50.2,51.7,49.7,51.2,53.4,52.5,50.8,47.4,47.6,48.0,49.1,48.9,54.1,47.0,52.2,51.0,43.3,51.9,54.9,51.6,59.9,46.2,44.0];
+    var CHK  = [662,985,908,1020,1108,1421,758,789,724,692,775,805,745,714,765,750,661,732,766,711,721,812,797,746,780,783,827,808,756,1007,903,897,1785,758,618];
+    var SIGN = [338,439,375,458,464,652,417,379,376,367,379,399,374,369,380,384,353,384,389,337,343,390,391,365,422,368,432,412,327,523,496,463,1070,350,272];
+    var L = 60, R = 850, T = 30, B = 262, MIN = 35, MAX = 65, LAUNCH = 28, LD = 32;
+    var xOf = function (i) { return L + (R - L) * (i / (DAYS.length - 1)); };
+    var yOf = function (v) { return B - (v - MIN) / (MAX - MIN) * (B - T); };
+    for (var v = 35; v <= 65; v += 5) hgrid(s, L, R, yOf(v), v + '%');
+    // Labor Day shading
+    var half = (xOf(1) - xOf(0)) / 2;
+    s.appendChild(el('rect', { x: xOf(LD) - half, y: T - 8, width: half * 2, height: B - T + 8, fill: 'var(--orange)', opacity: .14 }));
+    s.appendChild(txt(xOf(LD), T - 14, 'LABOR DAY', { size: 10.5, weight: 900, ls: '.1em', fill: 'var(--orange)' }));
+    // launch marker
+    var lx = xOf(LAUNCH) - half;
+    s.appendChild(el('line', { x1: lx, x2: lx, y1: T - 8, y2: B, stroke: 'var(--blue)', 'stroke-width': 2, 'stroke-dasharray': '5 4' }));
+    s.appendChild(txt(lx - 8, T - 14, 'NEW BUY BOX · SEP 3', { anchor: 'end', size: 10.5, weight: 900, ls: '.1em', fill: 'var(--blue)' }));
+    // pre average
+    s.appendChild(el('line', { x1: L, x2: R, y1: yOf(48.9), y2: yOf(48.9), stroke: 'var(--ink-3)', 'stroke-width': 2, 'stroke-dasharray': '3 5' }));
+    s.appendChild(txt(R + 6, yOf(48.9) + 4, '48.9%', { anchor: 'start', size: 11.5, weight: 900, fill: 'var(--ink-3)' }));
+    // line
+    s.appendChild(el('polyline', { points: RATE.map(function (v, i) { return xOf(i) + ',' + yOf(v); }).join(' '),
+      fill: 'none', stroke: 'var(--core-black)', 'stroke-width': 2.6, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
+    RATE.forEach(function (v, i) {
+      var special = i === LD;
+      var c = el('circle', { cx: xOf(i), cy: yOf(v), r: special ? 5.5 : 3.4, fill: special ? 'var(--orange)' : 'var(--core-black)',
+        stroke: 'var(--card)', 'stroke-width': 1.6 });
+      hoverable(c, '<b>' + DAYS[i] + '</b><br>' + v.toFixed(1) + '% opt-in<br>' + SIGN[i].toLocaleString() + ' of ' + CHK[i].toLocaleString() + ' checkout orders');
+      s.appendChild(c);
+    });
+    s.appendChild(txt(xOf(LD), yOf(59.9) - 12, '59.9%', { size: 13, weight: 900, fill: 'var(--orange)' }));
+    s.appendChild(txt(xOf(28), yOf(43.3) + 18, '43.3%', { size: 11, weight: 700 }));
+    s.appendChild(txt(xOf(34), yOf(44.0) + 18, '44.0%', { size: 11, weight: 700 }));
+    s.appendChild(el('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--rule)', 'stroke-width': 1.5 }));
+    [0, 7, 14, 21, 28, 34].forEach(function (i) { s.appendChild(txt(xOf(i), B + 22, DAYS[i].toUpperCase(), { size: 11, weight: 700, ls: '.06em' })); });
+    s.appendChild(txt(L, B + 48, 'ORDERS THAT STARTED A SUBSCRIPTION ÷ ALL CHECKOUT ORDERS, PER DAY', { anchor: 'start', size: 11, weight: 900, ls: '.1em' }));
+  })();
+
+  /* Chart 2 — cadence mix, two stacked bars */
+  (function () {
+    var s = document.getElementById('c2'); if (!s) return;
+    var L = 110, R = 830, rowH = 58, top = 24;
+    var rows = [
+      { k: 'BEFORE', note: 'Aug 6 – Sep 2 · 8,516 subs', v: [[65.8, 5606], [17.5, 1495], [16.7, 1420], [0, 0]] },
+      { k: 'AFTER',  note: 'Sep 3 – 9 · 3,917 subs',    v: [[50.4, 1975], [15.0, 588],  [31.9, 1250], [2.6, 104]] }
+    ];
+    var cols = ['var(--retention)', 'var(--orange)', 'var(--blue)', 'var(--deep)'];
+    var names = ['Monthly', 'Bi-monthly', 'Quarterly', '120 / 180-day'];
+    rows.forEach(function (r, i) {
+      var y = top + i * (rowH + 34), x = L, W = R - L;
+      s.appendChild(txt(L - 14, y + 26, r.k, { anchor: 'end', size: 13, weight: 900, fill: 'var(--ink)', ls: '.08em' }));
+      s.appendChild(txt(L - 14, y + 44, r.note, { anchor: 'end', size: 11, weight: 500, fam: "'Public Sans', sans-serif" }));
+      r.v.forEach(function (seg, j) {
+        if (seg[0] === 0) return;
+        var w = Math.max((seg[0] / 100) * W - 2, 1);
+        bar(s, x, y, w, rowH, cols[j], '<b>' + names[j] + '</b><br>' + seg[0].toFixed(1) + '% · ' + seg[1].toLocaleString() + ' subscriptions');
+        if (seg[0] > 6) {
+          s.appendChild(txt(x + w / 2, y + rowH / 2 + 1, seg[0].toFixed(1) + '%', { size: 14, weight: 900, fill: '#FFFFFF' }));
+          s.appendChild(txt(x + w / 2, y + rowH / 2 + 17, names[j], { size: 11, fill: 'rgba(255,255,255,.85)', fam: "'Public Sans', sans-serif" }));
+        }
+        x += w + 2;
+      });
+    });
+  })();
+
+  /* Chart 4 — daily cadence per 100 checkout orders, with toggle */
+  (function () {
+    var s = document.getElementById('c4'); if (!s) return;
+    var DAYS = ['Aug 6','Aug 7','Aug 8','Aug 9','Aug 10','Aug 11','Aug 12','Aug 13','Aug 14','Aug 15','Aug 16','Aug 17','Aug 18','Aug 19','Aug 20','Aug 21','Aug 22','Aug 23','Aug 24','Aug 25','Aug 26','Aug 27','Aug 28','Aug 29','Aug 30','Aug 31','Sep 1','Sep 2','Sep 3','Sep 4','Sep 5','Sep 6','Sep 7','Sep 8','Sep 9'];
+    var CHK  = [662,985,908,1020,1108,1421,758,789,724,692,775,805,745,714,765,750,661,732,766,711,721,812,797,746,780,783,827,808,756,1007,903,897,1785,758,618];
+    var S = {
+      tot:  { name: 'All subscriptions', col: 'var(--core-black)', w: 2.8, v: [253,339,316,327,366,422,451,263,313,257,270,329,287,280,275,281,272,281,304,257,265,286,284,303,314,314,302,310,340,536,550,493,874,854,279] },
+      c30:  { name: 'Monthly',           col: 'var(--retention)',  w: 2,   v: [174,219,210,212,237,263,281,171,198,186,196,230,179,189,166,186,185,187,200,165,169,200,198,203,202,203,191,206,202,282,263,264,403,410,159] },
+      c60:  { name: 'Bi-monthly',        col: 'var(--orange)',     w: 2,   v: [41,60,49,51,60,80,65,49,67,42,36,48,59,48,52,52,55,40,49,49,52,50,51,59,59,62,59,51,53,75,86,70,137,123,45] },
+      c90:  { name: 'Quarterly',         col: 'var(--blue)',       w: 2,   v: [38,60,57,64,69,79,105,43,48,29,38,51,49,43,57,43,32,54,55,43,44,36,35,41,53,49,52,53,81,172,183,148,305,296,66] },
+      c120: { name: '120 / 180-day',     col: 'var(--deep)',       w: 2,   v: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,7,18,11,29,25,9] }
+    };
+    var L = 58, R = 790, T = 30, B = 284, MAX = 120, LAUNCH = 28, LD = 32;
+    var xOf = function (i) { return L + (R - L) * (i / (DAYS.length - 1)); };
+    var yOf = function (v) { return B - (v / MAX) * (B - T); };
+    for (var v = 0; v <= 120; v += 20) hgrid(s, L, R + 80, yOf(v), String(v));
+    var half = (xOf(1) - xOf(0)) / 2;
+    s.appendChild(el('rect', { x: xOf(LD) - half, y: T - 10, width: half * 2, height: B - T + 10, fill: 'var(--orange)', opacity: .12 }));
+    s.appendChild(txt(xOf(LD), T - 16, 'LABOR DAY', { size: 10.5, weight: 900, ls: '.1em', fill: 'var(--orange)' }));
+    var lx = xOf(LAUNCH) - half;
+    s.appendChild(el('line', { x1: lx, x2: lx, y1: T - 10, y2: B, stroke: 'var(--blue)', 'stroke-width': 2, 'stroke-dasharray': '5 4' }));
+    s.appendChild(txt(lx - 8, T - 16, 'NEW BUY BOX · SEP 3', { anchor: 'end', size: 10.5, weight: 900, ls: '.1em', fill: 'var(--blue)' }));
+    var groups = {};
+    Object.keys(S).forEach(function (k) {
+      var ser = S[k], g = el('g', { 'data-series': k });
+      var rate = ser.v.map(function (n, i) { return n / CHK[i] * 100; });
+      var preSum = 0, preO = 0, saleSum = 0, saleO = 0;
+      ser.v.forEach(function (n, i) { if (i < LAUNCH) { preSum += n; preO += CHK[i]; } else { saleSum += n; saleO += CHK[i]; } });
+      var preAvg = preSum / preO * 100, saleAvg = saleSum / saleO * 100;
+      var ga = el('g', { 'data-avg': k });
+      ga.appendChild(el('line', { x1: xOf(0), x2: xOf(LAUNCH - 1), y1: yOf(preAvg), y2: yOf(preAvg), stroke: ser.col, 'stroke-width': 2, 'stroke-dasharray': '3 5', opacity: .9 }));
+      ga.appendChild(txt(xOf(13), yOf(preAvg) - 9, 'AVG ' + preAvg.toFixed(1), { size: 11.5, weight: 900, fill: ser.col }));
+      ga.appendChild(el('line', { x1: xOf(LAUNCH), x2: xOf(DAYS.length - 1), y1: yOf(saleAvg), y2: yOf(saleAvg), stroke: ser.col, 'stroke-width': 2, 'stroke-dasharray': '3 5', opacity: .9 }));
+      ga.appendChild(txt(xOf(31), yOf(saleAvg) - 9, 'AVG ' + saleAvg.toFixed(1), { size: 11.5, weight: 900, fill: ser.col }));
+      g.appendChild(ga);
+      g.appendChild(el('polyline', { points: rate.map(function (r, i) { return xOf(i) + ',' + yOf(Math.min(r, MAX)); }).join(' '),
+        fill: 'none', stroke: ser.col, 'stroke-width': ser.w, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
+      rate.forEach(function (r, i) {
+        var c = el('circle', { cx: xOf(i), cy: yOf(Math.min(r, MAX)), r: ser.w >= 2.8 ? 3.4 : 2.6, fill: ser.col, stroke: 'var(--card)', 'stroke-width': 1.4 });
+        hoverable(c, '<b>' + DAYS[i] + ' · ' + ser.name + '</b><br>' + r.toFixed(1) + ' per 100 orders<br>' + ser.v[i].toLocaleString() + ' subscriptions · ' + CHK[i].toLocaleString() + ' checkout orders');
+        g.appendChild(c);
+      });
+      g.appendChild(txt(R + 12, yOf(Math.min(rate[rate.length - 1], MAX)) + 4, ser.name, { anchor: 'start', size: 11.5, weight: 700, fill: ser.col }));
+      s.appendChild(g); groups[k] = g;
+    });
+    s.appendChild(el('line', { x1: L, x2: R + 80, y1: B, y2: B, stroke: 'var(--rule)', 'stroke-width': 1.5 }));
+    [0, 7, 14, 21, 28, 34].forEach(function (i) { s.appendChild(txt(xOf(i), B + 22, DAYS[i].toUpperCase(), { size: 11, weight: 700, ls: '.06em' })); });
+    s.appendChild(txt(L, B + 48, 'SUBSCRIPTIONS STARTED PER 100 CHECKOUT ORDERS, PER DAY · SEP 8 CARRIES LABOR DAY EVENING IN UTC', { anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));
+
+    function apply(sel) {
+      Object.keys(groups).forEach(function (k) {
+        var g = groups[k], on = sel === 'all' || sel === k;
+        g.style.display = on ? '' : 'none';
+        var avg = g.querySelector('[data-avg]');
+        avg.style.display = (sel === k || (sel === 'all' && k === 'tot')) ? '' : 'none';
+      });
+    }
+    apply('all');
+    document.querySelectorAll('.seg button[data-series]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('.seg button[data-series]').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+        b.setAttribute('aria-pressed', 'true');
+        apply(b.getAttribute('data-series'));
+      });
+    });
+  })();
+
+  /* Chart 3 — singles value, three panels */
+  (function () {
+    var s = document.getElementById('c3'); if (!s) return;
+    var panels = [
+      { t: 'NET REVENUE PER ORDER', pre: 56.89, post: 74.25, fmt: function (v) { return '$' + v.toFixed(2); }, d: '+30.5%', max: 90 },
+      { t: 'UNITS PER NEW SUBSCRIPTION', pre: 1.15, post: 1.92, fmt: function (v) { return v.toFixed(2); }, d: '+67%', max: 2.4 },
+      { t: 'LIST FIRST CHARGE PER SUB', pre: 67.81, post: 112.31, fmt: function (v) { return '$' + v.toFixed(2); }, d: '+65.6%', max: 130 },
+      { t: 'LIST PRICE PER UNIT', pre: 59.14, post: 58.43, fmt: function (v) { return '$' + v.toFixed(2); }, d: '−1.2%', max: 90, flat: true }
+    ];
+    var PW = 880 / 4, T = 56, B = 226, bw = 58, gap = 12;
+    panels.forEach(function (p, i) {
+      var x0 = PW * i, cx = x0 + PW / 2;
+      var yOf = function (v) { return B - (v / p.max) * (B - T); };
+      s.appendChild(txt(cx, 22, p.t, { size: 10.5, weight: 900, ls: '.08em' }));
+      s.appendChild(el('line', { x1: x0 + 26, x2: x0 + PW - 26, y1: B, y2: B, stroke: 'var(--rule)', 'stroke-width': 1.5 }));
+      var x1 = cx - bw - gap / 2, x2 = cx + gap / 2;
+      bar(s, x1, yOf(p.pre), bw, B - yOf(p.pre), 'var(--orange)', '<b>Before</b><br>' + p.fmt(p.pre));
+      bar(s, x2, yOf(p.post), bw, B - yOf(p.post), 'var(--blue)', '<b>After</b><br>' + p.fmt(p.post));
+      s.appendChild(txt(x1 + bw / 2, yOf(p.pre) - 9, p.fmt(p.pre), { size: 12, weight: 900, fill: 'var(--ink)' }));
+      s.appendChild(txt(x2 + bw / 2, yOf(p.post) - 9, p.fmt(p.post), { size: 12, weight: 900, fill: 'var(--ink)' }));
+      s.appendChild(txt(cx, B + 26, p.d, { size: 15, weight: 900, fill: p.flat ? 'var(--ink-3)' : 'var(--blue)' }));
+      s.appendChild(txt(cx, B + 46, p.flat ? 'unchanged' : 'before → after', { size: 11, weight: 500, fam: "'Public Sans', sans-serif" }));
+      if (i < 3) s.appendChild(el('line', { x1: x0 + PW, x2: x0 + PW, y1: 12, y2: B + 54, stroke: 'var(--grid)', 'stroke-width': 1 }));
+    });
+  })();
+})();
+</script>
+</body>
+</html>
