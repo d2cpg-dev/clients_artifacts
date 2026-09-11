@@ -203,27 +203,39 @@
     </figcaption>
   </figure>
 
+  <div class="callout">
+    <h3>The same cadence label meant a different product before Sep 3</h3>
+    <p>
+      The old buy box let a subscriber choose how often one unit shipped: every 30, 60 or 90 days. The new tiers
+      ship one, two or three units per delivery. A quarterly subscription before the launch was one bottle every
+      three months; after, it is three bottles every three months. On Whole Package, 103 of the 138 pre-launch
+      quarterly subscriptions were a single bottle; after launch, 216 of 219 carry three. Across single products,
+      units per new subscription rose from 1.15 to 1.92. The chart above compares billing cadence, which is the
+      same axis in both periods. The product volume behind each cadence is not, and the value section below is
+      where that difference shows up.
+    </p>
+  </div>
+
   <h2>Cadence Day By Day</h2>
   <p class="lede">
-    The same split as above, one point per day, measured against checkout orders so the lines are comparable
-    across time. Pick a line to see it alone with its period averages.
+    The same split as above, one point per day. Each line is that cadence's share of the subscriptions started
+    that day, so the four lines sum to 100% on every date. Pick a line to see it alone with its period averages.
   </p>
   <figure>
-    <p class="ch-t">Subscriptions started per 100 checkout orders, by cadence</p>
-    <p class="ch-s">All products, Skio subscription records over Shopify checkout orders. A checkout can start more than one subscription, so this runs higher than the share of orders in the first chart.</p>
+    <p class="ch-t">Share of each day's new subscriptions, by cadence</p>
+    <p class="ch-s">All products, Skio subscription records. Both sides of the ratio come from the same source, so the timezone offset between Skio and Shopify does not affect it.</p>
     <div class="seg" role="group" aria-label="Choose a line">
       <button data-series="all" aria-pressed="true">All lines</button>
-      <button data-series="tot" aria-pressed="false">All subscriptions</button>
       <button data-series="c30" aria-pressed="false">Monthly</button>
       <button data-series="c60" aria-pressed="false">Bi-monthly</button>
       <button data-series="c90" aria-pressed="false">Quarterly</button>
       <button data-series="c120" aria-pressed="false">120 / 180-day</button>
     </div>
-    <div class="ch-scroll"><svg id="c4" viewBox="0 0 880 380" role="img" aria-label="Subscriptions started per 100 checkout orders by cadence, daily, August 6 to September 9. All subscriptions run near 37 per 100 orders through August and near 58 after launch. Monthly stays near 25 throughout. Quarterly rises from about 7 to about 19 after launch. Bi-monthly holds near 7. The 120 and 180-day line appears only after launch, under 3."></svg></div>
+    <div class="ch-scroll"><svg id="c4" viewBox="0 0 880 380" role="img" aria-label="Share of each day's new subscriptions by cadence, daily, August 6 to September 9. Monthly runs near 66 percent through August and drops to about 50 percent after launch. Quarterly runs near 17 percent before and rises to about 32 percent after. Bi-monthly holds near 16 percent. The 120 and 180-day line appears only after launch, under 4 percent."></svg></div>
     <figcaption>
-      Monthly holds its level across the launch. The rise is quarterly, from roughly 7 per 100 orders before to
-      roughly 19 after. Sep 8 reads high on every line because Skio stamps in UTC and Shopify in store time, so
-      Labor Day evening subscriptions land on the following day; Sep 7 and Sep 8 together sit in line with the week.
+      The shift lands on launch day and holds. Monthly's share falls from about two-thirds to about half; quarterly
+      roughly doubles. Bi-monthly does not move. The gap between monthly and quarterly narrows from roughly 49 points
+      before launch to roughly 19 after, and stays narrow through the two days after Labor Day when volume fell back.
     </figcaption>
   </figure>
 
@@ -441,18 +453,17 @@
   (function () {
     var s = document.getElementById('c4'); if (!s) return;
     var DAYS = ['Aug 6','Aug 7','Aug 8','Aug 9','Aug 10','Aug 11','Aug 12','Aug 13','Aug 14','Aug 15','Aug 16','Aug 17','Aug 18','Aug 19','Aug 20','Aug 21','Aug 22','Aug 23','Aug 24','Aug 25','Aug 26','Aug 27','Aug 28','Aug 29','Aug 30','Aug 31','Sep 1','Sep 2','Sep 3','Sep 4','Sep 5','Sep 6','Sep 7','Sep 8','Sep 9'];
-    var CHK  = [662,985,908,1020,1108,1421,758,789,724,692,775,805,745,714,765,750,661,732,766,711,721,812,797,746,780,783,827,808,756,1007,903,897,1785,758,618];
+    var TOT  = [253,339,316,327,366,422,451,263,313,257,270,329,287,280,275,281,272,281,304,257,265,286,284,303,314,314,302,310,340,536,550,493,874,854,279];
     var S = {
-      tot:  { name: 'All subscriptions', col: 'var(--core-black)', w: 2.8, v: [253,339,316,327,366,422,451,263,313,257,270,329,287,280,275,281,272,281,304,257,265,286,284,303,314,314,302,310,340,536,550,493,874,854,279] },
-      c30:  { name: 'Monthly',           col: 'var(--retention)',  w: 2,   v: [174,219,210,212,237,263,281,171,198,186,196,230,179,189,166,186,185,187,200,165,169,200,198,203,202,203,191,206,202,282,263,264,403,410,159] },
-      c60:  { name: 'Bi-monthly',        col: 'var(--orange)',     w: 2,   v: [41,60,49,51,60,80,65,49,67,42,36,48,59,48,52,52,55,40,49,49,52,50,51,59,59,62,59,51,53,75,86,70,137,123,45] },
-      c90:  { name: 'Quarterly',         col: 'var(--blue)',       w: 2,   v: [38,60,57,64,69,79,105,43,48,29,38,51,49,43,57,43,32,54,55,43,44,36,35,41,53,49,52,53,81,172,183,148,305,296,66] },
-      c120: { name: '120 / 180-day',     col: 'var(--deep)',       w: 2,   v: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,7,18,11,29,25,9] }
+      c30:  { name: 'Monthly',       col: 'var(--retention)', w: 2.4, v: [174,219,210,212,237,263,281,171,198,186,196,230,179,189,166,186,185,187,200,165,169,200,198,203,202,203,191,206,202,282,263,264,403,410,159] },
+      c60:  { name: 'Bi-monthly',    col: 'var(--orange)',    w: 2.4, v: [41,60,49,51,60,80,65,49,67,42,36,48,59,48,52,52,55,40,49,49,52,50,51,59,59,62,59,51,53,75,86,70,137,123,45] },
+      c90:  { name: 'Quarterly',     col: 'var(--blue)',      w: 2.4, v: [38,60,57,64,69,79,105,43,48,29,38,51,49,43,57,43,32,54,55,43,44,36,35,41,53,49,52,53,81,172,183,148,305,296,66] },
+      c120: { name: '120 / 180-day', col: 'var(--deep)',      w: 2.4, v: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,7,18,11,29,25,9] }
     };
-    var L = 58, R = 790, T = 30, B = 284, MAX = 120, LAUNCH = 28, LD = 32;
+    var L = 58, R = 790, T = 30, B = 284, MAX = 80, LAUNCH = 28, LD = 32;
     var xOf = function (i) { return L + (R - L) * (i / (DAYS.length - 1)); };
     var yOf = function (v) { return B - (v / MAX) * (B - T); };
-    for (var v = 0; v <= 120; v += 20) hgrid(s, L, R + 80, yOf(v), String(v));
+    for (var v = 0; v <= 80; v += 20) hgrid(s, L, R + 80, yOf(v), v + '%');
     var half = (xOf(1) - xOf(0)) / 2;
     s.appendChild(el('rect', { x: xOf(LD) - half, y: T - 10, width: half * 2, height: B - T + 10, fill: 'var(--orange)', opacity: .12 }));
     s.appendChild(txt(xOf(LD), T - 16, 'LABOR DAY', { size: 10.5, weight: 900, ls: '.1em', fill: 'var(--orange)' }));
@@ -462,36 +473,35 @@
     var groups = {};
     Object.keys(S).forEach(function (k) {
       var ser = S[k], g = el('g', { 'data-series': k });
-      var rate = ser.v.map(function (n, i) { return n / CHK[i] * 100; });
-      var preSum = 0, preO = 0, saleSum = 0, saleO = 0;
-      ser.v.forEach(function (n, i) { if (i < LAUNCH) { preSum += n; preO += CHK[i]; } else { saleSum += n; saleO += CHK[i]; } });
-      var preAvg = preSum / preO * 100, saleAvg = saleSum / saleO * 100;
+      var share = ser.v.map(function (n, i) { return n / TOT[i] * 100; });
+      var preSum = 0, preT = 0, saleSum = 0, saleT = 0;
+      ser.v.forEach(function (n, i) { if (i < LAUNCH) { preSum += n; preT += TOT[i]; } else { saleSum += n; saleT += TOT[i]; } });
+      var preAvg = preSum / preT * 100, saleAvg = saleSum / saleT * 100;
       var ga = el('g', { 'data-avg': k });
       ga.appendChild(el('line', { x1: xOf(0), x2: xOf(LAUNCH - 1), y1: yOf(preAvg), y2: yOf(preAvg), stroke: ser.col, 'stroke-width': 2, 'stroke-dasharray': '3 5', opacity: .9 }));
-      ga.appendChild(txt(xOf(13), yOf(preAvg) - 9, 'AVG ' + preAvg.toFixed(1), { size: 11.5, weight: 900, fill: ser.col }));
+      ga.appendChild(txt(xOf(13), yOf(preAvg) - 9, 'AVG ' + preAvg.toFixed(1) + '%', { size: 11.5, weight: 900, fill: ser.col }));
       ga.appendChild(el('line', { x1: xOf(LAUNCH), x2: xOf(DAYS.length - 1), y1: yOf(saleAvg), y2: yOf(saleAvg), stroke: ser.col, 'stroke-width': 2, 'stroke-dasharray': '3 5', opacity: .9 }));
-      ga.appendChild(txt(xOf(31), yOf(saleAvg) - 9, 'AVG ' + saleAvg.toFixed(1), { size: 11.5, weight: 900, fill: ser.col }));
+      ga.appendChild(txt(xOf(31), yOf(saleAvg) - 9, 'AVG ' + saleAvg.toFixed(1) + '%', { size: 11.5, weight: 900, fill: ser.col }));
       g.appendChild(ga);
-      g.appendChild(el('polyline', { points: rate.map(function (r, i) { return xOf(i) + ',' + yOf(Math.min(r, MAX)); }).join(' '),
+      g.appendChild(el('polyline', { points: share.map(function (r, i) { return xOf(i) + ',' + yOf(r); }).join(' '),
         fill: 'none', stroke: ser.col, 'stroke-width': ser.w, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
-      rate.forEach(function (r, i) {
-        var c = el('circle', { cx: xOf(i), cy: yOf(Math.min(r, MAX)), r: ser.w >= 2.8 ? 3.4 : 2.6, fill: ser.col, stroke: 'var(--card)', 'stroke-width': 1.4 });
-        hoverable(c, '<b>' + DAYS[i] + ' · ' + ser.name + '</b><br>' + r.toFixed(1) + ' per 100 orders<br>' + ser.v[i].toLocaleString() + ' subscriptions · ' + CHK[i].toLocaleString() + ' checkout orders');
+      share.forEach(function (r, i) {
+        var c = el('circle', { cx: xOf(i), cy: yOf(r), r: 2.8, fill: ser.col, stroke: 'var(--card)', 'stroke-width': 1.4 });
+        hoverable(c, '<b>' + DAYS[i] + ' · ' + ser.name + '</b><br>' + r.toFixed(1) + '% of the day\'s new subscriptions<br>' + ser.v[i].toLocaleString() + ' of ' + TOT[i].toLocaleString());
         g.appendChild(c);
       });
-      g.appendChild(txt(R + 12, yOf(Math.min(rate[rate.length - 1], MAX)) + 4, ser.name, { anchor: 'start', size: 11.5, weight: 700, fill: ser.col }));
+      g.appendChild(txt(R + 12, yOf(share[share.length - 1]) + 4, ser.name, { anchor: 'start', size: 11.5, weight: 700, fill: ser.col }));
       s.appendChild(g); groups[k] = g;
     });
     s.appendChild(el('line', { x1: L, x2: R + 80, y1: B, y2: B, stroke: 'var(--rule)', 'stroke-width': 1.5 }));
     [0, 7, 14, 21, 28, 34].forEach(function (i) { s.appendChild(txt(xOf(i), B + 22, DAYS[i].toUpperCase(), { size: 11, weight: 700, ls: '.06em' })); });
-    s.appendChild(txt(L, B + 48, 'SUBSCRIPTIONS STARTED PER 100 CHECKOUT ORDERS, PER DAY · SEP 8 CARRIES LABOR DAY EVENING IN UTC', { anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));
+    s.appendChild(txt(L, B + 48, 'SHARE OF THE DAY\'S NEW SUBSCRIPTIONS BY CADENCE · THE FOUR LINES SUM TO 100% EACH DAY', { anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));
 
     function apply(sel) {
       Object.keys(groups).forEach(function (k) {
         var g = groups[k], on = sel === 'all' || sel === k;
         g.style.display = on ? '' : 'none';
-        var avg = g.querySelector('[data-avg]');
-        avg.style.display = (sel === k || (sel === 'all' && k === 'tot')) ? '' : 'none';
+        g.querySelector('[data-avg]').style.display = (sel === k) ? '' : 'none';
       });
     }
     apply('all');
