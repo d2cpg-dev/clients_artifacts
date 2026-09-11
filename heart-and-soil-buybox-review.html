@@ -125,8 +125,9 @@
     </h1>
     <p class="open">
       Store-wide subscription opt-in ran <b>52.1%</b> in launch week against <b>48.9%</b> over the previous four weeks.
-      The 60% figure is Labor Day itself, at 59.9%; on the other six days the rate sat level with the pre-launch
-      average. Of subscriptions started in launch week, <b>50% chose monthly, 15% bi-monthly, 32% quarterly</b>,
+      Labor Day alone reached 59.9%; the other six days sat level with the pre-launch average. The internal
+      tracker's 60% is a different measure, new customers only with TikTok Shop removed, and it ran between 58%
+      and 60% before the launch and between 57% and 59% after. Of subscriptions started in launch week, <b>50% chose monthly, 15% bi-monthly, 32% quarterly</b>,
       with quarterly nearly doubling from 17%. On single products, revenue per order rose <b>30%</b>, driven by units
       per new subscription climbing from 1.15 to 1.92 rather than by price. List price per unit did not move.
     </p>
@@ -175,10 +176,24 @@
     </figcaption>
   </figure>
   <div class="callout b">
+    <h3>How the tracker's 60% and this page's 52% fit together</h3>
     <p>
-      Returning customers moved. Their opt-in went from 38.0% to 43.0% across the week. New customers held at
-      57.8% → 56.7%. The buy box is a decision a customer meets at the product page, so the returning-customer
-      segment is where an effect would appear first. Still inside a promotion week, so read it as a direction.
+      The tracker carries two opt-in formulas. Its overall rate divides orders that started a subscription by all
+      orders less renewals. On the same exports that gives 47.1% before the launch and 49.4% in launch week. This page
+      also removes zero-revenue service-channel orders from the denominator, which lifts the pair to 48.9% and 52.1%.
+      Same shape, two to three points apart.
+    </p>
+    <p>
+      The 60% is the tracker's new-customer rate: subscription orders from first-time customers divided by first-time
+      customer orders, with TikTok Shop taken out. New customers subscribe far more often than returning ones. Summed
+      across products, their rate was 57.8% before the launch and 56.7% in launch week. Removing TikTok Shop from the
+      denominator adds at most 2.6 points, so the metric sits between 58% and 60% before and between 57% and 59% after.
+      It was near 60% before Sep 3 and it did not move.
+    </p>
+    <p>
+      Returning customers moved. Their opt-in went from 38.0% to 43.0% across the week. The buy box is a decision a
+      customer meets at the product page, so the returning-customer segment is where an effect would appear first.
+      Still inside a promotion week, so read it as a direction.
     </p>
   </div>
 
@@ -297,6 +312,8 @@
         <tr><td>Opt-in rate, Labor Day only</td><td>%</td><td>—</td><td>59.9</td><td class="nc">—</td></tr>
         <tr><td>Opt-in, new customers</td><td>%</td><td>57.8</td><td>56.7</td><td class="nc">−1.1 pt</td></tr>
         <tr><td>Opt-in, returning customers</td><td>%</td><td>38.0</td><td>43.0</td><td class="up">+5.0 pt</td></tr>
+        <tr><td>Tracker formula, overall (service channels kept in)</td><td>%</td><td>47.1</td><td>49.4</td><td class="up">+2.3 pt</td></tr>
+        <tr><td>Tracker formula, new customers, TikTok Shop removed</td><td>%</td><td>58 to 60</td><td>57 to 59</td><td class="nc">flat</td></tr>
 
         <tr class="grp"><td colspan="5">Cadence mix, all products, share of new subscriptions</td></tr>
         <tr><td>New subscriptions</td><td>subs</td><td>8,516</td><td>3,917</td><td class="up">304 → 560 /day</td></tr>
@@ -325,6 +342,7 @@
   <ul>
     <li>Cost of goods per unit and shipping cost per shipment. With the discount table confirmed and units per subscription known, these two inputs turn the value picture into margin.</li>
     <li>First clean read of the store-wide rate: Sep 14 to Sep 27, no holiday and no sale traffic in the window.</li>
+    <li>One export of orders split by new versus returning customer and by sales channel, with no product dimension, closes the tracker's new-customer rate to the decimal. The 58 to 60% range on this page brackets it.</li>
     <li>Stack subscribers joined at 30% off and renew at 10%. The first renewals on those subscriptions fall in early October and will show whether the 20-point step-down holds them.</li>
     <li>First quarterly renewals on single products land around Dec 3. That is the earliest date the retention question on 90-day cycles has an answer.</li>
   </ul>
@@ -332,6 +350,7 @@
   <h2>Method</h2>
   <ul>
     <li>Store-wide opt-in is orders tagged as a subscription's first order divided by checkout orders. Checkout orders exclude renewals, identified by the Skio and LUNA recurring tags, and exclude zero-revenue service channels: Gorgias, Corso, The Lobby, Trybe UGC, Superfiliate, DigitalGenius, Shopify Mobile, Draft Orders, GOAFFPRO.</li>
+    <li>The internal tracker's overall rate uses the same numerator and keeps service-channel orders in the denominator, which places it two to three points under this page. Its new-customer rate divides first-time customers' subscription orders by first-time customers' orders less TikTok Shop. TikTok Shop is 2.9% of checkout orders before the launch and 2.3% after, and carries no buy box. The new-customer figure here is summed across products; the range given brackets the exact store-level value, which needs one further export split by customer type and sales channel.</li>
     <li>Product take rate is Skio subscriptions created for the product divided by Shopify checkout orders containing it on Online Store and Shop, the two channels where the buy box renders. TikTok Shop and Meta shops carry no buy box and are excluded from this measure; including them shifts the singles figure by 0.2 pt.</li>
     <li>An order with two products counts once toward each product's denominator. This is correct for product-scoped rates and inflates the singles group total relative to stacks, since singles dominate mixed carts. Correcting for it moves the singles take rate up about 2 pt.</li>
     <li>Discounts are taken from the live storefront on Sep 11. Single products: 10% on 30-day supply, 20% on 60-day, 30% on 90-day, applied to every order. Stacks: 30% on the first order, 10% on renewals. Before Sep 3 all subscriptions ran a flat 25%.</li>
