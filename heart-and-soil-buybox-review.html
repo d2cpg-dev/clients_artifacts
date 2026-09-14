@@ -223,13 +223,27 @@
     <p>
       The old buy box let a subscriber choose how often one unit shipped: every 30, 60 or 90 days. The new tiers
       ship one, two or three units per delivery. A quarterly subscription before the launch was one bottle every
-      three months; after, it is three bottles every three months. Across single products, 962 of the 1,269
-      pre-launch quarterly subscriptions carried a single bottle (75.8%); after launch, 1,168 of 1,249 carry three
-      (93.5%). Units per new subscription rose from 1.15 to 1.92. The chart above compares billing cadence, which
+      three months; after, it is three bottles every three months. Across single products, 1,322 of the 1,772
+      pre-launch quarterly subscriptions carried a single bottle (74.6%); after launch, 1,195 of 1,288 carry three
+      or more (92.8%). Bi-monthly subscriptions moved the same way, 1,629 of 1,858 one bottle before
+      (87.7%) to 382 of 612 two (62.4%). Units per new subscription rose from 1.15 to 1.92. The chart above compares billing cadence, which
       is the same axis in both periods. The product volume behind each cadence is not, and the value section below
       is where that difference shows up.
     </p>
   </div>
+  <figure>
+    <p class="ch-t">Bi-monthly and quarterly subscriptions, split by bottle count</p>
+    <p class="ch-s">New subscriptions only, single products. Each bar is 100% of that cadence and period.</p>
+    <div class="legend">
+      <span><i class="sw" style="background:#E8E1CE"></i> 1 bottle</span>
+      <span><i class="sw" style="background:var(--retention)"></i> 2 bottles</span>
+      <span><i class="sw" style="background:var(--core-black)"></i> 3 or more bottles</span>
+    </div>
+    <div class="ch-scroll"><svg id="c5" viewBox="0 0 880 260" role="img" aria-label="Bi-monthly and quarterly subscriptions split by bottle count. Bi-monthly before launch: 87.7 percent one bottle, 11.1 percent two, 1.2 percent three or more. Bi-monthly after: 36.6 percent one, 62.4 percent two, 1.0 percent three or more. Quarterly before launch: 74.6 percent one bottle, 13.4 percent two, 12.0 percent three or more. Quarterly after: 5.7 percent one, 1.5 percent two, 92.8 percent three or more."></svg></div>
+    <figcaption>
+      Bi-monthly went from 87.7% one-bottle before the launch to 62.4% two-bottle after; quarterly went from 74.6% one-bottle to 92.8% three-or-more. Both cadences flip from mostly the legacy single-bottle pattern to mostly the new tier's intended count. The small three-or-more share on bi-monthly before launch and the small one- and two-bottle share on quarterly after it are customers who set a non-default quantity manually; on quarterly after launch that is 93 of 1,288 subscriptions.
+    </figcaption>
+  </figure>
 
   <h2>Cadence Day By Day</h2>
   <p class="lede">
@@ -577,6 +591,32 @@
         document.querySelectorAll('.seg button[data-series]').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
         b.setAttribute('aria-pressed', 'true');
         apply(b.getAttribute('data-series'));
+      });
+    });
+  })();
+
+  /* Chart 5 - bi-monthly / quarterly split by bottle count */
+  (function () {
+    var s = document.getElementById('c5'); if (!s) return;
+    var ROWS = [["Bi-monthly \u00b7 before launch", [87.7, 1629], [11.1, 207], [1.2, 22], "1,858 subscriptions, Aug 6\u2013Sep 2"], ["Bi-monthly \u00b7 after launch", [36.6, 224], [62.4, 382], [1.0, 6], "612 subscriptions, Sep 3\u20139"], ["Quarterly \u00b7 before launch", [74.6, 1322], [13.4, 237], [12.0, 213], "1,772 subscriptions, Aug 6\u2013Sep 2"], ["Quarterly \u00b7 after launch", [5.7, 74], [1.5, 19], [92.8, 1195], "1,288 subscriptions, Sep 3\u20139"]];
+    var COLS = ['#E8E1CE', 'var(--retention)', 'var(--core-black)'];
+    var NAMES = ['1 bottle', '2 bottles', '3 or more bottles'];
+    var L = 190, R = 850, T = 20, rowH = 40, gap = 18;
+    ROWS.forEach(function (row, i) {
+      var label = row[0], segs = [row[1], row[2], row[3]], subN = row[4];
+      var y = T + i * (rowH + gap);
+      s.appendChild(txt(L - 12, y + rowH / 2 + 5, label, { anchor: 'end', size: 13, weight: 700, fam: "'Public Sans',sans-serif" }));
+      s.appendChild(txt(L - 12, y + rowH / 2 + 20, subN, { anchor: 'end', size: 10.5, weight: 500, fill: 'var(--ink-3)', fam: "'Public Sans',sans-serif" }));
+      var x = L, W = R - L;
+      segs.forEach(function (seg, j) {
+        if (seg[0] <= 0) return;
+        var w = Math.max((seg[0] / 100) * W - (j > 0 ? 2 : 0), 1);
+        bar(s, x, y, w, rowH, COLS[j], '<b>' + NAMES[j] + '</b><br>' + seg[0].toFixed(1) + '% \u00b7 ' + seg[1].toLocaleString() + ' subscriptions');
+        if (seg[0] > 6) {
+          s.appendChild(txt(x + w / 2, y + rowH / 2 + 5, seg[0].toFixed(1) + '%',
+            { size: 13.5, weight: 900, fill: j === 1 ? '#FFFFFF' : (j === 2 ? '#FFFFFF' : 'var(--ink)') }));
+        }
+        x += (seg[0] / 100) * W;
       });
     });
   })();
