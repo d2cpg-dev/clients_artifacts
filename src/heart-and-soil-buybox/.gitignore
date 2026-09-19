@@ -1,0 +1,9 @@
+# build output: regenerate with build_v15.py, then wrap_pages.py
+page_v15.html
+
+# the raw Shopify exports never belong in a public repo, see README.md
+a_orders.csv
+b_signups.csv
+c_linebasis.csv
+d_products.csv
+e_sessions.csv
