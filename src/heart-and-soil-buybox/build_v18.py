@@ -39,7 +39,7 @@ SCRIPT = patch(SCRIPT,
     "var names = ['1 bottle / 30 days', '2 bottles / 60 days', '3 bottles / 90 days', '120 / 180-day plans', 'Every other combination'];",
     "var names = P.tier_names;", "c2 names")
 SCRIPT = patch(SCRIPT, "var L = 250, R = 790, T = 14, rowH = 48, gap = 14, MAX = 65;",
-    "var L = 250, R = 790, T = 14, rowH = 40, gap = 12, MAX = 50;",
+    "var L = 250, R = 700, T = 14, rowH = 40, gap = 12, MAX = 50;",
     "c2 scale and row height, it was the tallest chart on the page")
 # c4 was 400 tall against 340 for its neighbours; bring the plot into the same band
 SCRIPT = patch(SCRIPT, "var L = 58, R = 700, T = 46, B = 300, bw = (R - L) / LBL.length;",
@@ -145,10 +145,25 @@ SCRIPT = patch(SCRIPT,
     "        s.appendChild(txt(L + ww + 8, y + j * (h + 3) + h / 2 + 4, val.toFixed(1) + '%', "
     "{ anchor: 'start', size: 11.5, weight: 900, fill: 'var(--ink)' }));",
     """        s.appendChild(txt(L + ww + 8, y + j * (h + 3) + h / 2 + 4, val.toFixed(1) + '%',
-          { anchor: 'start', size: 11.5, weight: 900, fill: 'var(--ink)' }));
-        if (i === 0) s.appendChild(txt(L + ww + 56, y + j * (h + 3) + h / 2 + 4, w[2].toUpperCase(),
-          { anchor: 'start', size: 10, weight: 700, ls: '.08em', fill: 'var(--ink-3)' }));""",
-    "c2 names its three windows on the first row")
+          { anchor: 'start', size: 11.5, weight: 900, fill: 'var(--ink)' }));""",
+    "c2 value labels stay with their bars")
+# c2: the three windows are named once, in a key beside the drawing, so the reader
+# never has to match a bar back to a label sitting on another row.
+SCRIPT = patch(SCRIPT,
+    "    s.appendChild(txt(L, yb, 'SHARE OF NEW SUBSCRIPTIONS, SINGLE PRODUCTS', "
+    "{ anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));",
+    """    var _kw = T + 9;
+    wins.forEach(function (w) {
+      s.appendChild(el('rect', { x: R + 18, y: _kw - 11, width: 13, height: 13, rx: 3,
+        fill: w[1], stroke: 'var(--rule)', 'stroke-width': 1 }));
+      s.appendChild(txt(R + 39, _kw, w[2].toUpperCase(),
+        { anchor: 'start', size: 13, weight: 700, ls: '.07em', fill: 'var(--ink-2)' }));
+      _kw += 26;
+    });
+    s.appendChild(txt(L, yb, 'SHARE OF NEW SUBSCRIPTIONS, SINGLE PRODUCTS',
+      { anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));""",
+    "c2 names its three windows once, in a key on the right")
+
 SCRIPT = patch(SCRIPT,
     "var wins = [['before', 'var(--retention)', 'Before'], ['sale', 'var(--tint-orange)', "
     "'Launch + sale'], ['after', 'var(--orange)', 'After the sale']];",

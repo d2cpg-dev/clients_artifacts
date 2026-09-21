@@ -646,8 +646,8 @@ summary{cursor:pointer}
     <p class="ch-tag">Plan mix &middot; single products</p>
     <p class="ch-t">Sign-ups moved off one bottle and onto three at 90 days</p>
     <p class="ch-s">Share of new subscriptions on single products, 12,949 before and 3,689
-      since the sale. The three windows are labelled on the first row and hold their order
-      down the chart.</p>
+      since the sale. The key on the right names the three
+      windows, which hold their order down the chart.</p>
     <div class="ch-scroll"><svg id="c2" viewBox="0 0 880 340" role="img"></svg></div>
     <figcaption>Read this against the chart below it. The share of sign-ups on each combination
       moved because the quantity offered at each cycle changed, not because any combination stopped
@@ -989,7 +989,7 @@ summary{cursor:pointer}
     var s = document.getElementById('c2');
     var names = P.tier_names;
     var wins = [['before', 'var(--ink-3)', 'Before'], ['sale', 'var(--tint-orange)', 'Launch + sale'], ['after', 'var(--orange)', 'Since the sale']];
-    var L = 250, R = 790, T = 14, rowH = 40, gap = 12, MAX = 50;
+    var L = 250, R = 700, T = 14, rowH = 40, gap = 12, MAX = 50;
     names.forEach(function (n, i) {
       var y = T + i * (rowH + gap), h = (rowH - 2 * 3) / 3;
       s.appendChild(txt(L - 14, y + rowH / 2 + 4, n, { anchor: 'end', size: 13.5, weight: 700, fill: 'var(--ink)', fam: "'Public Sans',sans-serif" }));
@@ -1000,11 +1000,17 @@ summary{cursor:pointer}
         s.appendChild(r);
         s.appendChild(txt(L + ww + 8, y + j * (h + 3) + h / 2 + 4, val.toFixed(1) + '%',
           { anchor: 'start', size: 13, weight: 900, fill: 'var(--ink)' }));
-        if (i === 0) s.appendChild(txt(L + ww + 56, y + j * (h + 3) + h / 2 + 4, w[2].toUpperCase(),
-          { anchor: 'start', size: 13, weight: 700, ls: '.08em', fill: 'var(--ink-3)' }));
       });
     });
     var yb = T + names.length * (rowH + gap) - gap + 26;
+    var _kw = T + 9;
+    wins.forEach(function (w) {
+      s.appendChild(el('rect', { x: R + 18, y: _kw - 11, width: 13, height: 13, rx: 3,
+        fill: w[1], stroke: 'var(--rule)', 'stroke-width': 1 }));
+      s.appendChild(txt(R + 39, _kw, w[2].toUpperCase(),
+        { anchor: 'start', size: 13, weight: 700, ls: '.07em', fill: 'var(--ink-2)' }));
+      _kw += 26;
+    });
         s.setAttribute('viewBox', '0 0 880 ' + (yb + 14));
     s.setAttribute('aria-label', 'Plan mix. ' + names.map(function (n, i) {
       return n + ': ' + P.tiers.before[i] + ' percent before, ' + P.tiers.after[i] + ' after the sale'; }).join('. '));
