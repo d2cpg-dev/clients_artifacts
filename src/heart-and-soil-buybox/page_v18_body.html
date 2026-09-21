@@ -117,9 +117,11 @@
         effectively uncorrelated, at a correlation of {{traffic_r}}. Restricting the comparison to pre-change days at
         similar traffic widens the fall rather than narrowing it.</p></div>
     <div class="box ac a-neutral"><span class="chip">Ruled out</span><span class="lbl">It is not a tracking gap</span>
-      <p>{{same_day}}% of subscriptions created since the sale trace to a Shopify order the same day.
-        Shopify reports more subscribing orders than Skio holds subscriptions in every window we
-        checked, so there is no pool of sign-ups going unrecorded.</p></div>
+      <p>{{same_day}}% of subscriptions created since the sale trace to a Shopify order the same
+        day, so nothing is arriving unattached. Across the baseline the two systems agree to
+        {{recon_pre}} of each other. Since the sale the ratio reads {{recon_post}}, with Skio
+        marginally ahead, which follows from the September export splitting the subscription app
+        into its own sales channel rather than from sign-ups going unrecorded.</p></div>
     <div class="box ac a-neutral"><span class="chip">Checked</span><span class="lbl">Reading plans as they stand today is safe</span>
       <p>Only {{drift_pre}}% of pre-change subscriptions have ever had a line edited, and
         {{drift_pre9}}% within their first {{post_days}} days. That is far too little to manufacture
@@ -329,7 +331,7 @@
     <li>Sessions and conversion are store-wide rather than new-customer only, so they set context and do not decompose the take rate.</li>
     <li>Confidence interval is a day-level cluster bootstrap over {{boot_n}} resamples, cross-checked against a quasi-binomial interval with a dispersion correction of {{phi}}. Both are reported in the figures table.</li>
     <li>Shopify data is a set of five exports pulled {{pulled_long}} covering {{range_long}}. The Skio pull covers the same window. {{tail_note}}</li>
-    <li>Checksums against your earlier reporting: {{ck_orders}} orders and {{ck_signups}} tagged sign-ups over {{ck_window}}, both exact.</li>
+    <li>The new-customer denominator over {{denom_window}} is {{ck_denom}} orders, matching your earlier reporting exactly. Two wider counts over {{ck_window}} do not: this pull gives {{ck_orders}} orders and {{ck_signups}} tagged sign-ups against the {{ck_orders_exp}} and {{ck_signups_exp}} reported earlier. The September export separates the subscription app into its own sales channel, so the totals are not drawn on the same base. Every new-customer figure in this report reproduces the earlier pull day for day.</li>
   </ul>
   </details>
 

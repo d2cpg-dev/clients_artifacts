@@ -18,6 +18,19 @@ Dp = load("d_products.csv"); E = load("e_sessions.csv")
 BQF = json.load(io.open("bq_facts.json", encoding="utf-8"))
 PLAN = list(csv.DictReader(io.open("bq_plan.csv", encoding="utf-8")))
 
+# The Sep 2026 re-pull ships every sales channel, including the two the
+# subscription app bills renewals through. Renewals are not orders anyone
+# placed, so they are dropped here rather than in the export: every
+# all-customer aggregate below (the reconciliation, the checksums) counts
+# placed orders only. New-customer figures are unaffected either way,
+# because a renewal is always a returning customer.
+_RENEW_CH = {"Skio Subscriptions (YC S20)", "Heart & Soil Subscriptions"}
+_before = len(A), len(C)
+A = [r for r in A if r["Sales channel"] not in _RENEW_CH]
+C = [r for r in C if r["Sales channel"] not in _RENEW_CH]
+print("dropped renewal channels: a_orders %d -> %d rows, c_linebasis %d -> %d"
+      % (_before[0], len(A), _before[1], len(C)))
+
 DAYS = sorted(set(r["Day"] for r in A))
 TT = "AfterShip for TikTok"
 RENEW = {"Skio Subscriptions (YC S20)", "Heart & Soil Subscriptions"}
@@ -60,7 +73,7 @@ F["range"] = dict(start=DAYS[0], end=DAYS[-1], days=len(DAYS),
                   change_day=CHANGE_DAY, labor_day=LABOR_DAY,
                   pre_days=len(PRE), promo_days=len(PROMO), sale_days=len(SALE), post_days=len(POST),
                   promo_start=PROMO0, promo_end=PROMO1, sale_end=SALE_END,
-                  pulled="2026-09-18")
+                  pulled="2026-09-22")
 
 # ---------------------------------------------------------------- take rate
 DEFS = dict(

@@ -30,13 +30,23 @@ python wrap_pages.py    # wraps the fragment into ../../heart-and-soil-buybox-re
 | `facts_v15.json` | the number ledger. Every figure in the prose resolves from here |
 | `plan_facts.json` | selling-plan evidence: plan groups and quantity chosen per cycle |
 | `payload_v15.json` | the chart data, embedded into the page |
-| `bq_facts.json` | Skio scalars with provenance, pulled 2026-09-18 |
+| `bq_facts.json` | Skio scalars with provenance, pulled 2026-09-22 |
 | `bq_plan.csv` | Skio plan mix by window, cadence and quantity |
 | `selling_plans.csv` | Skio sign-ups by selling plan, the evidence that nothing was removed |
 | `qa_v15.py` | 117 checks that re-derive relationships rather than trusting them |
 | `facts_v15.py` | rebuilds `facts_v15.json` from the raw exports. See the note below |
 | `prep_v15.py` | rebuilds `payload_v15.json` from the raw exports. See the note below |
+| `single_products.csv` | the 21 single-product Shopify GIDs the tiered buy box lives on, pinned so the set cannot drift |
 | `wrap_pages.py` | adds the document shell and crawler directives for GitHub Pages |
+
+## The window, and the export definition that changed under it
+
+The published build covers Jul 20 to Sep 20, 2026, from Shopify exports pulled Sep 22 and a Skio
+pull of the same date. The September re-pull ships two sales channels the July pull did not, the two
+the subscription app bills renewals through. Renewals are not orders anyone placed, so `facts_v15.py`
+drops those channels in code rather than in the export. Every new-customer figure reproduces the
+earlier pull day for day; two wider all-customer counts do not, because they are no longer drawn on
+the same base. That is stated in the method notes on the page rather than hidden.
 
 ## The raw exports are deliberately not committed
 
@@ -105,8 +115,8 @@ previous published build. A v16 pass was rejected on its layout and is not in th
 
 - Numbers live in `facts_v15.json` and `plan_facts.json`. Changing a figure means changing the
   ledger and re-running QA, never editing the copy.
-- Charts are drawn into an 880-unit viewBox and the figure column is pinned to 880px so the render
-  scale is exactly 1.000. In-SVG type is floored at 11 units, which is therefore 11px. Widening the
-  figure column breaks that relationship and makes every chart taller.
+- Charts are drawn into an 880-unit viewBox and render into the 749px graphic zone, a scale of
+  0.852. In-SVG type is floored at 13 units, which lands on 11.07px. Changing the zone width changes
+  that scale, so the floor has to move with it or labels drop below 11px.
 - The page is light only, on purpose. Both dark blocks are stripped from the inherited stylesheet at
   build time and `wrap_pages.py` asserts none came back.

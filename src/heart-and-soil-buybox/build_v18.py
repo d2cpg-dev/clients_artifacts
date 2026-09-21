@@ -288,6 +288,11 @@ TOK = dict(
   aov_pct=pct(c["aov_pct"]), rev_pct=pct(c["rev_pct"]),
   # chart 6 states its own endpoint in its headline
   f12=n0(m["per_month"] * 12),
+  # the two wider counts the September export no longer reproduces, and what the
+  # earlier reporting held, so the method note can state both rather than claim a match
+  ck_orders_exp=n0(F["checksum"]["orders_expected"]),
+  ck_signups_exp=n0(F["checksum"]["signups_expected"]),
+  recon_pre=p2(F["recon"]["pre"]["ratio"]), recon_post=p2(F["recon"]["post"]["ratio"]),
   subs_pre=p1(c["subs_day_pre"]), subs_post=p1(c["subs_day_post"]),
   share_tr="%.0f%%" % c["share_takerate"], share_vol="%.0f%%" % c["share_volume"],
   rev_gain=n0(c["rev_gain_day"]),
