@@ -1,0 +1,341 @@
+<a class="skip" href="#take-rate">Skip to the analysis</a>
+<div id="tip" role="status" aria-live="polite"></div>
+<main class="wrap">
+  <header>
+    <div class="mast">
+      <p class="doc">Subscription Buy Box</p>
+      <div class="kicker">Heart &amp; Soil &middot; new buy box live {{change_day_long}}</div>
+      <nav class="secnav" aria-label="Jump to a section">
+        <a href="#take-rate">How many</a><a href="#confidence">How sure</a><a href="#mechanism">What changed</a><a href="#worth">What it is worth</a><a href="#open-questions">Still open</a><a href="#recommend">Recommendation</a>
+      </nav>
+    </div>
+
+
+    <h1>Bigger first orders, <em>fewer subscribers</em>. The long cycles became bulk.</h1>
+
+    <div class="strip">
+      <div class="cell"><div class="lbl">Subscription take rate</div>
+        <div class="val">{{post}}<span class="u">%</span></div>
+        <div class="sup">from {{pre}}% across the {{pre_days}} days before the change</div></div>
+      <div class="cell"><div class="lbl">The fall</div>
+        <div class="val o">&minus;{{drop}}<span class="u"> pts</span></div>
+        <div class="sup">{{rel}} relative &middot; confident between {{band_lo}} and {{band_hi}} points</div></div>
+      <div class="cell"><div class="lbl">Subscribers not started</div>
+        <div class="val b">{{lost_mo}}</div>
+        <div class="sup">a month &middot; between {{lost_lo}} and {{lost_hi}} on that range</div></div>
+      <div class="cell"><div class="lbl">New-customer revenue</div>
+        <div class="val">{{rev_pct}}</div>
+        <div class="sup">per day, on order value up {{aov_pct}}</div></div>
+    </div>
+
+    <div class="exec">
+      <div class="exec-row">
+        <span class="exec-t">Take rate on new-customer orders fell from <b>{{pre}}%</b> across the
+          {{pre_days}} clean days before the change to <b>{{post}}%</b> in the {{post_days}} days since
+          the sale, about {{drop_r}} points. At your volume that is roughly {{lost_mo}} fewer new
+          subscribers a month.</span>
+        <a class="exec-l" href="#confidence">How sure we are</a>
+      </div>
+      <div class="exec-row">
+        <span class="exec-t">The cause is not a deleted plan. The new buy box ties how much you buy
+          to how often it arrives. At {{gone_cad}} days a single bottle fell from <b>{{one90_old}}%</b>
+          of that cycle to <b>{{one90_new}}%</b> while three bottles rose to <b>{{three90_new}}%</b>,
+          so the long cycles became bulk purchases.</span>
+        <a class="exec-l" href="#mechanism">What changed</a>
+      </div>
+      <div class="exec-row exec-act">
+        <span class="exec-t">Keep the new buy box and put that one plan back on {{restore_date}},
+          which needs your yes by <b>{{signoff_date}}</b>. Judge it on {{decide_date}}. Retention at
+          {{ret_read_1}} days on {{retention_date}} settles the trade.</span>
+        <a class="exec-l" href="#recommend">What we recommend</a>
+      </div>
+    </div>
+  </header>
+
+  <h2>What We Measured</h2>
+  <p>Take rate here is the share of <b>new-customer orders that contain a subscription</b>. A cart
+    holding a subscription and a one-off item counts once. Renewals are excluded from both sides, and
+    the TikTok channel is excluded because the buy box never appears there. Over
+    {{denom_window}} this denominator is {{ck_denom}} orders, which reproduces the figure behind your
+    earlier reporting exactly.</p>
+  <p>The baseline is the {{pre_days}} clean days from {{pre_start}} to {{pre_end}}. We cut
+    {{promo_long}} out of it for two independent reasons: a sitewide cart promotion ran across those
+    days, and a Skio data migration of {{migration}} records landed in the same window.</p>
+
+  <h2 id="take-rate">How Many Subscribed</h2>
+  <p>The buttons cut the same orders {{n_measures}} ways. The second one counts from a different Shopify field
+    entirely, the subscription app's own first-order tag, so it is a genuine second opinion on the same
+    question. The right-hand pair switches between days and Monday-to-Sunday weeks. The launch and the
+    Labor Day sale are shaded.</p>
+    <div class="ranges">
+      <span class="rg">Every chart <b>{{range_long}}</b></span>
+    </div>
+  <figure>
+    <p class="ch-tag">Take rate &middot; new-customer orders</p>
+    <p class="ch-t" id="c1t">Take rate fell {{drop_r}} points and has not come back</p>
+    <p class="ch-s" id="c1s"></p>
+    <div class="seg-row">
+      <div class="seg" role="group" aria-label="Choose a measure">
+        <button data-optin="headline" aria-pressed="true">New customers</button>
+        <button data-optin="tag" aria-pressed="false">Order-tag measure</button>
+        <button data-optin="store" aria-pressed="false">Online store only</button>
+        <button data-optin="ret" aria-pressed="false">Returning customers</button>
+      </div>
+      <div class="seg grain" role="group" aria-label="Days or weeks">
+        <button data-grain="day" aria-pressed="false">Daily</button>
+        <button data-grain="week" aria-pressed="true">Weekly</button>
+      </div>
+    </div>
+    <div class="ch-scroll"><svg id="c1" viewBox="0 0 880 300" role="img"></svg></div>
+    <figcaption id="c1cap"></figcaption>
+  </figure>
+  <p>Two details in that chart carry most of the weight. The sale peak is real and it is large:
+    Labor Day itself ran {{labor}}% on {{labor_mult}} times a normal day's orders, which is why a
+    window containing it tells you very little. And the fall was already there on day one.
+    {{change_day_short}}, the first day the new buy box was live and before the sale had built,
+    read {{day1}}%.</p>
+
+  <h2 id="confidence">How Sure We Are</h2>
+  <p>The daily numbers barely overlap. The weakest of the {{pre_days}} days before the change was
+    {{min_pre}}%. {{below_n}} of the {{post_days}} days since the sale came in below that. The single
+    exception reached {{max_post}}%. Comparing every post-change day against every pre-change day, the
+    post day is lower in {{pairs_lower}} of {{pairs_total}} pairings, which on a rank test that assumes
+    nothing about the shape of the data gives a probability of {{mw_p}}.</p>
+  <p>Every way we cut it lands between {{spread_lo}} and {{spread_hi}} points, and when we ran the
+    same method on {{placebo_n}} earlier dates where nothing had happened, the largest false fall it
+    produced was {{placebo_worst}} points against the {{drop_r}} we are reporting.</p>
+  <details class="fold sub">
+    <summary>How we cut it<span class="fold-ind">+</span></summary>
+    <p>The order-tag measure gives {{tag_drop}} points. Standardising for day of week gives
+      {{dow_drop}} points. Comparing only against pre-change days at similar traffic gives
+      {{matched_drop}} points, across {{matched_n}} days averaging {{matched_sess}} sessions against
+      {{post_sess}} now. The online store on its own gives {{store_drop}} points.</p>
+  </details>
+  <div class="quad">
+    <div class="box ac a-green"><span class="chip">Ruled out</span><span class="lbl">Traffic does not explain it</span>
+      <p>Across the {{pre_days}} clean days before the change, daily take rate and daily sessions are
+        effectively uncorrelated, at a correlation of {{traffic_r}}. Restricting the comparison to pre-change days at
+        similar traffic widens the fall rather than narrowing it.</p></div>
+    <div class="box ac a-green"><span class="chip">Ruled out</span><span class="lbl">It is not a tracking gap</span>
+      <p>{{same_day}}% of subscriptions created since the sale trace to a Shopify order the same day.
+        Shopify reports more subscribing orders than Skio holds subscriptions in every window we
+        checked, so there is no pool of sign-ups going unrecorded.</p></div>
+    <div class="box ac a-green"><span class="chip">Checked</span><span class="lbl">Reading plans as they stand today is safe</span>
+      <p>Only {{drift_pre}}% of pre-change subscriptions have ever had a line edited, and
+        {{drift_pre9}}% within their first {{post_days}} days. That is far too little to manufacture
+        the basket shift below.</p></div>
+    <div class="box ac a-orange"><span class="chip">Still open</span><span class="lbl">No verdict on permanence yet</span>
+      <p>We cannot call permanence on {{post_days}} days, and we have no year-ago data for this
+        window. A seasonal effect would have to arrive as a step inside one week and then hold.
+        Seasonality does not behave that way. We still cannot close it with data we do not have.</p></div>
+  </div>
+
+  <h2 id="mechanism">What Changed In The Buy Box</h2>
+  <p>Nothing was removed. The buy box swapped which group of plans it puts in front of people.
+    The group that used to take almost every sign-up went from {{fam_old_pre}} subscriptions before
+    the change to {{fam_old_post}} since. The group that replaced it went from {{fam_new_pre}} to
+    {{fam_new_post}}. Both groups existed before the change.</p>
+  <p>What the new group does differently is <b>tie how much you buy to how often it arrives</b>. At
+    {{gone_cad}} days a single bottle used to be {{one90_old}}% of that cycle's sign-ups and is now
+    {{one90_new}}%, while three bottles went from {{three90_old}}% to {{three90_new}}%. At
+    {{alive_cad}} days one bottle went from {{one60_old}}% to {{one60_new}}% and two bottles from
+    {{two60_old}}% to {{two60_new}}%. At {{m30_cad}} days, where one bottle is the natural quantity
+    anyway, almost nothing moved: {{one30_old}}% to {{one30_new}}%.</p>
+  <p>So the long cycles have become bulk purchases. Somebody who wants one bottle at a time is now
+    steered to the monthly plan. The combinations themselves are all still buyable, quietly:
+    {{live30}} people started a single bottle monthly since the sale, {{live60}} did it at
+    {{alive_cad}} days and {{live90}} at {{gone_cad}} days, the most recent on {{live90_last}}.</p>
+  <figure>
+    <p class="ch-tag">Plan mix &middot; single products</p>
+    <p class="ch-t">Sign-ups moved off one bottle and onto three at {{gone_cad}} days</p>
+    <p class="ch-s">Share of new subscriptions on single products, {{n_pre}} before and {{n_post}}
+      since the sale. The three windows are labelled on the first row and hold their order
+      down the chart.</p>
+    <div class="ch-scroll"><svg id="c2" viewBox="0 0 880 340" role="img"></svg></div>
+    <figcaption>Read this against the chart below it. The share of sign-ups on each combination
+      moved because the quantity offered at each cycle changed, not because any combination stopped
+      being available.</figcaption>
+  </figure>
+  <figure>
+    <p class="ch-tag">Basket size &middot; within each cycle</p>
+    <p class="ch-t">Three bottles took the {{gone_cad}}-day cycle, from {{three90_old}}% to
+      {{three90_new}}%</p>
+    <p class="ch-s">Each row fills to the whole of that cycle's new subscriptions. The bands are
+      named on the first row.</p>
+    <div class="ch-scroll"><svg id="c3" viewBox="0 0 880 340" role="img"></svg></div>
+    <figcaption>Monthly was a one-bottle plan and stayed one. The longer cycles moved to two and three
+      bottles, which is where the extra order value comes from.</figcaption>
+  </figure>
+
+  <h2 id="worth">What It Is Worth</h2>
+  <p>Each subscription now commits more product. Bottles per subscription went from {{ups_pre}} to
+    {{ups_post}}, and list value per subscription from ${{lps_pre}} to ${{lps_post}}. The third card is
+    the one that decides the economics, and it is flat.</p>
+  <div class="trio vgap">
+    <div class="stat ac a-neutral"><span class="chip">Bigger</span>
+      <div class="stat-k">Bottles per subscription</div>
+      <div class="stat-v">{{ups_pre}} <i>&rarr;</i> {{ups_post}}</div>
+      <div class="stat-d up">{{ups_pct}}</div></div>
+    <div class="stat ac a-neutral"><span class="chip">Bigger</span>
+      <div class="stat-k">List value committed</div>
+      <div class="stat-v">${{lps_pre}} <i>&rarr;</i> ${{lps_post}}</div>
+      <div class="stat-d up">{{lps_pct}}</div></div>
+    <div class="stat ac a-orange lead"><span class="chip">The one that decides it</span>
+      <div class="stat-k">List value per month, the rate of spend</div>
+      <div class="stat-v">${{lpm_pre}} <i>&rarr;</i> ${{lpm_post}}</div>
+      <div class="stat-d nc">{{lpm_pct}}, flat</div></div>
+  </div>
+  <p>Bigger shipments are arriving further apart, which nets out at about the same monthly
+    commitment per subscriber. Combine that with the lower take rate and the dollars new customers
+    sign up to spend each month are down {{crux_pct}}. We give that as a band of roughly {{crux_lo}} to {{crux_hi}} rather than a single
+    figure, because it multiplies three estimates across two systems.</p>
+  <p>Those subscription figures are list prices. The Skio export carries no charged price on the
+    subscription line, the order line or the change log, so we cannot yet see the effect of any
+    difference in discount between the old buy box and the new one. That is question three below.</p>
+
+  <h2>Everything Else, Week By Week</h2>
+  <p>Take rate, new subscriptions, order value, conversion and traffic across the same range,
+    {{range_long}}. Tick any combination. They do not share a unit, so each line runs against its own
+    pre-launch average, the rule at one hundred. Hover any point for the underlying number.</p>
+  <figure>
+    <p class="ch-tag">Context &middot; five measures, weekly</p>
+    <p class="ch-t">New subscriptions fell further than take rate alone, {{subs_pre}} to
+      {{subs_post}} a day</p>
+    <p class="ch-s">Each line runs against its own pre-launch average, the six full weeks from
+      {{prew_start}} to {{prew_end}}, drawn as the rule at one hundred.</p>
+    <div class="chips" id="chips" role="group" aria-label="Add or remove measures"></div>
+    <div class="ch-scroll"><svg id="c4" viewBox="0 0 880 348" role="img"></svg></div>
+    <details class="fold sub"><summary>Values<span class="fold-ind">+</span></summary>
+      <div class="readout" id="c4r"></div></details>
+    <figcaption>New subscriptions per day fall further than take rate alone, from {{subs_pre}} to
+      {{subs_post}} a day. About {{share_tr}} of that is the take rate and {{share_vol}} is lower
+      order volume, which tracks traffic and has nothing to do with the buy box.</figcaption>
+  </figure>
+
+  <h2 id="open-questions">What We Cannot Answer Yet</h2>
+  <p>Whether this trade is good depends on how long the new subscriptions last, and the oldest of them
+    is {{post_days}} days old. A {{big_cad}}-day plan has to survive three months to bill a second
+    time. Nothing in this data tells you whether it will.</p>
+  <details class="fold sub">
+    <summary>The last few days<span class="fold-ind">+</span></summary>
+    <p>The first half of the post-sale window ran {{trend_early}}% and the second half
+      {{trend_late}}%, a move of {{trend_delta}} points, which is well inside the daily noise. We
+      would not read it either way.</p>
+  </details>
+  <p>Returning customers moved less than new ones, {{ret_pre}}% to {{ret_post}}%, a fall of
+    {{ret_drop}} points. They see the same buy box, so this is worth watching, though a returning customer
+    who already has a subscription is a different decision from a first one.</p>
+
+  <h2 id="recommend">What We Recommend</h2>
+  <div class="recs">
+    <div class="rc ac a-orange primary">
+      <span class="chip">Do this</span>
+      <h3>Let people pick one bottle at the longer cycles</h3>
+      <p>The combination already exists and still sells, it is just not what the box offers at {{alive_cad}} and {{gone_cad}} days. Untie quantity from cycle length in the group the box presents. It is a configuration change with no build, and you can undo it in a day if nothing moves. We read take rate on clean data the day before, on {{reread_date}}, so the test starts against a fresh baseline.</p>
+      <span class="who">Your team &middot; live {{restore_date}} &middot; we need a yes by {{signoff_date}}</span>
+    </div>
+    <div class="rc ac a-blue">
+      <span class="chip">Hold</span>
+      <h3>Keep the new buy box</h3>
+      <p>Order value is up {{aov_pct}} and revenue per day is up {{rev_pct}}. Reverting gives that back to solve a problem that one plan may solve on its own.</p>
+      <span class="who">No action &middot; stated so it is not assumed</span>
+    </div>
+    <div class="rc ac a-deep">
+      <span class="chip">Measure</span>
+      <h3>Judge it against a number agreed in advance</h3>
+      <p>Run it for {{test_days}} days. Call it a success if new-customer take rate recovers at least {{threshold}} of the {{drop_r}} points while new-customer order value holds above ${{aov_floor}}. At your volume, {{test_orders}} orders over {{test_days}} days lets us read a move of about {{mde}} points, so the threshold has room. Full recovery means the missing plan was the cause. No recovery means the cause is where the new buy box points people, and tile order is what we look at next.</p>
+      <span class="who">Joint call &middot; result {{decide_date}}</span>
+    </div>
+    <div class="rc ac a-blue">
+      <span class="chip">Hold</span>
+      <h3>Change nothing else in the buy box, and run no sitewide promotion, while it runs</h3>
+      <p>Either one makes the test unreadable. A promotion sitting on top of a change is what made the first read of this misleading.</p>
+      <span class="who">No action &middot; {{restore_date}} to {{decide_date}}</span>
+    </div>
+    <div class="rc ac a-green">
+      <span class="chip">Then decide</span>
+      <h3>Read retention at {{ret_read_1}} and {{ret_read_2}} days</h3>
+      <p>This is the one that settles it. Fewer, larger, less frequent subscriptions beat more, smaller, more frequent ones only if they survive long enough to bill again.</p>
+      <span class="who">Us &middot; {{retention_date}}</span>
+    </div>
+  </div>
+
+  <h2>What Happens When</h2>
+  <figure>
+    <p class="ch-tag">Schedule &middot; owners and dates</p>
+    <p class="ch-t">Your yes on {{signoff_date}} sets every date after it</p>
+    <p class="ch-s">Five steps between {{signoff_date}} and {{retention_date}}. Each row names its
+      own owner on the right. Diamonds are single dates. The bar is the {{test_days}}-day test
+      window.</p>
+    <div class="ch-scroll"><svg id="c5" viewBox="0 0 880 250" role="img"></svg></div>
+    <figcaption>The only date inside the next two weeks is {{signoff_date}}. Everything after
+      it depends on that yes.</figcaption>
+  </figure>
+  <p>Leaving the buy box exactly as it is costs roughly {{lost_mo}} new subscribers a month, worth about
+    ${{mo_bill}} of monthly billings at list price for as long as those subscribers would have stayed,
+    against a first-order revenue gain of about ${{rev_gain}} a day. We are not annualising the
+    subscriber figure. We have no retention data on the new plans, which is exactly what the
+    {{retention_date}} read is for.</p>
+  <figure>
+    <p class="ch-tag">If nothing changes &middot; twelve months</p>
+    <p class="ch-t">Holding the gap for a year is {{f12}} subscriptions not started</p>
+    <p class="ch-s">Running total at the measured rate of {{lost_mo}} a month, with the same
+      confidence band as the headline. It counts subscriptions and puts no dollar figure on
+      them.</p>
+    <div class="ch-scroll"><svg id="c6" viewBox="0 0 880 276" role="img"></svg></div>
+    <figcaption>This assumes only that the gap stays where it is now. It says nothing about revenue,
+      because that depends on how long those subscriptions would have lasted, which is what the
+      {{retention_date}} retention read measures.</figcaption>
+  </figure>
+
+  <h2>Three Questions For You</h2>
+  <div class="trio">
+    <div class="box ac a-deep"><span class="chip">Question one</span><span class="lbl">Was the bundling deliberate?</span>
+      <p>Tying quantity to cycle length, so {{gone_cad}} days means three bottles, is the single
+        biggest change in what people choose. Was that the intent, or a side effect of how the new
+        plans were set up? Your answer changes what we recommend.</p></div>
+    <div class="box ac a-deep"><span class="chip">Question two</span><span class="lbl">Anything else change?</span>
+      <p>Did anything else change on the site between {{window_q_start}} and {{window_q_end}}? Flows,
+        pricing, ad mix, landing pages. We want to rule out anything else that could be driving this.</p></div>
+    <div class="box ac a-deep"><span class="chip">Question three</span><span class="lbl">Discount by tier</span>
+      <p>Can you send the subscribe-and-save discount by tier, old buy box and new? If the discount is the
+        same percentage at every tier our dollar figures are clean. If the new buy box discounts bigger
+        bundles harder, the fall is larger than we are stating.</p></div>
+  </div>
+
+  <details class="fold">
+    <summary>Figures<span class="fold-ind">+</span></summary>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th scope="col">Measure</th><th scope="col">Unit</th><th scope="col">Before</th><th scope="col">Since the sale</th><th scope="col">Change</th></tr></thead>
+      <tbody>
+{{figrows}}
+      </tbody></table></div>
+  </details>
+
+  <h2>Method And Limits</h2>
+  <p>We hold any read on a change that overlaps a promotion until there are at least
+    {{clean_rule}} clean days after the promotion ends. The earlier read on this question was
+    taken before those days existed, which is why this one reverses it.</p>
+  <details class="fold">
+    <summary>How we measured it<span class="fold-ind">+</span></summary>
+  <ul>
+    <li>Take rate counts orders rather than line items, so a cart holding both a subscription and a one-off item counts once. Renewals are removed from both sides and the TikTok channel is excluded throughout. Over {{denom_window}} the denominator is {{ck_denom}} orders, matching your earlier reporting exactly.</li>
+    <li>Windows: baseline {{pre_start}} to {{pre_end}} excluding {{promo_long}}, launch and Labor Day sale {{sale_long}}, since the sale {{post_long}}.</li>
+    <li>{{promo_long}} is excluded for two independent reasons: a sitewide cart promotion, and a Skio migration of {{migration}} records landing in the same days.</li>
+    <li>Migration records are excluded from the plan analysis. The pre-change base is {{plan_base}} subscriptions rather than the {{plan_base_bloated}} that would appear if they were left in.</li>
+    <li>Plan mix covers the {{n_products}} single products where the tiered buy box lives. That is {{cov_pre}}% of subscriptions created before the change and {{cov_post}}% since, a spread of {{cov_spread}} points, so it cannot bias a comparison.</li>
+    <li>Subscription plans are read as they stand today rather than as first chosen. Only {{drift_pre}}% of pre-change subscriptions have ever had a line edited, against {{drift_post}}% since the change.</li>
+    <li>Every subscription dollar figure is a list price. The Skio export carries priceWithoutDiscount and no charged price on the subscription line, the order line or the change log.</li>
+    <li>Sessions and conversion are store-wide rather than new-customer only, so they set context and do not decompose the take rate.</li>
+    <li>Confidence interval is a day-level cluster bootstrap over {{boot_n}} resamples, cross-checked against a quasi-binomial interval with a dispersion correction of {{phi}}. Both are reported in the figures table.</li>
+    <li>Shopify data is a set of five exports pulled {{pulled_long}} covering {{range_long}}. The Skio pull covers the same window. {{tail_note}}</li>
+    <li>Checksums against your earlier reporting: {{ck_orders}} orders and {{ck_signups}} tagged sign-ups over {{ck_window}}, both exact.</li>
+  </ul>
+  </details>
+
+  <footer>
+    <p>Heart &amp; Soil &middot; Shopify order exports and Skio subscription records &middot; prepared by DTCPG</p>
+    <p>All figures as of {{range_end_long}}. Exports pulled {{pulled_long}}.</p>
+    <p>Type substitution: Wosker, Artlab and Buvera are not web-servable here, so this page is set in Anton, Archivo and Public Sans.</p>
+  </footer>
+</main>

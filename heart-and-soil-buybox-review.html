@@ -9,261 +9,444 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;900&family=Public+Sans:wght@400;500;600&display=swap">
 <style>
-  :root{
-    --core-black:#2A211C; --base-white:#F7F3E7; --card:#FFFFFF;
-    --orange:#EC8E28; --orange-lg:#F9982F; --blue:#3636CC; --retention:#3E9BC9; --deep:#26268F;
-    --green:#D7E021; --green-tint:#ECEFA8;
-    --ink:#2A211C; --ink-2:rgba(42,33,28,0.72); --ink-3:rgba(42,33,28,0.52);
-    --rule:rgba(42,33,28,0.18); --grid:rgba(42,33,28,0.10);
-    --tint-orange:#FCE2BF; --tint-blue:#D6E9F8; --surface:#F7F3E7;
-    --s-alt:#8A7B5E; --s-green:#2F7D4F; --s-sess:#A08F72;
-    --shadow-sm:0 1px 2px rgba(42,33,28,0.06);
-    color-scheme: light;
+/* ===========================================================================
+   Heart & Soil, subscription buy box. DTCPG.
+
+   This is v15's layout at v15's density. What changed is the discipline under
+   it. The sheet it replaced was a base stylesheet plus fifteen patch layers in
+   which 143 of 178 spacing declarations sat off the 8px grid, nineteen font
+   sizes were in play, and thirteen letter-spacing values were used on what is
+   meant to be one kind of label.
+
+   Four rules govern everything below.
+
+   SPACE. One 8px unit. Every margin, padding and gap is 8, 16, 24, 32 or 48.
+   Hairlines and optical nudges under 8px are the only exceptions and they are
+   borders, not spacing. The wrapper is a grid, so margins never collapse:
+   every gap is a margin-top on the lower element and nothing carries a bottom
+   margin.
+
+   TYPE. Seven roles, each one a token, stepping in 4px increments. Anton is
+   display only. Every uppercase label wears the same 0.08em tracking.
+
+   COLOUR. Roughly 70% cream and white, 20% ink, 10% accent. Orange marks the
+   change and nothing else, so it stays scarce enough to mean something. Bold
+   blue is ours: links, focus, the steps we own. Retention blue is the
+   secondary fill. There is no green on this page.
+
+   INK. Charts carry no vertical gridlines, horizontal gridlines are muted to a
+   hairline, and every series is named on the drawing rather than in a legend.
+   ======================================================================== */
+
+:root{
+  /* --- surfaces and ink ------------------------------------------------ */
+  --core-black:#2A211C; --base-white:#F7F3E7; --card:#FFFFFF; --surface:#F7F3E7;
+  --ink:#2A211C; --ink-2:rgba(42,33,28,.72);
+  /* .64, not the .52 this page inherited. Every micro label, table header and
+     section link wears this tone and at .52 they measured 3.25:1 on cream. */
+  --ink-3:rgba(42,33,28,.64);
+  --rule:rgba(42,33,28,.18); --grid:rgba(42,33,28,.08);
+
+  /* --- accents --------------------------------------------------------- */
+  --orange:#EC8E28;          /* text and small marks, AA on cream */
+  --orange-lg:#F9982F;       /* large fills */
+  --orange-text:#B5731B;     /* orange that has to carry small type */
+  --tint-orange:#FCE2BF;
+  --blue:#3636CC; --deep:#26268F; --retention:#3E9BC9; --tint-blue:#D6E9F8;
+  --ramp-lo:#E8E1CE; --ramp-mid:#BBA173;
+  --shadow-sm:0 1px 2px rgba(42,33,28,.06);
+
+  /* --- type: seven roles, 4px steps ------------------------------------ */
+  --f-display:'Anton',Impact,sans-serif;
+  --f-label:'Archivo',sans-serif;
+  --f-body:'Public Sans',system-ui,sans-serif;
+  --t-display:clamp(32px,4vw,44px);   /* h1 */
+  --t-section:clamp(24px,2.6vw,32px); /* h2 and fold summaries */
+  --t-headline:20px;                  /* chart headline, card title, h3 */
+  --t-body:16px;                      /* reading prose */
+  --t-small:14px;                     /* card body, caption, table, subtitle */
+  --t-micro:12px;                     /* every uppercase label */
+  --t-stat:24px;                      /* card stat */
+  --t-stat-xl:32px;                   /* KPI strip */
+
+  /* --- space: the only vertical gaps on the page ----------------------- */
+  --g-section:40px;  /* between sections */
+  --g-block:24px;    /* between blocks inside a section */
+  --g-head:16px;     /* under a heading */
+  --g-para:8px;      /* between paragraphs */
+  --pad-card:24px;   /* tile interior */
+
+  --ease:cubic-bezier(.2,.7,.2,1);
+  color-scheme:light;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;background:var(--surface);color:var(--ink);
+  font:400 var(--t-body)/1.6 var(--f-body);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* --- shell -------------------------------------------------------------- */
+/* 1280px is the brand maximum. The wrapper is a grid so that nothing inside
+   it can collapse a margin into its neighbour. */
+.wrap{
+  max-width:1280px;margin:0 auto;padding:32px clamp(24px,5vw,48px) 0;
+  display:grid;grid-template-columns:minmax(0,1fr);row-gap:0;
+  align-content:start;container-type:inline-size;container-name:wrap;
+}
+.wrap > *{min-width:0}
+
+/* --- masthead ----------------------------------------------------------- */
+.mast{
+  display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+  flex-wrap:wrap;margin:0;padding-bottom:16px;border-bottom:1.5px solid var(--rule);
+}
+.doc{font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;margin:0}
+.kicker{font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3)}
+.secnav{display:flex;flex-wrap:wrap;gap:8px 24px;margin:16px 0 0}
+.secnav a{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);text-decoration:none;border-bottom:1.5px solid transparent;
+}
+.secnav a:hover{color:var(--ink);border-bottom-color:var(--orange)}
+
+h1{
+  font:400 var(--t-display)/0.95 var(--f-display);letter-spacing:-.01em;
+  text-transform:uppercase;margin:24px 0 0;max-width:24ch;
+}
+h1 em{font-style:normal;color:var(--ink);box-shadow:inset 0 -.16em 0 var(--tint-orange)}
+
+/* --- the hero tile: KPI strip ------------------------------------------- */
+/* Level 3 cards from the framework: four single-stat callouts on one row,
+   equal height, sharing the rule above them. */
+.strip{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  border-top:1.5px solid var(--core-black);margin:24px 0 0;
+}
+.cell{padding:24px 24px 24px 0;border-right:1px solid var(--rule)}
+.cell:last-child{border-right:none}
+.cell .lbl{font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3)}
+.cell .val{
+  font:900 var(--t-stat-xl)/1.0 var(--f-label);letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;margin:8px 0 8px;color:var(--ink);
+}
+/* the fall is the only orange number on the page, because it is the change */
+.cell .val.o{color:var(--orange-text)}
+/* the digits carry the colour; at 16px the unit is not large text and cannot
+   wear the orange and still clear 4.5:1 */
+.cell .val .u{font-size:var(--t-body);color:var(--ink-2)}
+.cell .sup{font-size:var(--t-small);line-height:1.45;color:var(--ink-2);max-width:32ch}
+
+/* --- executive summary: the count is a counter, never typed ------------- */
+.exec{counter-reset:ex;margin:24px 0 0;border-top:1.5px solid var(--core-black)}
+.exec-row{
+  counter-increment:ex;display:grid;grid-template-columns:32px minmax(0,1fr) auto;
+  gap:8px 16px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--rule);
+}
+.exec-row::before{
+  content:counter(ex,decimal-leading-zero);
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  color:var(--ink-3);font-variant-numeric:tabular-nums;
+}
+.exec-t{font-size:var(--t-body);line-height:1.55;color:var(--ink-2)}
+.exec-t b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.exec-act .exec-t{color:var(--ink)}
+.exec-l{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--blue);text-decoration:none;white-space:nowrap;
+  border-bottom:1.5px solid transparent;
+}
+.exec-l:hover{border-bottom-color:var(--blue)}
+
+/* --- headings and prose -------------------------------------------------- */
+h2{
+  font:400 var(--t-section)/1.0 var(--f-display);letter-spacing:-.01em;
+  text-transform:uppercase;margin:var(--g-section) 0 0;scroll-margin-top:24px;
+}
+h3{font:700 var(--t-headline)/1.25 var(--f-label);margin:0}
+p{margin:var(--g-para) 0 0;color:var(--ink-2);max-width:74ch}
+h2 + p{margin-top:var(--g-head)}
+p b,li b{color:var(--ink);font-weight:600}
+ul{margin:var(--g-head) 0 0;padding-left:24px;max-width:84ch}
+li{margin:8px 0;color:var(--ink-2)}
+li::marker{color:var(--ink-3);font-weight:700}
+
+.ranges{display:flex;flex-wrap:wrap;gap:8px;margin:var(--g-block) 0 0}
+.rg{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1.5px solid var(--rule);border-radius:999px;padding:8px 16px;
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-2);background:var(--card);
+}
+.rg i{width:8px;height:8px;border-radius:2px;flex:none}
+.rg b{color:var(--ink)}
+
+/* --- the figure tile ----------------------------------------------------- */
+/* One anatomy, every time: category tag, takeaway headline, what is counted,
+   controls if any, the drawing, then the reading. */
+figure{
+  margin:var(--g-block) 0 0;background:var(--card);border:1px solid var(--rule);
+  border-radius:18px;padding:var(--pad-card);box-shadow:var(--shadow-sm);
+  display:grid;grid-template-columns:minmax(0,1fr);column-gap:32px;
+}
+figure > *{grid-column:1;min-width:0}
+.ch-tag{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);margin:0;max-width:none;
+}
+.ch-t{font:700 var(--t-headline)/1.3 var(--f-label);margin:8px 0 0;color:var(--ink);max-width:56ch}
+.ch-s{font-size:var(--t-small);line-height:1.5;color:var(--ink-2);margin:8px 0 16px;max-width:74ch}
+figcaption{
+  font-size:var(--t-small);line-height:1.5;color:var(--ink-2);
+  margin-top:16px;padding-top:16px;border-top:1px solid var(--rule);
+}
+
+/* The drawing is built in an 880-unit viewBox. It never renders wider than
+   that and never narrower than 812, the width at which 12-unit in-chart type
+   still lands on 11 real pixels. Outside that band the figure scrolls rather
+   than shrinking its own labels out of legibility. */
+.ch-scroll{overflow-x:auto;scrollbar-width:thin}
+svg{display:block;height:auto}
+.ch-scroll > svg{width:100%;max-width:880px;min-width:812px;margin-inline:auto}
+
+/* --- controls: one family ------------------------------------------------ */
+.seg-row{display:flex;justify-content:space-between;align-items:flex-start;
+  gap:8px 24px;flex-wrap:wrap;margin:0 0 16px}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.seg button,.chips .pick{
+  display:inline-flex;align-items:center;gap:8px;position:relative;cursor:pointer;
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  padding:8px 16px;border:1.5px solid var(--rule);border-radius:999px;
+  background:transparent;color:var(--ink-3);user-select:none;
+  transition:background 160ms var(--ease),color 160ms var(--ease),border-color 160ms var(--ease);
+}
+.seg button:hover,.chips .pick:hover{border-color:var(--core-black);color:var(--ink)}
+/* pressed is the same in both groups. The grain toggle is told apart by sitting
+   at the right of its row, not by being a different colour. */
+.seg button[aria-pressed="true"],.chips .pick.on{
+  background:var(--core-black);color:var(--base-white);border-color:var(--core-black);
+}
+.chips input{position:absolute;opacity:0;width:1px;height:1px}
+.chips .dot{width:8px;height:8px;border-radius:2px;flex:none;
+  background:transparent;border:1.5px solid var(--sc,currentColor)}
+.chips .pick.on .dot{background:var(--sc);border-color:var(--sc)}
+.chips .pick .q{font-weight:500;color:var(--ink-3);text-transform:none;letter-spacing:0}
+.chips .pick.on .q{color:rgba(247,243,231,.72)}
+
+/* --- the values readout under chart 4 ------------------------------------ */
+.readout{
+  display:grid;grid-template-columns:8px minmax(0,1fr) auto 16px auto auto;
+  align-items:baseline;column-gap:16px;margin-top:16px;
+  font-size:var(--t-small);font-variant-numeric:tabular-nums;
+}
+.readout .hd{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);white-space:nowrap;border-bottom:2px solid var(--core-black);
+  padding-bottom:8px;margin-bottom:8px;
+}
+.readout .r{text-align:right}
+.readout .c{text-align:center}
+.ro{display:contents}
+.ro > *{padding:8px 0;border-bottom:1px solid var(--rule)}
+.ro:last-child > *{border-bottom:none}
+.ro i{width:8px;height:8px;border-radius:2px;justify-self:start;align-self:start;
+  margin-top:16px;padding:0;border-bottom:none}
+.ro .n{font:700 var(--t-small)/1.25 var(--f-label);color:var(--ink)}
+.ro .n em{font-style:normal;display:block;font-weight:500;font-size:var(--t-micro);
+  color:var(--ink-3)}
+.ro .b{font:600 var(--t-small)/1.45 var(--f-label);color:var(--ink-2);white-space:nowrap}
+.ro .a{font:700 var(--t-small)/1.45 var(--f-label);color:var(--ink);white-space:nowrap}
+.ro .ar{color:var(--ink-3)}
+/* direction is carried by the sign. On this page a rise is not automatically
+   good and a fall is not automatically bad, so neither gets a colour. */
+.ro .g{font:900 var(--t-small)/1.45 var(--f-label);white-space:nowrap;
+  min-width:3.6em;color:var(--ink)}
+
+/* --- tiles --------------------------------------------------------------- */
+/* Three kinds and no more: the strip cell above, the sheet a figure or table
+   sits on, and the judgment card, which is the only one that shows accent. */
+.a-orange{--ac:var(--orange);--ac-t:var(--tint-orange)}
+.a-blue{--ac:var(--blue);--ac-t:rgba(54,54,204,.13)}
+.a-ret{--ac:var(--retention);--ac-t:var(--tint-blue)}
+.a-deep{--ac:var(--deep);--ac-t:rgba(38,38,143,.13)}
+.a-neutral{--ac:var(--ink-3);--ac-t:rgba(42,33,28,.07)}
+
+.quad,.trio,.recs{display:grid;gap:16px;margin:var(--g-block) 0 0}
+.quad{grid-template-columns:repeat(4,minmax(0,1fr))}
+.trio{grid-template-columns:repeat(3,minmax(0,1fr))}
+.recs{grid-template-columns:repeat(2,minmax(0,1fr))}
+.trio.vgap{margin-top:var(--g-block)}
+
+/* equal height across a row, and the same interior in every one */
+.box.ac,.stat,.rc{
+  background:var(--card);border:1px solid var(--rule);border-top:4px solid var(--ac);
+  border-radius:18px;padding:var(--pad-card);display:flex;flex-direction:column;
+  box-shadow:var(--shadow-sm);
+}
+.chip{
+  display:inline-flex;align-items:center;align-self:flex-start;
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink);background:var(--ac-t);border:1px solid var(--ac);
+  border-radius:999px;padding:8px 16px;
+}
+.box.ac .lbl{font:700 var(--t-headline)/1.25 var(--f-label);color:var(--ink);
+  letter-spacing:0;text-transform:none;margin:16px 0 8px}
+.box.ac p{font-size:var(--t-small);line-height:1.5;margin:0;max-width:none}
+.stat-k{font-size:var(--t-small);line-height:1.35;color:var(--ink-2);margin:16px 0 8px}
+.stat-v{font:900 var(--t-stat)/1.1 var(--f-label);letter-spacing:-.02em;
+  color:var(--ink);font-variant-numeric:tabular-nums}
+.stat-v i{font-style:normal;color:var(--ink-3);font-weight:600;padding:0 8px}
+.stat-d{font:900 var(--t-small)/1.45 var(--f-label);margin-top:8px;color:var(--ink)}
+.stat-d.nc{color:var(--ink-3)}
+
+.rc h3{margin:16px 0 8px}
+.rc p{font-size:var(--t-small);line-height:1.5;margin:0;max-width:none;color:var(--ink-2)}
+.rc .who{
+  font:900 var(--t-micro)/1.4 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:auto;padding-top:16px;
+  border-top:1px solid var(--rule);display:block;
+}
+/* the one action reads as the hero of its section: full row, heavier rule,
+   bigger headline. No glow; the brand has none and a shadow is not an accent. */
+.rc.primary{
+  grid-column:1 / -1;border-top-width:6px;display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:8px 32px;align-items:start;
+}
+.rc.primary .chip{grid-column:1}
+.rc.primary h3{grid-column:1;font:900 var(--t-stat)/1.15 var(--f-label);
+  letter-spacing:-.01em;margin:16px 0 0}
+.rc.primary p{grid-column:2;grid-row:1 / span 4;align-self:center;font-size:var(--t-body)}
+.rc.primary .who{grid-column:1;border-top:none;padding-top:16px;margin-top:8px}
+
+/* --- the figures table --------------------------------------------------- */
+.tbl-wrap{overflow-x:auto;margin:var(--g-block) 0 0;background:var(--card);
+  border:1px solid var(--rule);border-radius:18px}
+table{border-collapse:collapse;width:100%;font-size:var(--t-small);min-width:640px}
+th{
+  text-align:right;font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);padding:16px 16px 8px;
+  border-bottom:2px solid var(--core-black);
+}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:8px 16px;border-bottom:1px solid var(--rule);
+  font-variant-numeric:tabular-nums}
+td:first-child{font-weight:600}
+tbody tr:last-child td{border-bottom:none}
+.grp td{font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);padding-top:24px}
+/* the sign says which way it went; colour stays reserved for the change */
+.up,.dn{color:var(--ink);font-weight:700}
+.nc{color:var(--ink-3);font-weight:600}
+
+/* --- disclosures --------------------------------------------------------- */
+details.fold{margin:var(--g-section) 0 0}
+details.fold > summary{
+  font:400 var(--t-section)/1.0 var(--f-display);letter-spacing:-.01em;text-transform:uppercase;
+  cursor:pointer;list-style:none;display:flex;align-items:center;
+  justify-content:space-between;gap:16px;padding:0 0 8px;user-select:none;
+}
+details.fold > summary::-webkit-details-marker{display:none}
+.fold-ind{
+  font:900 var(--t-small)/1 var(--f-label);color:var(--ink);flex:none;
+  width:24px;height:24px;border:1.5px solid var(--orange);background:var(--tint-orange);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+}
+details.fold[open] > summary .fold-ind{transform:rotate(45deg)}
+details.fold.sub{margin:var(--g-head) 0 0}
+details.fold.sub > summary{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-2);padding:0 0 8px;
+}
+details.fold.sub > summary .fold-ind{width:16px;height:16px;font-size:var(--t-micro)}
+details.fold.sub p{font-size:var(--t-small);margin-top:8px}
+details.fold.sub .readout{margin-top:16px}
+
+/* --- tooltip, footer, keyboard ------------------------------------------- */
+#tip{
+  position:fixed;pointer-events:none;opacity:0;z-index:99;white-space:nowrap;
+  transition:opacity 140ms var(--ease);
+  background:var(--core-black);color:var(--base-white);
+  font:500 var(--t-small)/1.5 var(--f-body);padding:8px 16px;border-radius:12px;
+}
+#tip b{font-family:var(--f-label);font-weight:700}
+footer{margin:var(--g-section) 0 0;padding:24px 0 48px;
+  border-top:3px solid var(--core-black);color:var(--ink-3);font-size:var(--t-small)}
+footer p{margin:0 0 8px;color:var(--ink-3);max-width:none}
+.skip{
+  position:absolute;left:-9999px;top:0;z-index:100;text-decoration:none;
+  background:var(--core-black);color:var(--base-white);
+  font:700 var(--t-small)/1.45 var(--f-label);padding:8px 16px;border-radius:0 0 8px 0;
+}
+.skip:focus{left:0}
+/* a scroll container is reachable by keyboard where it genuinely scrolls, so it
+   gets the page's ring rather than the user agent's default */
+a:focus-visible,summary:focus-visible,button:focus-visible,
+.ch-scroll:focus-visible,input:focus-visible + .dot{
+  outline:3px solid var(--blue);outline-offset:2px;border-radius:4px;
+}
+summary{cursor:pointer}
+/* No smooth scrolling. With it, every jump link set the hash and then moved
+   nothing: the animation was cancelled before it ran, so the section nav and
+   the three "how sure we are" links did nothing at all. An instant jump is
+   what a report wants anyway, and scroll-margin keeps the heading off the
+   top edge when it lands. */
+@media(prefers-reduced-motion:reduce){*{transition:none !important}}
+
+/* --- the reading moves beside the drawing once there is room for both ---- */
+@container wrap (min-width:1184px){
+  figure{grid-template-columns:minmax(0,1fr) 280px}
+  figure > figcaption{
+    grid-column:2;grid-row:1 / span 24;align-self:start;margin:0;
+    border-top:none;border-left:1px solid var(--rule);padding:0 0 0 32px;
   }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--surface);color:var(--ink);
-    font-family:'Public Sans',system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:1120px;margin:0 auto;padding:40px clamp(20px,5vw,52px) 88px}
-  .mast{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;
-    padding-bottom:14px;border-bottom:1.5px solid var(--rule)}
-  .doc{font-family:'Archivo',sans-serif;font-weight:900;font-size:14px;letter-spacing:.16em;text-transform:uppercase;margin:0}
-  .kicker{font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
-  /* data-range chips */
-  .ranges{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
-  .rg{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--rule);border-radius:999px;
-    padding:6px 14px 6px 10px;font-family:'Archivo',sans-serif;font-weight:700;font-size:11.5px;
-    letter-spacing:.04em;color:var(--ink-2);background:var(--card)}
-  .rg i{width:9px;height:9px;border-radius:2px;flex:none}
-  .rg b{font-weight:900;color:var(--ink);letter-spacing:.02em}
-  h1{font-family:'Anton',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,46px);line-height:1.02;
-    text-transform:uppercase;margin:28px 0 0;max-width:26ch;letter-spacing:-.005em}
-  h1 em{font-style:normal;color:var(--orange)}
-  h2{font-family:'Anton',Impact,sans-serif;font-weight:400;font-size:clamp(21px,2.6vw,29px);line-height:1;
-    text-transform:uppercase;margin:58px 0 10px;letter-spacing:.005em}
-  h3{font-family:'Archivo',sans-serif;font-weight:700;font-size:17px;line-height:1.25;margin:0 0 6px}
-  p{max-width:74ch;margin:0 0 13px;color:var(--ink-2)}
-  p b,li b{color:var(--ink);font-weight:600}
-  .correct{background:var(--card);border:1px solid var(--rule);border-left:5px solid var(--blue);
-    border-radius:0 18px 18px 0;padding:20px 26px;margin:26px 0 0;max-width:86ch;box-shadow:var(--shadow-sm)}
-  .correct .lbl{font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--blue);display:block;margin-bottom:8px}
-  .correct p{margin:0 0 10px;max-width:none;font-size:16.5px} .correct p:last-child{margin-bottom:0}
-  .open{font-size:17.5px;line-height:1.6;max-width:76ch;margin:22px 0 0}
-  .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));border-top:1.5px solid var(--core-black);margin:32px 0 0}
-  .cell{padding:18px 24px 18px 0;border-right:1px solid var(--rule)}
-  .cell:last-child{border-right:none}
-  .cell .lbl{font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
-  .cell .val{font-family:'Archivo',sans-serif;font-weight:900;font-size:33px;line-height:1.05;margin:8px 0 3px;
-    letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-  .cell .val.o{color:var(--orange)} .cell .val.b{color:var(--blue)}
-  .cell .sup{font-size:13px;color:var(--ink-2);max-width:32ch}
-  figure{margin:14px 0 10px;background:var(--card);border:1px solid var(--rule);border-radius:18px;padding:22px 22px 14px;box-shadow:var(--shadow-sm)}
-  .ch-t{font-family:'Archivo',sans-serif;font-weight:700;font-size:17px;margin:0 0 3px}
-  .ch-s{color:var(--ink-2);font-size:14px;margin:0 0 16px;max-width:84ch}
-  .ch-scroll{overflow-x:auto}
-  svg{display:block;width:100%;height:auto;min-width:580px}
-  figcaption{font-size:14px;color:var(--ink-2);margin-top:14px;padding-top:13px;border-top:1px solid var(--rule);max-width:88ch}
-  .seg{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
-  .seg-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px 20px;flex-wrap:wrap}
-  .seg button{font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
-    padding:9px 14px;border-radius:999px;cursor:pointer;background:transparent;color:var(--ink-2);
-    border:1.5px solid var(--rule);transition:background 160ms cubic-bezier(0.2,0.7,0.2,1),color 160ms,border-color 160ms}
-  .seg button:hover{border-color:var(--core-black);color:var(--ink)}
-  .seg button[aria-pressed="true"]{background:var(--core-black);color:var(--base-white);border-color:var(--core-black)}
-  .seg.grain button[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#FFFFFF}
-  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
-  .chips label{display:inline-flex;align-items:center;gap:8px;cursor:pointer;position:relative;
-    font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;color:var(--ink-3);
-    border:1.5px solid var(--rule);border-radius:999px;padding:7px 14px 7px 11px;user-select:none}
-  .chips label .q{font-weight:500;color:var(--ink-3);font-size:11.5px}
-  .chips label.on{border-color:currentColor} .chips label.on .q{color:var(--ink-2)}
-  .chips input{position:absolute;opacity:0;width:1px;height:1px}
-  .chips .dot{width:11px;height:11px;border-radius:3px;flex:none;border:1.5px solid currentColor;background:transparent}
-  .chips label.on .dot{background:currentColor}
-  .readout{display:grid;grid-template-columns:13px minmax(0,1fr) auto 16px auto auto;align-items:baseline;
-    column-gap:14px;margin-top:20px;font-size:13.5px;font-variant-numeric:tabular-nums}
-  .readout .hd{font-family:'Archivo',sans-serif;font-weight:900;font-size:10px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--ink-3);white-space:nowrap;border-bottom:2px solid var(--core-black);
-    padding-bottom:8px;margin-bottom:5px}
-  .readout .r{text-align:right} .readout .c{text-align:center}
-  .ro{display:contents} .ro>*{padding:9px 0;border-bottom:1px solid var(--rule)}
-  .ro:last-child>*{border-bottom:none}
-  .ro i{width:9px;height:9px;border-radius:2px;justify-self:start;align-self:start;margin-top:14px;padding:0;border-bottom:none}
-  .ro .n{font-family:'Archivo',sans-serif;font-weight:700;color:var(--ink);line-height:1.25}
-  .ro .n em{font-style:normal;display:block;font-weight:500;font-size:11px;color:var(--ink-3);margin-top:2px}
-  .ro .b{font-family:'Archivo',sans-serif;font-weight:600;color:var(--ink-2);white-space:nowrap}
-  .ro .a{font-family:'Archivo',sans-serif;font-weight:700;color:var(--ink);white-space:nowrap}
-  .ro .ar{color:var(--ink-3)}
-  .ro .g{font-family:'Archivo',sans-serif;font-weight:900;white-space:nowrap;min-width:3.6em}
-  .ro .g.u{color:var(--blue)} .ro .g.w{color:var(--orange)}
-  @media(max-width:640px){.readout{grid-template-columns:13px minmax(0,1fr) auto auto;column-gap:10px;font-size:12px}
-    .readout .c,.readout .pre,.ro .b,.ro .ar{display:none}}
-  .legend{display:flex;flex-wrap:wrap;gap:18px;margin:0 0 14px}
-  .legend span{display:inline-flex;align-items:center;gap:7px;font-family:'Archivo',sans-serif;font-weight:600;font-size:13px;color:var(--ink-2)}
-  .sw{width:13px;height:13px;border-radius:3px;display:inline-block}
-  .tbl-wrap{overflow-x:auto;margin:16px 0 4px;background:var(--card);border:1px solid var(--rule);border-radius:18px}
-  table{border-collapse:collapse;width:100%;font-size:15px;min-width:620px}
-  th{text-align:right;font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--ink-3);padding:16px 18px 10px;border-bottom:2px solid var(--core-black)}
-  th:first-child,td:first-child{text-align:left}
-  td{text-align:right;padding:11px 18px;border-bottom:1px solid var(--rule);font-variant-numeric:tabular-nums}
-  td:first-child{font-weight:600}
-  tbody tr:last-child td{border-bottom:none}
-  .grp td{font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding-top:18px}
-  .up{color:var(--blue);font-weight:700} .dn{color:var(--orange);font-weight:700} .nc{color:var(--ink-3);font-weight:600}
-  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;margin:16px 0}
-  .box{background:var(--card);border:1px solid var(--rule);border-radius:18px;padding:20px 24px;box-shadow:var(--shadow-sm)}
-  .box .lbl{font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:10px}
-  .box p{margin:0;font-size:15px;max-width:none} .box ul{margin:0;padding-left:20px}
-  .rec{background:var(--card);border:1px solid var(--rule);border-left:5px solid var(--orange);
-    border-radius:0 18px 18px 0;padding:18px 24px;margin:0 0 14px;max-width:88ch;box-shadow:var(--shadow-sm)}
-  .rec.no{border-left-color:var(--blue)}
-  .rec p{margin:0;font-size:15px;max-width:none}
-  .rec .who{font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-top:10px;display:block}
-  details.fold{margin:52px 0 0}
-  details.fold summary{font-family:'Anton',Impact,sans-serif;font-weight:400;font-size:clamp(21px,2.6vw,29px);
-    line-height:1;text-transform:uppercase;letter-spacing:.005em;cursor:pointer;list-style:none;
-    display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 0 8px;user-select:none}
-  details.fold summary::-webkit-details-marker{display:none}
-  .fold-ind{font-family:'Archivo',sans-serif;font-size:15px;font-weight:900;color:var(--orange);flex:none;
-    width:26px;height:26px;border:1.5px solid var(--rule);border-radius:50%;display:flex;align-items:center;justify-content:center}
-  details.fold[open] .fold-ind{transform:rotate(45deg)}
-  ul{max-width:84ch;padding-left:22px;margin:0 0 12px}
-  li{margin:9px 0;color:var(--ink-2)} li::marker{color:var(--orange);font-weight:700}
-  #tip{position:fixed;pointer-events:none;opacity:0;transition:opacity 140ms cubic-bezier(0.2,0.7,0.2,1);
-    background:var(--core-black);color:var(--base-white);font-family:'Public Sans',sans-serif;font-size:13px;
-    font-weight:500;line-height:1.5;padding:9px 12px;border-radius:12px;z-index:99;white-space:nowrap}
-  #tip b{font-family:'Archivo',sans-serif;font-weight:700}
-  footer{margin-top:70px;padding-top:22px;border-top:3px solid var(--core-black);color:var(--ink-3);font-size:13.5px}
-  footer p{max-width:none;margin:0 0 6px}
-  :focus-visible{outline:3px solid rgba(54,54,204,0.15);outline-offset:2px}
-  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
-</style><style>
-  .cell .val .u{font-size:14px}
-  .exec{counter-reset:ex;margin:26px 0 0;max-width:90ch;border-top:1.5px solid var(--core-black)}
-  .exec-row{counter-increment:ex;display:grid;grid-template-columns:2.2em minmax(0,1fr) auto;gap:6px 18px;align-items:baseline;padding:15px 0;border-bottom:1px solid var(--rule)}
-  .exec-row::before{content:counter(ex,decimal-leading-zero);font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;letter-spacing:.1em;color:var(--orange);font-variant-numeric:tabular-nums}
-  .exec-t{font-size:16.5px;line-height:1.55;color:var(--ink-2)}
-  .exec-t b{color:var(--ink);font-weight:600}
-  .exec-l{font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);text-decoration:none;white-space:nowrap;border-bottom:1.5px solid transparent;padding-bottom:1px}
-  .exec-l:hover{border-bottom-color:var(--blue)}
-  .exec-act .exec-t{color:var(--ink);font-weight:500}
-  @media(max-width:640px){.exec-row{grid-template-columns:2.2em minmax(0,1fr)}
-    .exec-l{grid-column:2;justify-self:start;margin-top:4px}}
-  html{scroll-behavior:smooth}
-  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-  h2[id]{scroll-margin-top:18px}
-  .cell .val.o{color:var(--ink)}
-  .ranges{margin:0 0 16px}
-  .a-orange{--ac:var(--orange);--ac-t:var(--tint-orange)}
-  .a-blue{--ac:var(--blue);--ac-t:rgba(54,54,204,.13)}
-  .a-ret{--ac:var(--retention);--ac-t:var(--tint-blue)}
-  .a-deep{--ac:var(--deep);--ac-t:rgba(38,38,143,.13)}
-  .a-green{--ac:var(--s-green);--ac-t:rgba(47,125,79,.14)}
-  .a-neutral{--ac:var(--ink-3);--ac-t:rgba(42,33,28,.07)}
-  .chip{display:inline-flex;align-items:center;font-family:'Archivo',sans-serif;font-weight:900;font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink);background:var(--ac-t);border:1px solid var(--ac);border-radius:999px;padding:4px 10px;align-self:flex-start}
-  .quad,.trio{display:grid;gap:14px;margin:18px 0 4px}
-  .quad{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .trio{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .trio.vgap{margin-top:16px}
-  .box.ac{border-top:4px solid var(--ac);display:flex;flex-direction:column;padding:18px 20px 20px}
-  .box.ac .lbl{font-size:14.5px;line-height:1.3;letter-spacing:0;text-transform:none;color:var(--ink);font-weight:700;margin:11px 0 7px}
-  .box.ac p{font-size:14px;line-height:1.5}
-  .stat{background:var(--card);border:1px solid var(--rule);border-top:4px solid var(--ac);border-radius:18px;padding:18px 20px 20px;display:flex;flex-direction:column;box-shadow:var(--shadow-sm)}
-  .stat-k{font-size:13.5px;color:var(--ink-2);margin:11px 0 10px;line-height:1.35}
-  .stat-v{font-family:'Archivo',sans-serif;font-weight:900;font-size:25px;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.1}
-  .stat-v i{font-style:normal;color:var(--ink-3);font-weight:600;padding:0 3px}
-  .stat-d{font-family:'Archivo',sans-serif;font-weight:900;font-size:13px;margin-top:8px}
-  .stat-d.up{color:var(--blue)} .stat-d.nc{color:var(--ink-3)}
-  .stat.lead{border-width:1px;border-top-width:4px;box-shadow:0 2px 10px rgba(236,142,40,.16)}
-  .recs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0 4px}
-  .rc{background:var(--card);border:1px solid var(--rule);border-top:4px solid var(--ac);border-radius:18px;padding:18px 20px 20px;display:flex;flex-direction:column;box-shadow:var(--shadow-sm)}
-  .rc h3{font-size:15px;line-height:1.3;margin:11px 0 7px}
-  .rc p{font-size:14px;line-height:1.5;margin:0;max-width:none;color:var(--ink-2)}
-  .rc .who{font-family:'Archivo',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);display:block;line-height:1.4}
-  .rc.primary{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:6px 30px;align-items:start}
-  .rc.primary .chip{grid-column:1}
-  .rc.primary h3{grid-column:1;font-size:22px;line-height:1.15;margin:12px 0 0}
-  .rc.primary p{grid-column:2;grid-row:1 / span 3;font-size:15px;align-self:center}
-  .rc.primary .who{grid-column:1;border-top:none;padding-top:10px;margin-top:8px;color:var(--orange)}
-  @media(max-width:900px){.quad,.recs{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .rc.primary{grid-template-columns:minmax(0,1fr)}
-    .rc.primary p{grid-column:1;grid-row:auto}
-    .rc.primary h3{font-size:19px}}
-  @media(max-width:700px){.trio{grid-template-columns:minmax(0,1fr)}}
-  @media(max-width:560px){.quad,.recs{grid-template-columns:minmax(0,1fr)}}
-  :root{--ramp-lo:#E8E1CE;--ramp-mid:#BBA173;color-scheme:light}
-  .rc.primary .who{color:var(--ink)}
-  .exec-row::before{color:var(--ink-2)}
-  .up,.dn{color:var(--ink);font-weight:700}
-  .ro .g.u,.ro .g.w{color:var(--ink)}
-  .fold-ind{color:var(--ink);border-color:var(--orange);background:var(--tint-orange)}
-  li::marker{color:var(--ink-2)}
-  .cell .val.b{color:var(--ink)}
-  .wrap > p{color:var(--ink);font-size:16.5px;line-height:1.6}
-  .box.ac .lbl{font-size:15px}
-  .ch-t{font-size:16px}
-  figure,.quad,.trio,.recs{margin:20px 0 18px}
-  figure + figure{margin-top:34px}
-  .trio.vgap{margin-top:20px}
-  .recs{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .rc.primary h3{font-size:24px;font-weight:900;letter-spacing:-.01em;line-height:1.12}
-  .rc.primary{box-shadow:0 3px 14px rgba(236,142,40,.20);border-top-width:6px;margin-bottom:8px}
-  @media(max-width:900px){.recs{grid-template-columns:minmax(0,1fr)}}
-  .chips label .nm{color:var(--ink)}
-  .chips label:not(.on) .nm{color:var(--ink-3)}
-  .chips label.on .q{color:var(--ink-2)}
-  h1 em{color:var(--ink);box-shadow:inset 0 -0.16em 0 var(--tint-orange)}
-  .wrap{max-width:1360px;padding-left:clamp(20px,2vw,28px);padding-right:clamp(20px,2vw,28px);padding-bottom:48px;container-type:inline-size;container-name:wrap}
-  svg{min-width:0}
-  .ch-scroll{overflow-x:auto;scrollbar-width:thin}
-  .ch-scroll > svg{width:880px;min-width:880px;margin-inline:auto}
-  figure{padding:16px 20px 12px;margin:14px 0 12px}
-  figure + figure{margin-top:18px}
-  .quad,.trio,.recs{margin:14px 0 12px}
-  h2{margin:28px 0 8px}
-  .ch-t{margin:0 0 2px}
-  .ch-s{margin:0 0 10px}
-  details.fold{margin:24px 0 0}
-  footer{margin-top:40px}
-  figure{display:grid;grid-template-columns:minmax(0,1fr);column-gap:24px}
-  figure > *{grid-column:1;min-width:0}
-  @container wrap (min-width:1194px){
-    figure{grid-template-columns:880px minmax(248px,1fr)}
-    figure > figcaption{grid-column:2;grid-row:1 / span 20;align-self:start;margin:0;border-top:none;border-left:1px solid var(--rule);padding:2px 0 0 24px;font-size:14px}
-    figure.noside{grid-template-columns:minmax(0,1fr)}
-    figure.noside > figcaption{grid-column:1;grid-row:auto;border-left:none;border-top:1px solid var(--rule);padding:13px 0 0;margin-top:14px}
-  }
-  .seg button{padding:8px 12px}
-  .seg{margin:0 0 10px;gap:5px}
-  .seg-row{gap:6px 14px}
-  details.fold.sub{margin:12px 0 0}
-  details.fold.sub > summary{font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;letter-spacing:.11em;text-transform:uppercase;padding:0 0 4px;color:var(--ink-2)}
-  details.fold.sub > summary .fold-ind{width:20px;height:20px;font-size:12px}
-  details.fold.sub .readout{margin-top:10px}
-  details.fold.sub p{font-size:14.5px;margin:8px 0 0;max-width:86ch}
-  .secnav{display:flex;flex-wrap:wrap;gap:4px 18px;margin:6px 0 0}
-  .secnav a{font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);text-decoration:none;border-bottom:1.5px solid transparent;padding-bottom:1px}
-  .secnav a:hover{color:var(--ink);border-bottom-color:var(--orange)}
-  .mast{align-items:flex-end}
-  .skip{position:absolute;left:-9999px;top:0;z-index:100;background:var(--core-black);color:var(--base-white);font-family:'Archivo',sans-serif;font-weight:700;font-size:13px;padding:10px 16px;border-radius:0 0 10px 0;text-decoration:none}
-  .skip:focus{left:0}
-  a:focus-visible,summary:focus-visible,button:focus-visible,input:focus-visible + .dot{outline:3px solid var(--blue);outline-offset:2px;border-radius:4px}
-  summary{cursor:pointer}
-  @media print{
-    @page{margin:14mm}
-    .skip,.secnav,#tip,.seg-row,.chips{display:none}
-    .wrap{max-width:none;padding:0}
-    details>*{display:block}
-    details.fold>summary{list-style:none}
-    details.fold>summary .fold-ind{display:none}
-    figure,.box,.stat,.rc,.tbl-wrap,.exec-row{break-inside:avoid;box-shadow:none}
-    h2{break-after:avoid}
-    figure{grid-template-columns:minmax(0,1fr)}
-    figure>figcaption{grid-column:1;grid-row:auto;border-left:none;border-top:1px solid var(--rule);padding:10px 0 0;margin-top:10px}
-    .ch-scroll{overflow:visible}
-    .ch-scroll>svg{width:100%;min-width:0}
-  }
+}
+
+/* --- narrower ------------------------------------------------------------ */
+/* Each grid drops a column at the width its own card stops reading, not at a
+   round number: four verdict cards need about 270px, three questions about 260. */
+@media(max-width:1199px){.quad{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){
+  .recs{grid-template-columns:minmax(0,1fr)}
+  .rc.primary{grid-template-columns:minmax(0,1fr)}
+  .rc.primary p{grid-column:1;grid-row:auto;margin-top:16px}
+  .strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cell{border-bottom:1px solid var(--rule)}
+  .cell:nth-child(2){border-right:none}
+  .exec-row{grid-template-columns:32px minmax(0,1fr)}
+  .exec-l{grid-column:2;justify-self:start;margin-top:8px}
+}
+@media(max-width:879px){.trio{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){.readout{grid-template-columns:8px minmax(0,1fr) auto auto;column-gap:8px}
+  .readout .c,.readout .pre,.ro .b,.ro .ar{display:none}}
+@media(max-width:560px){
+  .quad{grid-template-columns:minmax(0,1fr)}
+  .strip{grid-template-columns:minmax(0,1fr)}
+  .cell{padding:16px 0;border-right:none}
+  .cell:last-child{border-bottom:none}
+}
+
+/* --- print --------------------------------------------------------------- */
+@page{size:A4;margin:16mm}
+@media print{
+  .skip,.secnav,#tip,.seg-row,.chips{display:none}
+  .wrap{max-width:none;padding:0;display:block}
+  details > *{display:block}
+  details.fold > summary{list-style:none}
+  details.fold > summary .fold-ind{display:none}
+  figure{grid-template-columns:minmax(0,1fr);break-inside:avoid;box-shadow:none}
+  figure > figcaption{grid-column:1;grid-row:auto;border-left:none;
+    border-top:1px solid var(--rule);padding:8px 0 0;margin-top:8px}
+  .box,.stat,.rc,.tbl-wrap,.exec-row{break-inside:avoid;box-shadow:none}
+  h2{break-after:avoid}
+  .ch-scroll{overflow:visible}
+  .ch-scroll > svg{width:100%;min-width:0;max-width:none}
+}
 </style>
 </head>
 <body>
@@ -340,7 +523,9 @@
       <span class="rg">Every chart <b>Jul 20 to Sep 16, 2026</b></span>
     </div>
   <figure>
-    <p class="ch-t" id="c1t">Take rate</p>
+    <p class="ch-tag">Take rate &middot; new-customer orders</p>
+    <p class="ch-t" id="c1t">Take rate fell 7.8 points and has not come back</p>
+    <p class="ch-s" id="c1s"></p>
     <div class="seg-row">
       <div class="seg" role="group" aria-label="Choose a measure">
         <button data-optin="headline" aria-pressed="true">New customers</button>
@@ -413,27 +598,22 @@
     1,020 people started a single bottle monthly since the sale, 151 did it at
     60 days and 23 at 90 days, the most recent on Sep 16.</p>
   <figure>
-    <p class="ch-t">Which plan people chose</p>
+    <p class="ch-tag">Plan mix &middot; single products</p>
+    <p class="ch-t">Sign-ups moved off one bottle and onto three at 90 days</p>
     <p class="ch-s">Share of new subscriptions on single products, 12,966 before and 2,772
-      since the sale.</p>
-    <div class="legend">
-      <span><i class="sw" style="background:var(--retention)"></i> Before &middot; Jul 20 to Sep 2</span>
-      <span><i class="sw" style="background:var(--tint-orange)"></i> Launch + sale &middot; Sep 3 to 7</span>
-      <span><i class="sw" style="background:var(--orange)"></i> Since the sale &middot; Sep 8 to 16</span>
-    </div>
+      since the sale. The three windows are labelled on the first row and hold their order
+      down the chart.</p>
     <div class="ch-scroll"><svg id="c2" viewBox="0 0 880 340" role="img"></svg></div>
     <figcaption>Read this against the chart below it. The share of sign-ups on each combination
       moved because the quantity offered at each cycle changed, not because any combination stopped
       being available.</figcaption>
   </figure>
   <figure>
-    <p class="ch-t">How many bottles, once the cycle is chosen</p>
-    <p class="ch-s">Each row fills to the whole of that cycle's new subscriptions.</p>
-    <div class="legend">
-      <span><i class="sw" style="background:var(--ramp-lo)"></i> 1 bottle</span>
-      <span><i class="sw" style="background:var(--ramp-mid)"></i> 2 bottles</span>
-      <span><i class="sw" style="background:var(--core-black)"></i> 3 or more</span>
-    </div>
+    <p class="ch-tag">Basket size &middot; within each cycle</p>
+    <p class="ch-t">Three bottles took the 90-day cycle, from 18.6% to
+      75.2%</p>
+    <p class="ch-s">Each row fills to the whole of that cycle's new subscriptions. The bands are
+      named on the first row.</p>
     <div class="ch-scroll"><svg id="c3" viewBox="0 0 880 340" role="img"></svg></div>
     <figcaption>Monthly was a one-bottle plan and stayed one. The longer cycles moved to two and three
       bottles, which is where the extra order value comes from.</figcaption>
@@ -470,8 +650,11 @@
     Jul 20 to Sep 16, 2026. Tick any combination. They do not share a unit, so each line runs against its own
     pre-launch average, the rule at one hundred. Hover any point for the underlying number.</p>
   <figure>
-    <p class="ch-t">Each measure against its own pre-launch average</p>
-    <p class="ch-s">Pre-launch average is the six full weeks from Jul 20 to Aug 24.</p>
+    <p class="ch-tag">Context &middot; five measures, weekly</p>
+    <p class="ch-t">New subscriptions fell further than take rate alone, 224.9 to
+      184.3 a day</p>
+    <p class="ch-s">Each line runs against its own pre-launch average, the six full weeks from
+      Jul 20 to Aug 24, drawn as the rule at one hundred.</p>
     <div class="chips" id="chips" role="group" aria-label="Add or remove measures"></div>
     <div class="ch-scroll"><svg id="c4" viewBox="0 0 880 348" role="img"></svg></div>
     <details class="fold sub"><summary>Values<span class="fold-ind">+</span></summary>
@@ -531,10 +714,11 @@
 
   <h2>What Happens When</h2>
   <figure>
-    <p class="ch-t">From your yes to the answer</p>
-    <p class="ch-s">Five steps between Sep 30 and Nov 11, coloured by who owns
-      each one. Diamonds are single dates. The bar is the 30-day test window.</p>
-    <div class="legend" id="gl"></div>
+    <p class="ch-tag">Schedule &middot; owners and dates</p>
+    <p class="ch-t">Your yes on Sep 30 sets every date after it</p>
+    <p class="ch-s">Five steps between Sep 30 and Nov 11. Each row names its
+      own owner on the right. Diamonds are single dates. The bar is the 30-day test
+      window.</p>
     <div class="ch-scroll"><svg id="c5" viewBox="0 0 880 250" role="img"></svg></div>
     <figcaption>The only date inside the next two weeks is Sep 30. Everything after
       it depends on that yes.</figcaption>
@@ -545,9 +729,11 @@
     subscriber figure. We have no retention data on the new plans, which is exactly what the
     Nov 11 read is for.</p>
   <figure>
-    <p class="ch-t">If the gap holds, subscriptions not started</p>
-    <p class="ch-s">Running total over twelve months at the measured rate, with the same confidence
-      band as the headline. It counts subscriptions. It puts no dollar figure on them.</p>
+    <p class="ch-tag">If nothing changes &middot; twelve months</p>
+    <p class="ch-t">Holding the gap for a year is 10,102 subscriptions not started</p>
+    <p class="ch-s">Running total at the measured rate of 842 a month, with the same
+      confidence band as the headline. It counts subscriptions and puts no dollar figure on
+      them.</p>
     <div class="ch-scroll"><svg id="c6" viewBox="0 0 880 276" role="img"></svg></div>
     <figcaption>This assumes only that the gap stays where it is now. It says nothing about revenue,
       because that depends on how long those subscriptions would have lasted, which is what the
@@ -651,7 +837,7 @@
 
 <script>
 (function () {
-  var P = {"defs":{"headline":{"name":"New customers, excl. TikTok","den":"new-customer orders on every channel but TikTok","rate":[55.372,60.34,60.274,58.791,58.17,60.635,64.42,58.182,62.342,60.883,62.5,63.957,57.218,58.055,55.381,60.59,54.737,56.667,52.929,47.266,50.687,47.07,55.682,61.013,57.857,58.268,62.176,58.252,59.481,57.908,56.235,59.268,58.435,64.571,64.021,58.753,58.713,59.673,59.314,59.615,57.538,66.047,58.056,61.058,58.667,51.414,58.636,60.849,64.23,69.174,54.369,47.967,48.753,51.987,53.628,53.582,48.229,57.273,50.882],"num":[201,213,176,214,178,191,239,192,197,193,235,236,218,191,247,226,208,187,253,242,295,241,343,241,243,222,240,240,229,227,230,243,239,226,242,245,219,219,242,248,229,284,227,254,264,200,258,258,246,469,224,177,176,157,170,187,177,189,202],"dn":[363,353,292,364,306,315,371,330,316,317,376,369,381,329,446,373,380,330,478,512,582,512,616,395,420,381,386,412,385,392,409,410,409,350,378,417,373,367,408,416,398,430,391,416,450,389,440,424,383,678,412,369,361,302,317,349,367,330,397],"wnum":[1412,1462,1658,1770,1636,1686,1707,1560,568],"wden":[2364,2418,3101,3122,2733,2809,2893,2788,1094],"wrate":[59.729,60.463,53.467,56.694,59.861,60.021,59.004,55.954,51.92],"win":{"before":{"r":59.55376059322034,"d":15104},"sale":{"r":61.840968020743304,"d":2314},"after":{"r":51.77902621722846,"d":3204}}},"tag":{"name":"New customers, order-tag measure","den":"new-customer orders, counted from the subscription first-order tag","rate":[55.096,60.34,59.932,58.791,56.863,60.635,63.612,57.273,61.709,60.883,61.702,61.789,56.955,57.143,54.709,60.054,54.474,55.758,52.51,47.07,50.344,47.07,55.032,61.013,57.143,58.005,61.917,58.01,58.961,57.653,56.235,59.024,58.435,64.0,63.757,58.273,58.445,59.401,59.314,59.375,57.035,65.814,57.801,60.577,58.222,51.157,58.409,60.849,64.23,68.142,46.602,47.967,48.476,51.987,52.997,53.295,48.229,57.273,50.378],"num":[200,213,175,214,174,191,236,189,195,193,232,228,217,188,244,224,207,184,251,241,293,241,339,241,240,221,239,239,227,226,230,242,239,224,241,243,218,218,242,247,227,283,226,252,262,199,257,258,246,462,192,177,175,157,168,186,177,189,200],"dn":[363,353,292,364,306,315,371,330,316,317,376,369,381,329,446,373,380,330,478,512,582,512,616,395,420,381,386,412,385,392,409,410,409,350,378,417,373,367,408,416,398,430,391,416,450,389,440,424,383,678,412,369,361,302,317,349,367,330,397],"wnum":[1403,1442,1644,1760,1629,1678,1700,1517,566],"wden":[2364,2418,3101,3122,2733,2809,2893,2788,1094],"wrate":[59.349,59.636,53.015,56.374,59.605,59.737,58.763,54.412,51.737],"win":{"before":{"r":59.13003177966102,"d":15104},"sale":{"r":61.45203111495246,"d":2314},"after":{"r":50.593008739076154,"d":3204}}},"store":{"name":"New customers, online store only","den":"new-customer orders placed on the online store","rate":[60.976,65.625,66.023,63.303,60.932,62.162,65.915,60.526,68.31,64.948,67.246,65.625,71.906,59.502,63.185,62.89,62.539,60.194,53.996,47.327,51.323,49.16,56.684,64.402,61.125,61.08,62.903,58.647,62.921,62.254,61.602,64.096,62.198,65.294,64.641,63.061,61.032,61.19,61.183,60.652,58.995,66.093,62.011,62.626,66.839,54.648,62.944,61.52,64.305,70.579,61.756,55.305,54.259,53.147,53.922,55.06,52.96,61.13,56.936],"num":[200,210,171,207,170,184,234,184,194,189,232,231,215,191,242,222,202,186,250,239,291,234,335,237,239,215,234,234,224,221,223,241,232,222,234,239,213,216,238,242,223,269,222,248,258,194,248,251,236,463,218,172,172,152,165,185,170,184,197],"dn":[328,320,259,327,279,296,355,304,284,291,345,352,299,321,383,353,323,309,463,505,567,476,591,368,391,352,372,399,356,355,362,376,373,340,362,379,349,353,389,399,378,407,358,396,386,355,394,408,367,656,353,311,317,286,306,336,321,301,346],"wnum":[1376,1436,1632,1728,1597,1640,1657,1527,551],"wden":[2164,2196,2903,2949,2524,2654,2664,2565,968],"wrate":[63.586,65.392,56.218,58.596,63.273,61.794,62.2,59.532,56.921],"win":{"before":{"r":63.095921883974725,"d":13928},"sale":{"r":63.85321100917431,"d":2180},"after":{"r":56.13486270420577,"d":2877}}},"ret":{"name":"Returning customers","den":"returning-customer orders, excluding TikTok","rate":[44.972,46.154,44.481,46.626,49.481,56.391,59.506,50.269,47.333,51.005,55.128,55.747,56.106,52.616,47.326,48.432,42.81,49.39,53.445,47.87,47.045,50.163,50.816,63.78,61.29,61.326,58.974,56.267,61.882,60.541,60.355,53.506,58.743,58.544,61.31,54.377,56.395,54.0,55.076,53.806,55.132,54.958,55.556,62.291,50.739,51.169,55.751,58.483,54.581,65.45,57.672,47.619,45.17,56.075,54.789,47.078,48.127,52.553,44.079],"num":[161,138,137,152,143,150,241,187,142,203,172,194,170,181,177,139,131,162,256,191,207,307,405,243,228,222,184,202,263,224,204,206,215,185,206,205,194,189,217,205,188,194,230,261,206,197,349,293,280,735,218,140,159,180,143,145,167,175,134],"dn":[358,299,308,326,289,266,405,372,300,398,312,348,303,344,374,287,306,328,479,399,440,612,797,381,372,362,312,359,425,370,338,385,366,316,336,377,344,350,394,381,341,353,414,419,406,385,626,501,513,1123,378,294,352,321,261,308,347,333,304],"wnum":[1122,1249,1263,1791,1503,1392,1816,1720,476],"wden":[2251,2377,2613,3195,2536,2540,3264,3037,984],"wrate":[49.845,52.545,48.335,56.056,59.267,54.803,55.637,56.635,48.374],"win":{"before":{"r":54.556474614945806,"d":14024},"sale":{"r":58.89453621346887,"d":3148},"after":{"r":50.41407867494824,"d":2898}}}},"days":["2026-07-20","2026-07-21","2026-07-22","2026-07-23","2026-07-24","2026-07-25","2026-07-26","2026-07-27","2026-07-28","2026-07-29","2026-07-30","2026-07-31","2026-08-01","2026-08-02","2026-08-03","2026-08-04","2026-08-05","2026-08-06","2026-08-07","2026-08-08","2026-08-09","2026-08-10","2026-08-11","2026-08-12","2026-08-13","2026-08-14","2026-08-15","2026-08-16","2026-08-17","2026-08-18","2026-08-19","2026-08-20","2026-08-21","2026-08-22","2026-08-23","2026-08-24","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-08-29","2026-08-30","2026-08-31","2026-09-01","2026-09-02","2026-09-03","2026-09-04","2026-09-05","2026-09-06","2026-09-07","2026-09-08","2026-09-09","2026-09-10","2026-09-11","2026-09-12","2026-09-13","2026-09-14","2026-09-15","2026-09-16"],"weeks":[{"label":"Jul 20","n":7,"full":true},{"label":"Jul 27","n":7,"full":true},{"label":"Aug 3","n":7,"full":true},{"label":"Aug 10","n":7,"full":true},{"label":"Aug 17","n":7,"full":true},{"label":"Aug 24","n":7,"full":true},{"label":"Aug 31","n":7,"full":true},{"label":"Sep 7","n":7,"full":true},{"label":"Sep 14","n":3,"full":false}],"launch_day":45,"sale_end":49,"ld":49,"launch_week":6,"sale_week":7,"tiers":{"before":[46.82,11.24,7.87,4.48,3.08,26.51],"sale":[29.41,6.13,1.18,9.82,25.96,27.5],"after":[36.83,5.48,0.8,9.96,22.33,24.6]},"tier_names":["1 bottle / 30 days","1 bottle / 60 days","1 bottle / 90 days","2 bottles / 60 days","3 bottles / 90 days","Everything else"],"bottles":{"before_30":{"n":8458,"p":[71.8,18.0,10.2]},"before_60":{"n":2361,"p":[61.7,24.6,13.7]},"before_90":{"n":2146,"p":[47.5,24.9,27.6]},"after_30":{"n":1393,"p":[73.3,19.5,7.2]},"after_60":{"n":472,"p":[32.2,58.5,9.3]},"after_90":{"n":829,"p":[2.7,1.8,95.5]}},"series":[{"lab":"Take rate","sub":"new customers","col":"var(--core-black)","unit":"%","v":[59.729,60.463,53.467,56.694,59.861,60.021,59.004,55.954,51.92],"base":58.3725,"on":true,"w":3.0},{"lab":"New subscriptions","sub":"started per day","col":"var(--deep)","unit":"n","v":[201.7,208.9,236.9,252.9,233.7,240.9,243.9,222.9,189.3],"base":229.1667,"on":true,"w":2.2},{"lab":"Order value","sub":"new-customer AOV","col":"var(--orange)","unit":"$","v":[87.49,87.2,85.28,87.88,87.07,90.42,100.82,111.23,100.67],"base":87.5567,"on":true,"w":2.2},{"lab":"Conversion","sub":"store-wide","col":"var(--s-green)","unit":"%","v":[1.282,1.016,0.79,0.918,0.778,1.261,1.415,1.701,1.859],"base":1.0075,"on":false,"w":2.0},{"lab":"Sessions","sub":"store-wide, per day","col":"var(--s-sess)","unit":"n","v":[47770,60049,57890,45860,43624,32721,36658,29706,25766],"base":47985.6667,"on":false,"w":2.0}],"grid":["Jul 20","Jul 27","Aug 3","Aug 10","Aug 17","Aug 24","Aug 31","Sep 7","Sep 14"],"prew":{"start":"Jul 20","end":"Aug 24","n":6},"gantt":{"who":[{"k":"you","lab":"You","col":"var(--orange)"},{"k":"us","lab":"Us","col":"var(--blue)"},{"k":"your_team","lab":"Your team","col":"var(--retention)"},{"k":"joint","lab":"Joint","col":"var(--deep)"}],"gutter":330,"ticks":[{"x":0.0,"lab":"Sep"},{"x":0.08163265306122448,"lab":"Oct"},{"x":0.7142857142857143,"lab":"Nov"}],"rows":[{"t":"Your yes on restoring the single bottle every 90 days","who":"you","lab":"Sep 30","x0":0.061224489795918366,"x1":0.061224489795918366,"point":true},{"t":"We re-read take rate on two more clean weeks","who":"us","lab":"Oct 1","x0":0.08163265306122448,"x1":0.08163265306122448,"point":true},{"t":"Plan back in the buy box, 30-day test runs","who":"your_team","lab":"Oct 2 to Nov 1","x0":0.10204081632653061,"x1":0.7142857142857143,"point":false},{"t":"Nothing else changes in the buy box, no promotion","who":"you","lab":"Oct 2 to Nov 1","x0":0.10204081632653061,"x1":0.7142857142857143,"point":false},{"t":"Test result and the decision on the missing plan","who":"joint","lab":"Nov 1","x0":0.7142857142857143,"x1":0.7142857142857143,"point":true},{"t":"60-day retention read on the September cohort","who":"us","lab":"Nov 11","x0":0.9183673469387755,"x1":0.9183673469387755,"point":true}]},"forecast":{"n":12,"unit":"subscriptions not started","labels":["Month 1","Month 2","Month 3","Month 4","Month 5","Month 6","Month 7","Month 8","Month 9","Month 10","Month 11","Month 12"],"mid":[842,1684,2526,3367,4209,5051,5893,6735,7577,8419,9261,10102],"lo":[541,1083,1624,2166,2707,3249,3790,4331,4873,5414,5956,6497],"hi":[1191,2382,3573,4764,5956,7147,8338,9529,10720,11911,13102,14293],"rate":842,"rate_lo":541,"rate_hi":1191,"retention_label":"Nov 11"}};
+  var P = {"defs":{"headline":{"name":"New customers, excl. TikTok","den":"new-customer orders on every channel but TikTok","rate":[55.372,60.34,60.274,58.791,58.17,60.635,64.42,58.182,62.342,60.883,62.5,63.957,57.218,58.055,55.381,60.59,54.737,56.667,52.929,47.266,50.687,47.07,55.682,61.013,57.857,58.268,62.176,58.252,59.481,57.908,56.235,59.268,58.435,64.571,64.021,58.753,58.713,59.673,59.314,59.615,57.538,66.047,58.056,61.058,58.667,51.414,58.636,60.849,64.23,69.174,54.369,47.967,48.753,51.987,53.628,53.582,48.229,57.273,50.882],"num":[201,213,176,214,178,191,239,192,197,193,235,236,218,191,247,226,208,187,253,242,295,241,343,241,243,222,240,240,229,227,230,243,239,226,242,245,219,219,242,248,229,284,227,254,264,200,258,258,246,469,224,177,176,157,170,187,177,189,202],"dn":[363,353,292,364,306,315,371,330,316,317,376,369,381,329,446,373,380,330,478,512,582,512,616,395,420,381,386,412,385,392,409,410,409,350,378,417,373,367,408,416,398,430,391,416,450,389,440,424,383,678,412,369,361,302,317,349,367,330,397],"wnum":[1412,1462,1658,1770,1636,1686,1707,1560,568],"wden":[2364,2418,3101,3122,2733,2809,2893,2788,1094],"wrate":[59.729,60.463,53.467,56.694,59.861,60.021,59.004,55.954,51.92],"win":{"before":{"r":59.55376059322034,"d":15104},"sale":{"r":61.840968020743304,"d":2314},"after":{"r":51.77902621722846,"d":3204}}},"tag":{"name":"New customers, order-tag measure","den":"new-customer orders, counted from the subscription first-order tag","rate":[55.096,60.34,59.932,58.791,56.863,60.635,63.612,57.273,61.709,60.883,61.702,61.789,56.955,57.143,54.709,60.054,54.474,55.758,52.51,47.07,50.344,47.07,55.032,61.013,57.143,58.005,61.917,58.01,58.961,57.653,56.235,59.024,58.435,64.0,63.757,58.273,58.445,59.401,59.314,59.375,57.035,65.814,57.801,60.577,58.222,51.157,58.409,60.849,64.23,68.142,46.602,47.967,48.476,51.987,52.997,53.295,48.229,57.273,50.378],"num":[200,213,175,214,174,191,236,189,195,193,232,228,217,188,244,224,207,184,251,241,293,241,339,241,240,221,239,239,227,226,230,242,239,224,241,243,218,218,242,247,227,283,226,252,262,199,257,258,246,462,192,177,175,157,168,186,177,189,200],"dn":[363,353,292,364,306,315,371,330,316,317,376,369,381,329,446,373,380,330,478,512,582,512,616,395,420,381,386,412,385,392,409,410,409,350,378,417,373,367,408,416,398,430,391,416,450,389,440,424,383,678,412,369,361,302,317,349,367,330,397],"wnum":[1403,1442,1644,1760,1629,1678,1700,1517,566],"wden":[2364,2418,3101,3122,2733,2809,2893,2788,1094],"wrate":[59.349,59.636,53.015,56.374,59.605,59.737,58.763,54.412,51.737],"win":{"before":{"r":59.13003177966102,"d":15104},"sale":{"r":61.45203111495246,"d":2314},"after":{"r":50.593008739076154,"d":3204}}},"store":{"name":"New customers, online store only","den":"new-customer orders placed on the online store","rate":[60.976,65.625,66.023,63.303,60.932,62.162,65.915,60.526,68.31,64.948,67.246,65.625,71.906,59.502,63.185,62.89,62.539,60.194,53.996,47.327,51.323,49.16,56.684,64.402,61.125,61.08,62.903,58.647,62.921,62.254,61.602,64.096,62.198,65.294,64.641,63.061,61.032,61.19,61.183,60.652,58.995,66.093,62.011,62.626,66.839,54.648,62.944,61.52,64.305,70.579,61.756,55.305,54.259,53.147,53.922,55.06,52.96,61.13,56.936],"num":[200,210,171,207,170,184,234,184,194,189,232,231,215,191,242,222,202,186,250,239,291,234,335,237,239,215,234,234,224,221,223,241,232,222,234,239,213,216,238,242,223,269,222,248,258,194,248,251,236,463,218,172,172,152,165,185,170,184,197],"dn":[328,320,259,327,279,296,355,304,284,291,345,352,299,321,383,353,323,309,463,505,567,476,591,368,391,352,372,399,356,355,362,376,373,340,362,379,349,353,389,399,378,407,358,396,386,355,394,408,367,656,353,311,317,286,306,336,321,301,346],"wnum":[1376,1436,1632,1728,1597,1640,1657,1527,551],"wden":[2164,2196,2903,2949,2524,2654,2664,2565,968],"wrate":[63.586,65.392,56.218,58.596,63.273,61.794,62.2,59.532,56.921],"win":{"before":{"r":63.095921883974725,"d":13928},"sale":{"r":63.85321100917431,"d":2180},"after":{"r":56.13486270420577,"d":2877}}},"ret":{"name":"Returning customers","den":"returning-customer orders, excluding TikTok","rate":[44.972,46.154,44.481,46.626,49.481,56.391,59.506,50.269,47.333,51.005,55.128,55.747,56.106,52.616,47.326,48.432,42.81,49.39,53.445,47.87,47.045,50.163,50.816,63.78,61.29,61.326,58.974,56.267,61.882,60.541,60.355,53.506,58.743,58.544,61.31,54.377,56.395,54.0,55.076,53.806,55.132,54.958,55.556,62.291,50.739,51.169,55.751,58.483,54.581,65.45,57.672,47.619,45.17,56.075,54.789,47.078,48.127,52.553,44.079],"num":[161,138,137,152,143,150,241,187,142,203,172,194,170,181,177,139,131,162,256,191,207,307,405,243,228,222,184,202,263,224,204,206,215,185,206,205,194,189,217,205,188,194,230,261,206,197,349,293,280,735,218,140,159,180,143,145,167,175,134],"dn":[358,299,308,326,289,266,405,372,300,398,312,348,303,344,374,287,306,328,479,399,440,612,797,381,372,362,312,359,425,370,338,385,366,316,336,377,344,350,394,381,341,353,414,419,406,385,626,501,513,1123,378,294,352,321,261,308,347,333,304],"wnum":[1122,1249,1263,1791,1503,1392,1816,1720,476],"wden":[2251,2377,2613,3195,2536,2540,3264,3037,984],"wrate":[49.845,52.545,48.335,56.056,59.267,54.803,55.637,56.635,48.374],"win":{"before":{"r":54.556474614945806,"d":14024},"sale":{"r":58.89453621346887,"d":3148},"after":{"r":50.41407867494824,"d":2898}}}},"days":["2026-07-20","2026-07-21","2026-07-22","2026-07-23","2026-07-24","2026-07-25","2026-07-26","2026-07-27","2026-07-28","2026-07-29","2026-07-30","2026-07-31","2026-08-01","2026-08-02","2026-08-03","2026-08-04","2026-08-05","2026-08-06","2026-08-07","2026-08-08","2026-08-09","2026-08-10","2026-08-11","2026-08-12","2026-08-13","2026-08-14","2026-08-15","2026-08-16","2026-08-17","2026-08-18","2026-08-19","2026-08-20","2026-08-21","2026-08-22","2026-08-23","2026-08-24","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-08-29","2026-08-30","2026-08-31","2026-09-01","2026-09-02","2026-09-03","2026-09-04","2026-09-05","2026-09-06","2026-09-07","2026-09-08","2026-09-09","2026-09-10","2026-09-11","2026-09-12","2026-09-13","2026-09-14","2026-09-15","2026-09-16"],"weeks":[{"label":"Jul 20","n":7,"full":true},{"label":"Jul 27","n":7,"full":true},{"label":"Aug 3","n":7,"full":true},{"label":"Aug 10","n":7,"full":true},{"label":"Aug 17","n":7,"full":true},{"label":"Aug 24","n":7,"full":true},{"label":"Aug 31","n":7,"full":true},{"label":"Sep 7","n":7,"full":true},{"label":"Sep 14","n":3,"full":false}],"launch_day":45,"sale_end":49,"ld":49,"launch_week":6,"sale_week":7,"tiers":{"before":[46.82,11.24,7.87,4.48,3.08,26.51],"sale":[29.41,6.13,1.18,9.82,25.96,27.5],"after":[36.83,5.48,0.8,9.96,22.33,24.6]},"tier_names":["1 bottle / 30 days","1 bottle / 60 days","1 bottle / 90 days","2 bottles / 60 days","3 bottles / 90 days","Everything else"],"bottles":{"before_30":{"n":8458,"p":[71.8,18.0,10.2]},"before_60":{"n":2361,"p":[61.7,24.6,13.7]},"before_90":{"n":2146,"p":[47.5,24.9,27.6]},"after_30":{"n":1393,"p":[73.3,19.5,7.2]},"after_60":{"n":472,"p":[32.2,58.5,9.3]},"after_90":{"n":829,"p":[2.7,1.8,95.5]}},"series":[{"lab":"Take rate","sub":"new customers","col":"var(--core-black)","unit":"%","v":[59.729,60.463,53.467,56.694,59.861,60.021,59.004,55.954,51.92],"base":58.3725,"on":true,"w":3.0},{"lab":"New subscriptions","sub":"started per day","col":"var(--deep)","unit":"n","v":[201.7,208.9,236.9,252.9,233.7,240.9,243.9,222.9,189.3],"base":229.1667,"on":true,"w":2.2},{"lab":"Order value","sub":"new-customer AOV","col":"var(--orange)","unit":"$","v":[87.49,87.2,85.28,87.88,87.07,90.42,100.82,111.23,100.67],"base":87.5567,"on":true,"w":2.2},{"lab":"Conversion","sub":"store-wide","col":"var(--retention)","unit":"%","v":[1.282,1.016,0.79,0.918,0.778,1.261,1.415,1.701,1.859],"base":1.0075,"on":false,"w":2.0},{"lab":"Sessions","sub":"store-wide, per day","col":"var(--ink-3)","unit":"n","v":[47770,60049,57890,45860,43624,32721,36658,29706,25766],"base":47985.6667,"on":false,"w":2.0}],"grid":["Jul 20","Jul 27","Aug 3","Aug 10","Aug 17","Aug 24","Aug 31","Sep 7","Sep 14"],"prew":{"start":"Jul 20","end":"Aug 24","n":6},"gantt":{"who":[{"k":"you","lab":"You","col":"var(--orange)"},{"k":"us","lab":"Us","col":"var(--blue)"},{"k":"your_team","lab":"Your team","col":"var(--retention)"},{"k":"joint","lab":"Joint","col":"var(--deep)"}],"gutter":330,"ticks":[{"x":0.0,"lab":"Sep"},{"x":0.08163265306122448,"lab":"Oct"},{"x":0.7142857142857143,"lab":"Nov"}],"rows":[{"t":"Your yes on restoring the single bottle every 90 days","who":"you","lab":"Sep 30","x0":0.061224489795918366,"x1":0.061224489795918366,"point":true},{"t":"We re-read take rate on two more clean weeks","who":"us","lab":"Oct 1","x0":0.08163265306122448,"x1":0.08163265306122448,"point":true},{"t":"Plan back in the buy box, 30-day test runs","who":"your_team","lab":"Oct 2 to Nov 1","x0":0.10204081632653061,"x1":0.7142857142857143,"point":false},{"t":"Nothing else changes in the buy box, no promotion","who":"you","lab":"Oct 2 to Nov 1","x0":0.10204081632653061,"x1":0.7142857142857143,"point":false},{"t":"Test result and the decision on the missing plan","who":"joint","lab":"Nov 1","x0":0.7142857142857143,"x1":0.7142857142857143,"point":true},{"t":"60-day retention read on the September cohort","who":"us","lab":"Nov 11","x0":0.9183673469387755,"x1":0.9183673469387755,"point":true}]},"forecast":{"n":12,"unit":"subscriptions not started","labels":["Month 1","Month 2","Month 3","Month 4","Month 5","Month 6","Month 7","Month 8","Month 9","Month 10","Month 11","Month 12"],"mid":[842,1684,2526,3367,4209,5051,5893,6735,7577,8419,9261,10102],"lo":[541,1083,1624,2166,2707,3249,3790,4331,4873,5414,5956,6497],"hi":[1191,2382,3573,4764,5956,7147,8338,9529,10720,11911,13102,14293],"rate":842,"rate_lo":541,"rate_hi":1191,"retention_label":"Nov 11"}};
   var NS = 'http://www.w3.org/2000/svg';
   function el(n, a) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); return e; }
   function txt(x, y, s, o) {
@@ -688,19 +874,20 @@
     var xOf = week ? function (i) { return L + (R - L) * ((i + 0.5) / N); } : function (i) { return L + (R - L) * (i / (N - 1)); };
     for (var v = lo; v <= hi; v += 5) {
       s.appendChild(el('line', { x1: L, x2: R, y1: yOf(v), y2: yOf(v), stroke: 'var(--grid)', 'stroke-width': 1 }));
-      s.appendChild(txt(L - 10, yOf(v) + 4, v + '%', { anchor: 'end', size: 11.5, weight: 600 }));
+      s.appendChild(txt(L - 10, yOf(v) + 4, v + '%', { anchor: 'end', size: 12, weight: 600 }));
     }
     var a = P.launch_day, b = P.sale_end, x0, x1;
     if (week) { var bw = (R - L) / N; x0 = L + bw * P.launch_week; x1 = L + bw * (P.sale_week + 1); }
     else { var half = (xOf(1) - xOf(0)) / 2; x0 = xOf(a) - half; x1 = xOf(b) + half; }
-    s.appendChild(el('rect', { x: x0, y: T - 12, width: x1 - x0, height: B - T + 12, fill: 'var(--orange)', opacity: .15 }));
+    s.appendChild(el('rect', { x: x0, y: T - 12, width: x1 - x0, height: B - T + 12, fill: 'var(--orange-lg)', opacity: .15 }));
     s.appendChild(txt((x0 + x1) / 2, T - 18, week ? 'LAUNCH WEEK' : 'LAUNCH + LABOR DAY SALE',
-      { size: 11, weight: 900, ls: '.09em', fill: '#B5731B' }));
+      { size: 12, weight: 900, ls: '.09em', fill: 'var(--orange-text)' }));
     var pre = m.win.before.r, post = m.win.after.r;
     [[pre, 'var(--ink-3)', 'BEFORE ' + pre.toFixed(1) + '%'], [post, 'var(--core-black)', 'AFTER THE SALE ' + post.toFixed(1) + '%']]
       .forEach(function (g) {
         s.appendChild(el('line', { x1: L, x2: R, y1: yOf(g[0]), y2: yOf(g[0]), stroke: g[1], 'stroke-width': 2, 'stroke-dasharray': '4 5' }));
-        s.appendChild(txt(L + 4, yOf(g[0]) - 7, g[2], { anchor: 'start', size: 11, weight: 900, ls: '.07em', fill: g[1] }));
+        s.appendChild(txt(L + 4, yOf(g[0]) + (g[0] === pre ? 18 : -9), g[2],
+          { anchor: 'start', size: 12, weight: 900, ls: '.07em', fill: g[1] }));
       });
     s.appendChild(el('polyline', { points: rate.map(function (v, i) { return xOf(i) + ',' + yOf(v); }).join(' '),
       fill: 'none', stroke: 'var(--core-black)', 'stroke-width': week ? 2.6 : 2.2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
@@ -715,20 +902,20 @@
     });
     if (week) rate.forEach(function (v, i) {
       s.appendChild(txt(xOf(i), yOf(v) - 13, v.toFixed(1) + '%', { size: 12.5, weight: 900, fill: 'var(--ink)' }));
-      s.appendChild(txt(xOf(i), B + 22, P.weeks[i].label.toUpperCase(), { size: 11, weight: 700, ls: '.05em' }));
-      if (!P.weeks[i].full) s.appendChild(txt(xOf(i), B + 36, P.weeks[i].n + ' DAYS', { size: 11, weight: 700, ls: '.05em' }));
+      s.appendChild(txt(xOf(i), B + 22, P.weeks[i].label.toUpperCase(), { size: 12, weight: 700, ls: '.05em' }));
+      if (!P.weeks[i].full) s.appendChild(txt(xOf(i), B + 36, P.weeks[i].n + ' DAYS', { size: 12, weight: 700, ls: '.05em' }));
     });
     else [0, Math.round((N-1)*0.25), Math.round((N-1)*0.5), P.launch_day, N - 1].forEach(function (i) {
-      s.appendChild(txt(xOf(i), B + 22, short(P.days[i]).toUpperCase(), { size: 11, weight: 700, ls: '.05em' }));
+      s.appendChild(txt(xOf(i), B + 22, short(P.days[i]).toUpperCase(), { size: 12, weight: 700, ls: '.05em' }));
     });
     s.appendChild(el('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--rule)', 'stroke-width': 1.5 }));
-    s.appendChild(txt(L, B + 54, 'SHARE OF ORDERS CONTAINING A SUBSCRIPTION' + (week ? ', BY WEEK (MON\u2013SUN)' : ', PER DAY'),
-      { anchor: 'start', size: 11, weight: 900, ls: '.09em' }));
-    s.setAttribute('aria-label', m.name + ' take rate, ' + (week ? 'weekly' : 'daily') + '. Before the change '
+        s.setAttribute('aria-label', m.name + ' take rate, ' + (week ? 'weekly' : 'daily') + '. Before the change '
       + pre.toFixed(1) + ' percent; after the sale ' + post.toFixed(1) + ' percent.');
-    document.getElementById('c1t').textContent = 'Take rate, ' + m.name.charAt(0).toLowerCase() + m.name.slice(1);
+    var _c1t = null; if (_c1t) _c1t.textContent = 'Take rate, ' + m.name.charAt(0).toLowerCase() + m.name.slice(1);
     var c1s = document.getElementById('c1s');
-    if (c1s) c1s.textContent = 'Share of ' + m.den + '.';
+    if (c1s) c1s.textContent = m.name + '. Share of ' + m.den
+      + (week ? ', by week, Monday to Sunday.' : ', per day.')
+      + (lo > 0 ? ' Axis starts at ' + lo + '%.' : '');
     document.getElementById('c1cap').textContent =
       'Before the change this ran ' + pre.toFixed(1) + '% across ' + m.win.before.d.toLocaleString()
       + ' orders. During the launch and Labor Day sale, Sep 3 to 7, it ran ' + m.win.sale.r.toFixed(1)
@@ -750,7 +937,7 @@
   (function () {
     var s = document.getElementById('c2');
     var names = P.tier_names;
-    var wins = [['before', 'var(--retention)', 'Before'], ['sale', 'var(--tint-orange)', 'Launch + sale'], ['after', 'var(--orange)', 'After the sale']];
+    var wins = [['before', 'var(--ink-3)', 'Before'], ['sale', 'var(--tint-orange)', 'Launch + sale'], ['after', 'var(--orange)', 'Since the sale']];
     var L = 250, R = 790, T = 14, rowH = 40, gap = 12, MAX = 50;
     names.forEach(function (n, i) {
       var y = T + i * (rowH + gap), h = (rowH - 2 * 3) / 3;
@@ -760,12 +947,14 @@
         var r = el('rect', { x: L, y: y + j * (h + 3), width: ww, height: h, fill: w[1] });
         hov(r, '<b>' + n + '</b><br>' + w[2] + ': ' + val.toFixed(1) + '%');
         s.appendChild(r);
-        s.appendChild(txt(L + ww + 8, y + j * (h + 3) + h / 2 + 4, val.toFixed(1) + '%', { anchor: 'start', size: 11.5, weight: 900, fill: 'var(--ink)' }));
+        s.appendChild(txt(L + ww + 8, y + j * (h + 3) + h / 2 + 4, val.toFixed(1) + '%',
+          { anchor: 'start', size: 12, weight: 900, fill: 'var(--ink)' }));
+        if (i === 0) s.appendChild(txt(L + ww + 56, y + j * (h + 3) + h / 2 + 4, w[2].toUpperCase(),
+          { anchor: 'start', size: 12, weight: 700, ls: '.08em', fill: 'var(--ink-3)' }));
       });
     });
     var yb = T + names.length * (rowH + gap) - gap + 26;
-    s.appendChild(txt(L, yb, 'SHARE OF NEW SUBSCRIPTIONS, SINGLE PRODUCTS', { anchor: 'start', size: 11, weight: 900, ls: '.08em' }));
-    s.setAttribute('viewBox', '0 0 880 ' + (yb + 14));
+        s.setAttribute('viewBox', '0 0 880 ' + (yb + 14));
     s.setAttribute('aria-label', 'Plan mix. ' + names.map(function (n, i) {
       return n + ': ' + P.tiers.before[i] + ' percent before, ' + P.tiers.after[i] + ' after the sale'; }).join('. '));
   })();
@@ -778,12 +967,17 @@
                 ['before_90', 'Quarterly \u00b7 before'], ['after_90', 'Quarterly \u00b7 after']];
     var COLS = ['var(--ramp-lo)', 'var(--ramp-mid)', 'var(--core-black)'], NM = ['1 bottle', '2 bottles', '3 or more'];
     var L = 210, R = 840, T = 16, rowH = 28;
+    var widest = NM.map(function (_, j) {
+      var best = 0;
+      rows.forEach(function (r, i) {
+        if (P.bottles[r[0]].p[j] > P.bottles[rows[best][0]].p[j]) best = i; });
+      return best; });
     var y = T;
     rows.forEach(function (r, i) {
       if (i && i % 2 === 0) y += 16;
       var d = P.bottles[r[0]];
       s.appendChild(txt(L - 12, y + rowH / 2 + 1, r[1], { anchor: 'end', size: 13, weight: 700, fill: 'var(--ink)', fam: "'Public Sans',sans-serif" }));
-      s.appendChild(txt(L - 12, y + rowH / 2 + 16, d.n.toLocaleString() + ' subscriptions', { anchor: 'end', size: 11, weight: 500, fam: "'Public Sans',sans-serif" }));
+      s.appendChild(txt(L - 12, y + rowH / 2 + 16, d.n.toLocaleString() + ' subscriptions', { anchor: 'end', size: 12, weight: 500, fam: "'Public Sans',sans-serif" }));
       var x = L;
       d.p.forEach(function (v, j) {
         if (v <= 0) return;
@@ -791,14 +985,15 @@
         var rect = el('rect', { x: x, y: y, width: Math.max(w - (j ? 2 : 0), 1), height: rowH, fill: COLS[j] });
         hov(rect, '<b>' + r[1] + '</b><br>' + NM[j] + ': ' + v.toFixed(1) + '%');
         s.appendChild(rect);
-        if (v > 7) s.appendChild(txt(x + w / 2, y + rowH / 2 + 5, v.toFixed(1) + '%',
+        var _lab = v.toFixed(1) + '%';
+        if (i === widest[j] && v > 20) _lab += '   ' + NM[j].toUpperCase();
+        if (v > 7) s.appendChild(txt(x + w / 2, y + rowH / 2 + 5, _lab,
           { size: 12.5, weight: 900, fill: j === 2 ? 'var(--base-white)' : 'var(--ink)' }));
         x += w;
       });
       y += rowH + 10;
     });
-    s.appendChild(txt(L, y + 18, 'EACH ROW FILLS TO 100% OF THAT PLAN\u2019S NEW SUBSCRIPTIONS', { anchor: 'start', size: 11, weight: 900, ls: '.08em' }));
-    s.setAttribute('viewBox', '0 0 880 ' + (y + 34));
+        s.setAttribute('viewBox', '0 0 880 ' + (y + 34));
     s.setAttribute('aria-label', 'Bottles chosen within each plan. ' + rows.map(function (r) {
       var d = P.bottles[r[0]]; return r[1] + ': ' + d.p[0] + ' percent one bottle, ' + d.p[1] + ' two, ' + d.p[2] + ' three or more'; }).join('. '));
   })();
@@ -809,14 +1004,14 @@
     var S = P.series, LBL = P.grid;
     S.forEach(function (x) {
       var lab = document.createElement('label');
-      lab.className = 'chip' + (x.on ? ' on' : '');
-      lab.style.color = x.on ? x.col : 'var(--ink-3)';
+      lab.className = 'pick' + (x.on ? ' on' : '');
+      lab.style.setProperty('--sc', x.col);
       lab.innerHTML = '<input type="checkbox"' + (x.on ? ' checked' : '') + '><span class="dot"></span>'
         + '<span class="nm">' + x.lab + '</span><span class="q">' + x.sub + '</span>';
       box.appendChild(lab);
       lab.querySelector('input').addEventListener('change', function () {
         x.on = this.checked; lab.classList.toggle('on', x.on);
-        lab.style.color = x.on ? x.col : 'var(--ink-3)'; draw4();
+        lab.style.setProperty('--sc', x.col); draw4();
       });
     });
     function fmt(v, u) {
@@ -839,15 +1034,15 @@
       var L = 58, R = 700, T = 42, B = 264, bw = (R - L) / LBL.length;
       var yOf = function (v) { return B - (v - lo) / (hi - lo) * (B - T); };
       var xOf = function (i) { return L + bw * (i + .5); };
-      s.appendChild(el('rect', { x: L + bw * P.launch_week, y: T - 10, width: bw * (P.sale_week - P.launch_week + 1), height: B - T + 10, fill: 'var(--orange)', opacity: .13 }));
-      s.appendChild(txt(L + bw * (P.launch_week + (P.sale_week - P.launch_week + 1) / 2), T - 16, 'LAUNCH + SALE', { size: 11, weight: 900, ls: '.09em', fill: '#B5731B' }));
+      s.appendChild(el('rect', { x: L + bw * P.launch_week, y: T - 10, width: bw * (P.sale_week - P.launch_week + 1), height: B - T + 10, fill: 'var(--orange-lg)', opacity: .13 }));
+      s.appendChild(txt(L + bw * (P.launch_week + (P.sale_week - P.launch_week + 1) / 2), T - 16, 'LAUNCH + SALE', { size: 12, weight: 900, ls: '.09em', fill: 'var(--orange-text)' }));
       for (var g = Math.ceil(lo / st) * st; g <= hi + .001; g += st) {
         var base = Math.abs(g - 100) < .001;
         s.appendChild(el('line', { x1: L, x2: R, y1: yOf(g), y2: yOf(g), stroke: base ? 'var(--ink-3)' : 'var(--grid)', 'stroke-width': base ? 1.5 : 1 }));
-        s.appendChild(txt(L - 10, yOf(g) + 4, Math.round(g), { anchor: 'end', size: 11.5, weight: base ? 900 : 600, fill: base ? 'var(--ink-2)' : 'var(--ink-3)' }));
+        s.appendChild(txt(L - 10, yOf(g) + 4, Math.round(g), { anchor: 'end', size: 12, weight: base ? 900 : 600, fill: base ? 'var(--ink-2)' : 'var(--ink-3)' }));
       }
-      s.appendChild(txt(L + 4, yOf(100) - 9, 'PRE-LAUNCH', { anchor: 'start', size: 11, weight: 900, ls: '.08em' }));
-      LBL.forEach(function (l, i) { s.appendChild(txt(xOf(i), B + 22, l.toUpperCase(), { size: 11, weight: 700, ls: '.04em' })); });
+      s.appendChild(txt(L + 4, yOf(100) - 9, 'PRE-LAUNCH', { anchor: 'start', size: 12, weight: 900, ls: '.08em' }));
+      LBL.forEach(function (l, i) { s.appendChild(txt(xOf(i), B + 22, l.toUpperCase(), { size: 12, weight: 700, ls: '.04em' })); });
       s.appendChild(el('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--rule)', 'stroke-width': 1.5 }));
       var ends = [];
       on.forEach(function (x) {
@@ -865,15 +1060,13 @@
         if (last >= 0) ends.push({ y: yOf(x.idx[last]), x: x, i: last });
       });
       ends.sort(function (a, b) { return a.y - b.y; });
-      for (var k = 1; k < ends.length; k++) if (ends[k].y - ends[k - 1].y < 26) ends[k].y = ends[k - 1].y + 26;
+      for (var k = 1; k < ends.length; k++) if (ends[k].y - ends[k - 1].y < 34) ends[k].y = ends[k - 1].y + 34;
       ends.forEach(function (e) {
         s.appendChild(el('line', { x1: xOf(e.i) + 6, x2: R + 12, y1: yOf(e.x.idx[e.i]), y2: e.y - 4, stroke: e.x.col, 'stroke-width': 1, opacity: .5 }));
         s.appendChild(txt(R + 16, e.y, fmt(e.x.v[e.i], e.x.unit), { anchor: 'start', size: 13, weight: 900, fill: e.x.col }));
-        s.appendChild(txt(R + 16, e.y + 13, e.x.lab.toUpperCase(), { anchor: 'start', size: 11, weight: 900, ls: '.06em' }));
+        s.appendChild(txt(R + 16, e.y + 17, e.x.lab.toUpperCase(), { anchor: 'start', size: 12, weight: 700, ls: '.06em' }));
       });
-      s.appendChild(txt(L, B + 48, 'EACH LINE INDEXED TO ITS OWN PRE-LAUNCH AVERAGE = 100 \u00b7 WEEKS RUN MON TO SUN',
-        { anchor: 'start', size: 11, weight: 900, ls: '.09em' }));
-      s.setAttribute('aria-label', 'Weekly outcome metrics indexed to their own pre-launch average. '
+            s.setAttribute('aria-label', 'Weekly outcome metrics indexed to their own pre-launch average. '
         + on.map(function (x) { var i = x.idx.length - 1; while (i >= 0 && x.idx[i] === null) i--;
             return x.lab + ' ' + x.sub + ' ends at ' + Math.round(x.idx[i]); }).join('. '));
       clear(out);
@@ -901,18 +1094,21 @@
   /* ---------- chart 5 : schedule gantt ---------- */
   (function () {
     var s = document.getElementById('c5'); if (!s) return;
-    var G = P.gantt, L = G.gutter, R2 = 856, T = 34, rowH = 34, gap = 10;
-    var col = {}; G.who.forEach(function (w) { col[w.k] = w.col; });
+    // the plot stops short of the right edge to leave an owner column, so the
+    // schedule names who holds each step instead of sending it to a legend
+    var G = P.gantt, L = G.gutter, R2 = 730, T = 34, rowH = 34, gap = 10;
+    var col = {}, wlab = {};
+    G.who.forEach(function (w) { col[w.k] = w.col; wlab[w.k] = w.lab; });
     var xOf = function (f) { return L + (R2 - L) * f; };
     G.ticks.forEach(function (t) {
       s.appendChild(el('line', { x1: xOf(t.x), x2: xOf(t.x), y1: T - 12,
         y2: T + G.rows.length * (rowH + gap), stroke: 'var(--grid)', 'stroke-width': 1 }));
       s.appendChild(txt(xOf(t.x), T - 18, t.lab.toUpperCase(),
-        { size: 11, weight: 900, ls: '.09em' }));
+        { size: 12, weight: 700, ls: '.09em' }));
     });
     G.rows.forEach(function (r, i) {
       var y = T + i * (rowH + gap), c = col[r.who];
-      s.appendChild(txt(L - 16, y + rowH / 2 + 4, r.t, { anchor: 'end', size: 11.5, weight: 600,
+      s.appendChild(txt(L - 16, y + rowH / 2 + 4, r.t, { anchor: 'end', size: 12, weight: 600,
         fill: 'var(--ink)', fam: "'Public Sans',sans-serif" }));
       var x0 = xOf(r.x0), x1 = xOf(r.x1), w = Math.max(x1 - x0, 0);
       if (r.point) {
@@ -920,17 +1116,21 @@
         var pt = el('rect', { x: x0 - d, y: y + rowH / 2 - d, width: d * 2, height: d * 2,
           fill: c, transform: 'rotate(45 ' + x0 + ' ' + (y + rowH / 2) + ')' });
         hov(pt, '<b>' + r.lab + '</b><br>' + r.t); s.appendChild(pt);
-        s.appendChild(txt(x0 + 16, y + rowH / 2 + 4, r.lab, { anchor: 'start', size: 11.5,
+        s.appendChild(txt(x0 + 16, y + rowH / 2 + 4, r.lab, { anchor: 'start', size: 12,
           weight: 900, fill: 'var(--ink)' }));
       } else {
         var bar = el('rect', { x: x0, y: y + 5, width: w, height: rowH - 10, rx: 5, fill: c,
           opacity: .85 });
         hov(bar, '<b>' + r.lab + '</b><br>' + r.t); s.appendChild(bar);
-        s.appendChild(txt(x0 + w / 2, y + rowH / 2 + 4, r.lab, { size: 11, weight: 900,
+        s.appendChild(txt(x0 + w / 2, y + rowH / 2 + 4, r.lab, { size: 12, weight: 900,
           fill: 'var(--core-black)' }));
       }
+      s.appendChild(txt(866, y + rowH / 2 + 4, wlab[r.who].toUpperCase(),
+        { anchor: 'end', size: 12, weight: 700, ls: '.08em', fill: 'var(--ink-3)' }));
     });
     var yb = T + G.rows.length * (rowH + gap);
+    s.appendChild(txt(866, T - 18, 'OWNER',
+      { anchor: 'end', size: 12, weight: 700, ls: '.08em', fill: 'var(--ink-3)' }));
     s.appendChild(el('line', { x1: L, x2: R2, y1: yb, y2: yb, stroke: 'var(--rule)', 'stroke-width': 1.5 }));
     s.setAttribute('viewBox', '0 0 880 ' + (yb + 26));
     s.setAttribute('aria-label', 'Schedule. ' + G.rows.map(function (r) {
@@ -956,7 +1156,7 @@
       s.appendChild(el('line', { x1: L, x2: R2, y1: yOf(g), y2: yOf(g),
         stroke: 'var(--grid)', 'stroke-width': 1 }));
       s.appendChild(txt(L - 10, yOf(g) + 4, g.toLocaleString(),
-        { anchor: 'end', size: 11, weight: 600 }));
+        { anchor: 'end', size: 12, weight: 600 }));
     }
     var band = '';
     F6.hi.forEach(function (v, i) { band += (i ? 'L' : 'M') + xOf(i) + ' ' + yOf(v); });
@@ -970,23 +1170,20 @@
       hov(c, '<b>' + F6.labels[i] + '</b><br>' + v.toLocaleString() + ' ' + F6.unit
         + '<br>between ' + F6.lo[i].toLocaleString() + ' and ' + F6.hi[i].toLocaleString());
       s.appendChild(c);
-      if (i % 2 === 0 || i === N - 1)
+      // every other month. The forced last label always landed on its
+      // neighbour, and the end callout already names the twelve-month figure.
+      if (i % 2 === 0)
         s.appendChild(txt(xOf(i), B + 20, F6.labels[i].toUpperCase(),
-          { size: 11, weight: 700, ls: '.04em' }));
+          { size: 12, weight: 700, ls: '.04em' }));
     });
     s.appendChild(el('line', { x1: L, x2: R2, y1: B, y2: B, stroke: 'var(--rule)', 'stroke-width': 1.5 }));
     s.appendChild(txt(R2 + 12, yOf(F6.mid[N - 1]) - 2, F6.mid[N - 1].toLocaleString(),
       { anchor: 'start', size: 15, weight: 900, fill: 'var(--ink)' }));
-    s.appendChild(txt(R2 + 12, yOf(F6.mid[N - 1]) + 12, 'SUBSCRIPTIONS',
-      { anchor: 'start', size: 11, weight: 900, ls: '.07em' }));
-    s.appendChild(txt(R2 + 12, yOf(F6.mid[N - 1]) + 24, 'AT 12 MONTHS',
-      { anchor: 'start', size: 11, weight: 900, ls: '.07em' }));
-    s.appendChild(txt(L, B + 44, 'CUMULATIVE SUBSCRIPTIONS NOT STARTED, AT THE MEASURED RATE OF '
-      + F6.rate.toLocaleString() + ' A MONTH', { anchor: 'start', size: 11, weight: 900, ls: '.08em' }));
-    s.appendChild(txt(L, B + 60, 'NO DOLLAR FIGURE HERE. THE REVENUE CONSEQUENCE WAITS FOR THE '
-      + F6.retention_label.toUpperCase() + ' RETENTION READ',
-      { anchor: 'start', size: 11, weight: 900, ls: '.08em', fill: 'var(--ink-2)' }));
-    s.setAttribute('aria-label', 'Cumulative subscriptions not started over twelve months, reaching '
+    s.appendChild(txt(R2 + 12, yOf(F6.mid[N - 1]) + 17, 'SUBSCRIPTIONS',
+      { anchor: 'start', size: 12, weight: 700, ls: '.07em' }));
+    s.appendChild(txt(R2 + 12, yOf(F6.mid[N - 1]) + 34, 'AT ' + F6.n + ' MONTHS',
+      { anchor: 'start', size: 12, weight: 700, ls: '.07em' }));
+            s.setAttribute('aria-label', 'Cumulative subscriptions not started over twelve months, reaching '
       + F6.mid[N - 1] + ', between ' + F6.lo[N - 1] + ' and ' + F6.hi[N - 1] + '.');
   })();
 

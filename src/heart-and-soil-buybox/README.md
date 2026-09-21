@@ -6,8 +6,8 @@ hand-edited. Edit the source and rebuild; do not edit the HTML.
 ## Rebuild
 
 ```
-python build_v15.py     # writes page_v15.html, the artifact-shaped fragment
-python qa_v15.py        # 117 checks, non-zero exit on any failure
+python build_v17.py     # writes page_v17.html, the artifact-shaped fragment
+python qa_v15.py        # 117 checks on the ledger, non-zero exit on any failure
 python wrap_pages.py    # wraps the fragment into ../../heart-and-soil-buybox-review.html
 ```
 
@@ -50,6 +50,40 @@ product-level daily revenue across the whole catalogue, so they stay out.
 
 To re-derive the ledgers from source, put the five exports in a local `Downloads` folder and run
 `facts_v15.py` then `prep_v15.py` before `build_v15.py`.
+
+## The build that is published
+
+`build_v17.py` is the one `wrap_pages.py` wraps. It is a presentation pass over v15:
+same section order, same headings, same analysis, every number identical. What changed
+is everything around the numbers.
+
+- one authored stylesheet, `page_v17.css`, in place of a base sheet plus fifteen patch
+  layers in which 143 of 178 spacing declarations sat off an 8px grid
+- every margin, padding and gap is a multiple of 8, enforced at build time
+- nineteen font sizes collapsed to six tokens plus two clamped display sizes, and
+  thirteen letter-spacing values to one for every uppercase label
+- six subject labels became takeaway headlines, each built from ledger tokens so a
+  headline cannot drift from the figure it states
+- the three legends came off: chart 2 names its windows on the first row, chart 3 names
+  each band inside itself on the row where it is widest, chart 5 gives every row an
+  owner column. Six in-chart footer sentences went with them
+- colour means one thing each. Orange is the change and nothing else; green is gone
+
+Four guards run on every build, and each one exists because the thing it checks broke
+once: the sheet guard rejects duplicate declarations and dead rules, the grid guard
+rejects spacing off the 8px unit, the type guard rejects a ninth size or a second caps
+tracking, the contrast guard computes WCAG ratios against both the cream ground and the
+white card, and the anchor guard rejects a jump link with no target or any return of
+`scroll-behavior: smooth`, which once silently swallowed every link in the section nav.
+
+```
+python build_v17.py      # writes page_v17.html
+python qa_v17_diff.py    # proves the design pass moved no number
+python wrap_pages.py     # wraps it into ../../heart-and-soil-buybox-review.html
+```
+
+`build_v15.py` is kept because it is the version this one is checked against. An earlier
+v16 pass was rejected on its layout and is not in the repository.
 
 ## Reading order for the analysis itself
 

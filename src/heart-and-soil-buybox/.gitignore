@@ -7,3 +7,9 @@ b_signups.csv
 c_linebasis.csv
 d_products.csv
 e_sessions.csv
+
+# v16 build output: regenerate with build_v16.py
+page_v16.html
+
+# v17 build output: regenerate with build_v17.py
+page_v17.html

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 """Wrap the built artifact body into a standalone page for GitHub Pages.
 
-The Artifact platform supplies <!DOCTYPE>, <html> and <head>, so build_v15.py emits a
+The Artifact platform supplies <!DOCTYPE>, <html> and <head>, so build_v17.py emits a
 fragment that starts at <title>. GitHub Pages does not, so this adds the document shell,
 the crawler directives and the social description, and changes nothing else.
 
-    python wrap_pages.py            # build_v15.py must have been run first
+    python wrap_pages.py            # build_v17.py must have been run first
 """
 import io, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
-SRC = os.path.join(HERE, "page_v15.html")
+SRC = os.path.join(HERE, "page_v17.html")
 OUT = os.path.join(REPO, "heart-and-soil-buybox-review.html")
 
 DESCRIPTION = ("Subscription take rate, plan mix and order value for Heart &amp; Soil since the "
@@ -21,7 +21,7 @@ frag = io.open(SRC, encoding="utf-8").read()
 
 # the body begins at the first element after the stylesheets
 marker = '<a class="skip"'
-assert marker in frag, "body marker not found; did build_v15.py change the page shell?"
+assert marker in frag, "body marker not found; did build_v17.py change the page shell?"
 split = frag.index(marker)
 head, body = frag[:split].rstrip(), frag[split:].rstrip()
 
