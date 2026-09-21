@@ -402,6 +402,20 @@
   "threshold": 4,
   "aov_floor": 95
  },
+ "colostrum": {
+  "cadence": 60,
+  "cell_subs_pre": 3049,
+  "cell_subs_post": 225,
+  "cell_price_pre": 60.5,
+  "cell_price_post": 83.8,
+  "share_pre": 7.4,
+  "share_post": 63.1,
+  "price_pre": 108.5,
+  "price_post": 109.61,
+  "mix_at_old_prices": 82.82,
+  "residual_price_pct": 1.2,
+  "note": "Grass-Fed Colostrum, SKU 1001FFC, in the single-bottle option at 60 days. Products with at least 5 sign-ups in a window. The cell's weighted price rose 38.5 percent; holding products constant it rises 36.9 percent, so the real price drift is 1.2 percent and the rest is composition."
+ },
  "checksum": {
   "orders": 28977,
   "orders_expected": 30740,

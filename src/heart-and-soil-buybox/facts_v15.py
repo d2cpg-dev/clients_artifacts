@@ -349,6 +349,11 @@ se_t = math.sqrt(phi_use * p_ * (1 - p_) * (1 / n_test + 1 / n_base)) * 100
 F["test"] = dict(orders_30d=n_test, se=se_t, mde=2.8 * se_t,
                  threshold=round(H["drop"] / 2.0), aov_floor=95)
 
+# Colostrum at 60 days, carried through from the Skio verification query. The
+# single-bottle cell at that cadence repriced almost entirely through product mix,
+# which is a question about how that product is configured, not a pricing finding.
+F["colostrum"] = BQF["colostrum_60d"]
+
 # ---------------------------------------------------------------- checksums
 CK0, CK1 = "2026-08-06", "2026-09-09"
 ck = [d for d in DAYS if CK0 <= d <= CK1]
