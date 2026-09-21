@@ -904,7 +904,7 @@ summary{cursor:pointer}
     var s = document.getElementById('c2');
     var names = P.tier_names;
     var wins = [['before', 'var(--ink-3)', 'Before'], ['sale', 'var(--tint-orange)', 'Launch + sale'], ['after', 'var(--orange)', 'Since the sale']];
-    var L = 250, R = 700, T = 14, rowH = 40, gap = 12, MAX = 50;
+    var L = 250, R = 700, T = 14, rowH = 40, gap = 12, MAX = 60;
     names.forEach(function (n, i) {
       var y = T + i * (rowH + gap), h = (rowH - 2 * 3) / 3;
       s.appendChild(txt(L - 14, y + rowH / 2 + 4, n, { anchor: 'end', size: 13.5, weight: 700, fill: 'var(--ink)', fam: "'Public Sans',sans-serif" }));
@@ -918,11 +918,15 @@ summary{cursor:pointer}
       });
     });
     var yb = T + names.length * (rowH + gap) - gap + 26;
-    var _kw = T + 9;
+    var _kw = T + 9, _kx = R + 18;
+    Array.prototype.forEach.call(s.querySelectorAll('text'), function (t) {
+      var b = t.getBBox();
+      if (b.x + b.width + 18 > _kx) _kx = b.x + b.width + 18;
+    });
     wins.forEach(function (w) {
-      s.appendChild(el('rect', { x: R + 18, y: _kw - 11, width: 13, height: 13, rx: 3,
+      s.appendChild(el('rect', { x: _kx, y: _kw - 11, width: 13, height: 13, rx: 3,
         fill: w[1], stroke: 'var(--rule)', 'stroke-width': 1 }));
-      s.appendChild(txt(R + 39, _kw, w[2].toUpperCase(),
+      s.appendChild(txt(_kx + 21, _kw, w[2].toUpperCase(),
         { anchor: 'start', size: 13, weight: 700, ls: '.07em', fill: 'var(--ink-2)' }));
       _kw += 26;
     });
@@ -952,8 +956,12 @@ summary{cursor:pointer}
         var rect = el('rect', { x: x, y: y, width: Math.max(w - (j ? 2 : 0), 1), height: rowH, fill: COLS[j] });
         hov(rect, '<b>' + r[1] + '</b><br>' + NM[j] + ': ' + v.toFixed(1) + '%');
         s.appendChild(rect);
-        if (v > 7) s.appendChild(txt(x + w / 2, y + rowH / 2 + 5, v.toFixed(1) + '%',
-          { size: 13, weight: 900, fill: j === 2 ? 'var(--base-white)' : 'var(--ink)' }));
+        if (v > 7) {
+          var _vt = txt(x + w / 2, y + rowH / 2 + 5, v.toFixed(1) + '%',
+            { size: 13, weight: 900, fill: j === 2 ? 'var(--base-white)' : 'var(--ink)' });
+          s.appendChild(_vt);
+          if (_vt.getComputedTextLength() > w - 8) s.removeChild(_vt);
+        }
         x += w;
       });
       y += rowH + 10;
@@ -1014,7 +1022,7 @@ summary{cursor:pointer}
         s.appendChild(el('line', { x1: L, x2: R, y1: yOf(g), y2: yOf(g), stroke: base ? 'var(--ink-3)' : 'var(--grid)', 'stroke-width': base ? 1.5 : 1 }));
         s.appendChild(txt(L - 10, yOf(g) + 4, Math.round(g), { anchor: 'end', size: 13, weight: base ? 900 : 600, fill: base ? 'var(--ink-2)' : 'var(--ink-3)' }));
       }
-      s.appendChild(txt(L + 4, yOf(100) - 9, 'PRE-LAUNCH', { anchor: 'start', size: 13, weight: 900, ls: '.08em' }));
+      
       LBL.forEach(function (l, i) { s.appendChild(txt(xOf(i), B + 22, l.toUpperCase(), { size: 13, weight: 700, ls: '.04em' })); });
       s.appendChild(el('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--rule)', 'stroke-width': 1.5 }));
       var ends = [];

@@ -38,8 +38,11 @@ SCRIPT = patch(SCRIPT, "else [0, 10, 20, 30, N - 1].forEach(function (i) {",
 SCRIPT = patch(SCRIPT,
     "var names = ['1 bottle / 30 days', '2 bottles / 60 days', '3 bottles / 90 days', '120 / 180-day plans', 'Every other combination'];",
     "var names = P.tier_names;", "c2 names")
+# MAX is the bar scale's ceiling, not a figure: at 50 the longest bar ran to 671 and
+# its value label, which sits outside the bar, reached 722, over the key at 718. At 60
+# the same bar ends at 601 and its label at 644, well clear.
 SCRIPT = patch(SCRIPT, "var L = 250, R = 790, T = 14, rowH = 48, gap = 14, MAX = 65;",
-    "var L = 250, R = 700, T = 14, rowH = 40, gap = 12, MAX = 50;",
+    "var L = 250, R = 700, T = 14, rowH = 40, gap = 12, MAX = 60;",
     "c2 scale and row height, it was the tallest chart on the page")
 # c4 was 400 tall against 340 for its neighbours; bring the plot into the same band
 SCRIPT = patch(SCRIPT, "var L = 58, R = 700, T = 46, B = 300, bw = (R - L) / LBL.length;",
@@ -85,16 +88,34 @@ SCRIPT = patch(SCRIPT,
     "{ size: 12.5, weight: 900, fill: j === 0 ? 'var(--ink)' : '#F7F3E7' }",
     "{ size: 12.5, weight: 900, fill: j === 2 ? 'var(--base-white)' : 'var(--ink)' }",
     "c3 bar labels legible on every ramp step")
+# A percentage over 7 does not guarantee a band that can hold its own label: at the
+# narrower plot width 7.2% drew a label exactly as wide as its band, spilling a hair
+# into the neighbour. The label is measured against the band it sits in and dropped
+# when it does not fit with a margin; the value stays in the tooltip and the table.
+SCRIPT = patch(SCRIPT,
+    """        if (v > 7) s.appendChild(txt(x + w / 2, y + rowH / 2 + 5, v.toFixed(1) + '%',
+          { size: 12.5, weight: 900, fill: j === 2 ? 'var(--base-white)' : 'var(--ink)' }));""",
+    """        if (v > 7) {
+          var _vt = txt(x + w / 2, y + rowH / 2 + 5, v.toFixed(1) + '%',
+            { size: 12.5, weight: 900, fill: j === 2 ? 'var(--base-white)' : 'var(--ink)' });
+          s.appendChild(_vt);
+          if (_vt.getComputedTextLength() > w - 8) s.removeChild(_vt);
+        }""",
+    "c3 keeps a value label only when its own band can hold it")
 # c1: the post-sale mean was drawn in blue inside an orange-shaded window
 SCRIPT = patch(SCRIPT,
     "[post, 'var(--blue)', 'AFTER THE SALE ' + post.toFixed(1) + '%']",
     "[post, 'var(--core-black)', 'AFTER THE SALE ' + post.toFixed(1) + '%']",
     "c1 post-sale mean line")
-# c4: the PRE-LAUNCH marker was right-anchored outside the drawing and clipped by 25px
+# c4: the PRE-LAUNCH tag was right-anchored outside the drawing and clipped by 25px.
+# Moved inside the plot it then sat on the first week's markers, and there is nowhere
+# along that rule it can go without landing on a series. It is dropped instead: the
+# axis already labels the rule 100 in bold, and the chart's own subtitle says every
+# line runs against its pre-launch average drawn as the rule at one hundred.
 SCRIPT = patch(SCRIPT,
     "s.appendChild(txt(L - 10, yOf(100) - 12, 'PRE-LAUNCH', { anchor: 'end', size: 9, weight: 900, ls: '.08em' }));",
-    "s.appendChild(txt(L + 4, yOf(100) - 9, 'PRE-LAUNCH', { anchor: 'start', size: 9, weight: 900, ls: '.08em' }));",
-    "c4 pre-launch label inside the plot")
+    "",
+    "c4 drops the tag that could not clear the data")
 # the payload is injected further down, once the schedule and forecast series exist
 
 # 1. The headline is the takeaway the reader is given before the chart. The
@@ -152,11 +173,15 @@ SCRIPT = patch(SCRIPT,
 SCRIPT = patch(SCRIPT,
     "    s.appendChild(txt(L, yb, 'SHARE OF NEW SUBSCRIPTIONS, SINGLE PRODUCTS', "
     "{ anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));",
-    """    var _kw = T + 9;
+    """    var _kw = T + 9, _kx = R + 18;
+    Array.prototype.forEach.call(s.querySelectorAll('text'), function (t) {
+      var b = t.getBBox();
+      if (b.x + b.width + 18 > _kx) _kx = b.x + b.width + 18;
+    });
     wins.forEach(function (w) {
-      s.appendChild(el('rect', { x: R + 18, y: _kw - 11, width: 13, height: 13, rx: 3,
+      s.appendChild(el('rect', { x: _kx, y: _kw - 11, width: 13, height: 13, rx: 3,
         fill: w[1], stroke: 'var(--rule)', 'stroke-width': 1 }));
-      s.appendChild(txt(R + 39, _kw, w[2].toUpperCase(),
+      s.appendChild(txt(_kx + 21, _kw, w[2].toUpperCase(),
         { anchor: 'start', size: 13, weight: 700, ls: '.07em', fill: 'var(--ink-2)' }));
       _kw += 26;
     });
