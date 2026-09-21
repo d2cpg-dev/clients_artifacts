@@ -26,7 +26,7 @@ SCRIPT = patch(SCRIPT,
     "var N = rate.length, L = 58, R = 828, T = 36, B = 226;", "c1 plot height")
 SCRIPT = patch(SCRIPT,
     "var L = 210, R = 840, T = 16, rowH = 34;",
-    "var L = 210, R = 840, T = 16, rowH = 28;", "c3 row height")
+    "var L = 210, R = 700, T = 16, rowH = 28;", "c3 row height and key gutter")
 SCRIPT = patch(SCRIPT, "var cur = 'newtt', grain = 'week';", "var cur = 'headline', grain = 'week';", "default measure")
 SCRIPT = patch(SCRIPT,
     "if (week) { var bw = (R - L) / N; x0 = L + bw * 4; x1 = L + bw * 5; }",
@@ -120,19 +120,6 @@ SCRIPT = patch(SCRIPT,
           { anchor: 'start', size: 10.5, weight: 900, ls: '.07em', fill: g[1] }));""",
     "c1 reference labels take opposite sides of their lines")
 
-# c3: each band is named once, on the row where it has the most room.
-SCRIPT = patch(SCRIPT,
-    """    var y = T;
-    rows.forEach(function (r, i) {""",
-    '''    var widest = NM.map(function (_, j) {
-      var best = 0;
-      rows.forEach(function (r, i) {
-        if (P.bottles[r[0]].p[j] > P.bottles[rows[best][0]].p[j]) best = i; });
-      return best; });
-    var y = T;
-    rows.forEach(function (r, i) {''',
-    "c3 works out where each band is widest")
-
 # c4: each end carries a value and a name, so the de-collision pass has to
 # reserve two lines of twelve-unit type, not the one line it was written for.
 SCRIPT = patch(SCRIPT,
@@ -170,14 +157,24 @@ SCRIPT = patch(SCRIPT,
     "c2 before is neutral ink, not a second accent")
 
 # c3: each band is named once, inside itself, on the row where it is widest.
-# Above the bar the name landed on the value label of the row overhead; on the
-# same line as its own percentage it reads as one label and costs no height.
+# The in-band names were asked off the bars: a band wide enough to hold its own
+# percentage is not always wide enough to hold a name too, and the name moved from
+# row to row depending on which row happened to be widest. The three names now sit
+# once, in a key to the right of the drawing, and the bars carry only their values.
 SCRIPT = patch(SCRIPT,
-    "        if (v > 7) s.appendChild(txt(x + w / 2, y + rowH / 2 + 5, v.toFixed(1) + '%',",
-    """        var _lab = v.toFixed(1) + '%';
-        if (i === widest[j] && v > 20) _lab += '   ' + NM[j].toUpperCase();
-        if (v > 7) s.appendChild(txt(x + w / 2, y + rowH / 2 + 5, _lab,""",
-    "c3 names each band on the same line as its value")
+    "    s.appendChild(txt(L, y + 18, 'EACH ROW FILLS TO 100% OF THAT PLAN’S NEW SUBSCRIPTIONS', "
+    "{ anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));",
+    """    var _ky = T + 7;
+    NM.forEach(function (n, j) {
+      s.appendChild(el('rect', { x: R + 18, y: _ky - 11, width: 13, height: 13, rx: 3,
+        fill: COLS[j], stroke: 'var(--rule)', 'stroke-width': 1 }));
+      s.appendChild(txt(R + 39, _ky, n.toUpperCase(),
+        { anchor: 'start', size: 13, weight: 700, ls: '.07em', fill: 'var(--ink-2)' }));
+      _ky += 26;
+    });
+    s.appendChild(txt(L, y + 18, 'EACH ROW FILLS TO 100% OF THAT PLAN’S NEW SUBSCRIPTIONS',
+      { anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));""",
+    "c3 names its three bands once, in a key on the right")
 
 # c5 is authored in EXTRA_JS further down, so its owner labels are written there.
 

@@ -657,8 +657,8 @@ summary{cursor:pointer}
     <p class="ch-tag">Basket size &middot; within each cycle</p>
     <p class="ch-t">Three bottles took the 90-day cycle, from 18.6% to
       75.2%</p>
-    <p class="ch-s">Each row fills to the whole of that cycle's new subscriptions. The bands are
-      named on the first row.</p>
+    <p class="ch-s">Each row fills to the whole of that cycle's new subscriptions. The key on the
+      right names the bands.</p>
     <div class="ch-scroll"><svg id="c3" viewBox="0 0 880 340" role="img"></svg></div>
     <figcaption>Monthly was a one-bottle plan and stayed one. The longer cycles moved to two and three
       bottles, which is where the extra order value comes from.</figcaption>
@@ -1017,12 +1017,7 @@ summary{cursor:pointer}
                 ['before_60', 'Bi-monthly \u00b7 before'], ['after_60', 'Bi-monthly \u00b7 after'],
                 ['before_90', 'Quarterly \u00b7 before'], ['after_90', 'Quarterly \u00b7 after']];
     var COLS = ['var(--ramp-lo)', 'var(--ramp-mid)', 'var(--core-black)'], NM = ['1 bottle', '2 bottles', '3 or more'];
-    var L = 210, R = 840, T = 16, rowH = 28;
-    var widest = NM.map(function (_, j) {
-      var best = 0;
-      rows.forEach(function (r, i) {
-        if (P.bottles[r[0]].p[j] > P.bottles[rows[best][0]].p[j]) best = i; });
-      return best; });
+    var L = 210, R = 700, T = 16, rowH = 28;
     var y = T;
     rows.forEach(function (r, i) {
       if (i && i % 2 === 0) y += 16;
@@ -1036,13 +1031,19 @@ summary{cursor:pointer}
         var rect = el('rect', { x: x, y: y, width: Math.max(w - (j ? 2 : 0), 1), height: rowH, fill: COLS[j] });
         hov(rect, '<b>' + r[1] + '</b><br>' + NM[j] + ': ' + v.toFixed(1) + '%');
         s.appendChild(rect);
-        var _lab = v.toFixed(1) + '%';
-        if (i === widest[j] && v > 20) _lab += '   ' + NM[j].toUpperCase();
-        if (v > 7) s.appendChild(txt(x + w / 2, y + rowH / 2 + 5, _lab,
+        if (v > 7) s.appendChild(txt(x + w / 2, y + rowH / 2 + 5, v.toFixed(1) + '%',
           { size: 13, weight: 900, fill: j === 2 ? 'var(--base-white)' : 'var(--ink)' }));
         x += w;
       });
       y += rowH + 10;
+    });
+    var _ky = T + 7;
+    NM.forEach(function (n, j) {
+      s.appendChild(el('rect', { x: R + 18, y: _ky - 11, width: 13, height: 13, rx: 3,
+        fill: COLS[j], stroke: 'var(--rule)', 'stroke-width': 1 }));
+      s.appendChild(txt(R + 39, _ky, n.toUpperCase(),
+        { anchor: 'start', size: 13, weight: 700, ls: '.07em', fill: 'var(--ink-2)' }));
+      _ky += 26;
     });
         s.setAttribute('viewBox', '0 0 880 ' + (y + 34));
     s.setAttribute('aria-label', 'Bottles chosen within each plan. ' + rows.map(function (r) {
