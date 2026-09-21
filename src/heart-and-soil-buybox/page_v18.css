@@ -221,7 +221,11 @@ figcaption{
    than shrinking its own labels out of legibility. */
 .ch-scroll{overflow-x:auto;scrollbar-width:thin}
 svg{display:block;height:auto}
-.ch-scroll > svg{width:100%;max-width:880px;min-width:740px;margin-inline:auto}
+/* min-width sets the floor the charts scroll at on a phone. At 740 the 13-unit
+   in-chart type landed on 10.93px, just under the 11px floor this page holds to;
+   745 puts it on 11.01 and still sits inside the 749px graphic zone, so the
+   desktop containers do not overflow and pick up a keyboard tab stop. */
+.ch-scroll > svg{width:100%;max-width:880px;min-width:745px;margin-inline:auto}
 
 /* --- controls: one family ------------------------------------------------ */
 .seg-row{display:flex;justify-content:space-between;align-items:flex-start;

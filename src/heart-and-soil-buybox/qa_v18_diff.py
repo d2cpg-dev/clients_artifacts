@@ -90,19 +90,34 @@ ungrounded = [f for f in new if f not in ledger]
 check("every figure new to the prose is a value the ledger computed",
       not ungrounded, "not in the ledger: %s" % ungrounded)
 
-# what left the prose must be accounted for by the three deleted legends
+# What left the prose must be accounted for, either by one of the three deleted
+# legends or by a section the client asked to have cut. The cut sections are named
+# by the tokens that only ever appeared inside them, so this still fails if a figure
+# disappears from a section that is meant to be there.
 legends = re.findall(r'<div class="legend".*?</div>', A, re.S)
 legend_figs = set()
 for lg in legends:
     legend_figs |= set(re.findall(FIG, re.sub(r"<[^>]+>", " ", lg)))
+
+# cut 2026-09-22 on the client's instruction: what we recommend, what happens when
+# (both its charts and the cost-of-inaction paragraph), and the questions block
+CUT_TOKENS = ("restore_date", "signoff_date", "decide_date", "reread_date", "retention_date",
+              "ret_read_1", "ret_read_2", "test_days", "test_orders", "threshold", "mde",
+              "aov_floor", "lost_mo", "mo_bill", "rev_gain", "f12",
+              "window_q_start", "window_q_end", "col_cad", "col_share_pre", "col_share_post",
+              "col_price_pre", "col_price_post")
+cut_figs = set()
+for _t in CUT_TOKENS:
+    cut_figs |= set(re.findall(FIG, TOK.get(_t, "")))
+
 gone = sorted(sa - sb)
-unexplained = [f for f in gone if f not in legend_figs]
-check("every figure that left the prose left with a deleted legend",
+unexplained = [f for f in gone if f not in legend_figs and f not in cut_figs]
+check("every figure that left the prose left with a deleted legend or a cut section",
       not unexplained, "unexplained: %s" % unexplained)
 
 print()
 print("  ledger figures newly surfaced by the takeaway headlines: %s" % (new or "none"))
-print("  figures retired with the three legends: %s" % (gone or "none"))
+print("  figures retired with the legends or the cut sections: %s" % (gone or "none"))
 print()
 print("%d checks, %d failures" % (5, len(fails)))
 sys.exit(1 if fails else 0)

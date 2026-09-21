@@ -1,0 +1,555 @@
+/* ===========================================================================
+   Heart & Soil, subscription buy box.
+
+   One stylesheet. Every value is declared once, so nothing here can be
+   silently overridden by a rule further down. The page it replaced was a
+   base sheet plus fifteen patch layers, and half its declarations were dead.
+
+   Three rules govern the rest of the file.
+
+   Colour has one meaning each. Ink is the baseline, the before, the settled
+   and the neutral, and it is the default for every number. Orange is the
+   change and nothing else. Bold blue is us: links, focus, our commitments.
+   Retention blue is the secondary fill. There is no green on this page.
+
+   Vertical space comes in five sizes: 72px between sections, 64px above the
+   first, 24px between blocks, 20px under a heading, 14px between paragraphs.
+   The wrapper is a grid, so margins never collapse; every gap is a margin-top
+   on the lower element and nothing carries a bottom margin.
+
+   Type comes from one scale, held in custom properties. Anton is display
+   only and never appears below 30px. Nothing on the page renders under 11px.
+   ======================================================================== */
+
+:root{
+  /* surfaces and ink */
+  --core-black:#2A211C; --base-white:#F7F3E7; --card:#FFFFFF; --surface:#F7F3E7;
+  --ink:#2A211C; --ink-2:rgba(42,33,28,.72);
+  /* .64, not the inherited .52: every micro label, table header, section link
+     and signpost wears this tone, and at .52 they measured 3.25:1 on cream */
+  --ink-3:rgba(42,33,28,.64);
+  --rule:rgba(42,33,28,.18); --grid:rgba(42,33,28,.10);
+
+  /* accents. Orange marks the change; blue is ours; retention blue is secondary. */
+  --orange:#EC8E28; --orange-lg:#F9982F; --orange-text:#B5731B; --tint-orange:#FCE2BF;
+  --blue:#3636CC; --deep:#26268F; --retention:#3E9BC9; --tint-blue:#D6E9F8;
+  --ramp-lo:#E8E1CE; --ramp-mid:#BBA173;
+  --shadow-sm:0 1px 2px rgba(42,33,28,.06);
+
+  /* type */
+  --f-display:'Anton',Impact,sans-serif;
+  --f-label:'Archivo',sans-serif;
+  --f-body:'Public Sans',system-ui,sans-serif;
+  --t-display:clamp(44px,6vw,72px);
+  --t-h2:clamp(30px,3.2vw,40px);
+  --t-h3:20px; --t-deck:21px; --t-body:17px; --t-small:15px;
+  --t-caption:13px; --t-micro:11px; --t-stat-xl:40px; --t-stat:28px;
+
+  /* the only vertical gaps on the page */
+  --g-section:72px; --g-open:64px; --g-block:24px; --g-head:20px; --g-para:14px;
+
+  color-scheme:light;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;background:var(--surface);color:var(--ink);
+  font:400 var(--t-body)/1.6 var(--f-body);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* --- the twelve-column shell ------------------------------------------- */
+/* Prose sits on the first eight columns, about 72 characters at 17px.
+   Evidence and verdicts run the full width. The right edge of the text is
+   ragged on purpose: it is the same measure on every section. */
+.wrap{
+  max-width:1280px;margin:0 auto;padding:40px clamp(20px,5vw,48px) 0;
+  display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;
+  align-content:start;container-type:inline-size;container-name:wrap;
+  counter-reset:sec;
+}
+.wrap > *{grid-column:1 / span 8;min-width:0}
+.wrap > header,
+.wrap > figure,
+.wrap > .quad,
+.wrap > .trio,
+.wrap > .recs,
+.wrap > details.fold.wide,
+.wrap > footer{grid-column:1 / -1}
+
+/* --- masthead ----------------------------------------------------------- */
+header{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px}
+header > *{grid-column:1 / span 8;min-width:0}
+header > .mast,header > .secnav,header > .deck-row,header > .strip{grid-column:1 / -1}
+header > h1,header > .exec{grid-column:1 / span 9}
+
+.mast{
+  display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;
+  margin:0;padding-bottom:14px;border-bottom:1.5px solid var(--rule);
+}
+.doc{
+  font:900 14px/1.3 var(--f-label);letter-spacing:.14em;text-transform:uppercase;margin:0;
+}
+.kicker{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+.secnav{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:14px}
+.secnav a{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);text-decoration:none;border-bottom:1.5px solid transparent;padding-bottom:2px;
+}
+.secnav a:hover{color:var(--ink);border-bottom-color:var(--orange)}
+
+.eyebrow{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);margin:var(--g-block) 0 0;
+}
+h1{
+  font:400 var(--t-display)/0.95 var(--f-display);letter-spacing:-.01em;
+  text-transform:uppercase;margin:8px 0 0;max-width:18ch;
+}
+h1 em{font-style:normal;color:var(--ink);box-shadow:inset 0 -.16em 0 var(--tint-orange)}
+
+/* deck and the one call to action, side by side on a laptop */
+.deck-row{
+  margin-top:16px;display:grid;grid-template-columns:minmax(0,1fr) auto;
+  column-gap:32px;align-items:start;
+}
+.deck{
+  grid-column:1;margin:0;max-width:60ch;
+  font-size:var(--t-deck);line-height:1.45;color:var(--ink-2);
+}
+/* the single decision on the page, carried in the verdict tile language */
+.badge{
+  grid-column:2;display:block;text-decoration:none;white-space:nowrap;
+  background:var(--card);border:1px solid var(--rule);border-top:4px solid var(--orange);
+  border-radius:18px;padding:14px 20px 15px;box-shadow:var(--shadow-sm);
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+.badge span{
+  display:block;margin-top:5px;font-size:var(--t-stat);line-height:1.1;
+  letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums;
+}
+.badge:hover{border-color:var(--orange)}
+
+/* --- the KPI strip, two labelled pairs ---------------------------------- */
+.strip{
+  margin-top:var(--g-block);display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));column-gap:48px;
+}
+.strip-h{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 8px;
+}
+.pair .cells{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  border-top:1.5px solid var(--core-black);
+}
+.cell{padding:20px 24px 20px 0;border-right:1px solid var(--rule)}
+.cell:last-child{border-right:none}
+.cell .lbl{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+.cell .val{
+  font:900 var(--t-stat-xl)/1.0 var(--f-label);letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;margin:10px 0 4px;color:var(--ink);
+}
+/* the fall is the only orange number on the page, because it is the change */
+.cell .val.o{color:var(--orange-text)}
+/* the digits carry the colour; the unit is secondary and at 16px it is not
+   large text, so it cannot wear the orange and still clear 4.5:1 */
+.cell .val .u{font-size:16px;color:var(--ink-2)}
+.cell .sup{font-size:var(--t-caption);line-height:1.45;color:var(--ink-2);max-width:32ch}
+
+/* --- executive summary: the count is a counter, never typed ------------- */
+.exec{counter-reset:ex;margin-top:var(--g-block);border-top:1.5px solid var(--core-black)}
+.exec-row{
+  counter-increment:ex;display:grid;grid-template-columns:2.2em minmax(0,1fr) auto;
+  gap:6px 18px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--rule);
+}
+.exec-row::before{
+  content:counter(ex,decimal-leading-zero);
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  color:var(--ink-3);font-variant-numeric:tabular-nums;
+}
+.exec-t{font-size:var(--t-body);line-height:1.55;color:var(--ink-2)}
+.exec-t b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.exec-act .exec-t{color:var(--ink)}
+.exec-l{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--blue);text-decoration:none;white-space:nowrap;
+  border-bottom:1.5px solid transparent;padding-bottom:2px;
+}
+.exec-l:hover{border-bottom-color:var(--blue)}
+
+/* --- headings and prose -------------------------------------------------- */
+h2{
+  font:400 var(--t-h2)/1.0 var(--f-display);letter-spacing:-.01em;
+  text-transform:uppercase;margin:var(--g-section) 0 0;scroll-margin-top:18px;
+}
+header + h2{margin-top:var(--g-open)}
+h2.num{counter-increment:sec}
+h2.num::before{
+  content:counter(sec,decimal-leading-zero);display:block;margin-bottom:10px;
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  color:var(--ink-3);font-variant-numeric:tabular-nums;
+}
+h3{font:700 var(--t-h3)/1.25 var(--f-label);margin:0}
+p{margin:var(--g-para) 0 0;color:var(--ink-2)}
+h2 + p{margin-top:var(--g-head)}
+p b,li b{color:var(--ink);font-weight:600}
+ul{margin:var(--g-head) 0 0;padding-left:22px}
+li{margin:9px 0;color:var(--ink-2)}
+li::marker{color:var(--ink-3);font-weight:700}
+
+/* a signpost between sections, three on the page */
+.next{margin-top:var(--g-block);text-align:right;font-size:var(--t-small)}
+.next a{color:var(--ink-3);text-decoration:none;border-bottom:1.5px solid transparent}
+.next a:hover{color:var(--ink);border-bottom-color:var(--orange)}
+
+/* the range pill */
+.ranges{display:flex;flex-wrap:wrap;gap:8px;margin:var(--g-block) 0 0}
+.rg{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1.5px solid var(--rule);border-radius:999px;padding:6px 14px;
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-2);background:var(--card);
+}
+.rg i{width:10px;height:10px;border-radius:2px;flex:none}
+.rg b{color:var(--ink)}
+
+/* --- figures: the sheet that carries evidence --------------------------- */
+figure{
+  margin:var(--g-block) 0 0;background:var(--card);border:1px solid var(--rule);
+  border-radius:18px;padding:20px 24px 16px;box-shadow:var(--shadow-sm);
+  display:grid;grid-template-columns:minmax(0,1fr);column-gap:32px;
+}
+figure > *{grid-column:1;min-width:0}
+.ch-t{font:700 var(--t-h3)/1.25 var(--f-label);margin:0;color:var(--ink)}
+.ch-s{font-size:var(--t-small);line-height:1.5;color:var(--ink-2);margin:4px 0 14px}
+figcaption{
+  font-size:var(--t-small);line-height:1.5;color:var(--ink-2);
+  margin-top:14px;padding-top:14px;border-top:1px solid var(--rule);
+}
+/* the definition that used to stall the page between the hook and the first chart */
+.def{
+  margin-top:14px;padding-top:14px;border-top:1px solid var(--rule);
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:32px;
+}
+.deflbl{grid-column:1 / -1}
+.deflbl{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 10px;
+}
+.def p{font-size:var(--t-small);line-height:1.5;margin:0}
+
+/* The chart is drawn into an 880-unit viewBox. It never renders wider than
+   that, and never narrower than 812, which is the width at which 12-unit
+   in-chart type still lands on 11 real pixels. Outside that band the figure
+   scrolls rather than shrinking its labels out of legibility. The floor sits
+   just under the 824px the column computes to, so a fraction of a pixel of
+   rounding cannot make every figure scrollable and steal a tab stop. */
+.ch-scroll{overflow-x:auto;scrollbar-width:thin}
+svg{display:block;height:auto}
+.ch-scroll > svg{width:100%;max-width:880px;min-width:812px;margin-inline:auto}
+
+/* --- controls: one family, two groups ----------------------------------- */
+.seg-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px 20px;flex-wrap:wrap}
+.seg{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.seg button,.chips .pick{
+  display:inline-flex;align-items:center;gap:8px;position:relative;cursor:pointer;
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  padding:8px 13px;border:1.5px solid var(--rule);border-radius:999px;
+  background:transparent;color:var(--ink-3);user-select:none;
+  transition:background 160ms cubic-bezier(.2,.7,.2,1),color 160ms,border-color 160ms;
+}
+.seg button:hover,.chips .pick:hover{border-color:var(--core-black);color:var(--ink)}
+/* pressed is the same in both groups. The grain toggle is told apart by sitting
+   on the right of the row, not by being a different colour. */
+.seg button[aria-pressed="true"],.chips .pick.on{
+  background:var(--core-black);color:var(--base-white);border-color:var(--core-black);
+}
+.chips input{position:absolute;opacity:0;width:1px;height:1px}
+.chips .dot{
+  width:10px;height:10px;border-radius:2px;flex:none;
+  background:transparent;border:1.5px solid var(--sc,currentColor);
+}
+.chips .pick.on .dot{background:var(--sc);border-color:var(--sc)}
+.chips .pick .q{font-weight:500;color:var(--ink-3);text-transform:none;letter-spacing:0}
+.chips .pick.on .q{color:rgba(247,243,231,.72)}
+
+.legend{display:flex;flex-wrap:wrap;gap:18px;margin:0 0 14px}
+.legend span{
+  display:inline-flex;align-items:center;gap:8px;
+  font:600 var(--t-caption)/1.45 var(--f-label);color:var(--ink-2);
+}
+.sw{width:10px;height:10px;border-radius:2px;display:inline-block;flex:none}
+
+/* --- the values readout under chart 4 ----------------------------------- */
+.readout{
+  display:grid;grid-template-columns:12px minmax(0,1fr) auto 16px auto auto;
+  align-items:baseline;column-gap:14px;margin-top:16px;
+  font-size:var(--t-caption);font-variant-numeric:tabular-nums;
+}
+.readout .hd{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);white-space:nowrap;border-bottom:2px solid var(--core-black);
+  padding-bottom:8px;margin-bottom:5px;
+}
+.readout .r{text-align:right}
+.readout .c{text-align:center}
+.ro{display:contents}
+.ro > *{padding:9px 0;border-bottom:1px solid var(--rule)}
+.ro:last-child > *{border-bottom:none}
+.ro i{
+  width:10px;height:10px;border-radius:2px;justify-self:start;align-self:start;
+  margin-top:13px;padding:0;border-bottom:none;
+}
+.ro .n{font:700 var(--t-caption)/1.25 var(--f-label);color:var(--ink)}
+.ro .n em{font-style:normal;display:block;font-weight:500;font-size:var(--t-micro);color:var(--ink-3);margin-top:3px}
+.ro .b{font:600 var(--t-caption)/1.45 var(--f-label);color:var(--ink-2);white-space:nowrap}
+.ro .a{font:700 var(--t-caption)/1.45 var(--f-label);color:var(--ink);white-space:nowrap}
+.ro .ar{color:var(--ink-3)}
+/* direction is carried by the sign, not by colour: on this page a rise is not
+   automatically good and a fall is not automatically bad */
+.ro .g{font:900 var(--t-caption)/1.45 var(--f-label);white-space:nowrap;min-width:3.6em;color:var(--ink)}
+
+/* --- tile one: the strip cell is above. Tile two: the sheet, above. ------ */
+/* --- tile three: the judgment card. The only tile that shows accent colour. */
+.a-orange{--ac:var(--orange);--ac-t:var(--tint-orange)}
+.a-blue{--ac:var(--blue);--ac-t:rgba(54,54,204,.13)}
+.a-ret{--ac:var(--retention);--ac-t:var(--tint-blue)}
+.a-deep{--ac:var(--deep);--ac-t:rgba(38,38,143,.13)}
+.a-neutral{--ac:var(--ink-3);--ac-t:rgba(42,33,28,.07)}
+
+.quad,.trio,.recs{display:grid;gap:16px;margin-top:var(--g-block)}
+.quad{grid-template-columns:repeat(4,minmax(0,1fr))}
+.trio{grid-template-columns:repeat(3,minmax(0,1fr))}
+.recs{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+.box.ac,.stat,.rc{
+  background:var(--card);border:1px solid var(--rule);border-top:4px solid var(--ac);
+  border-radius:18px;padding:20px 24px;display:flex;flex-direction:column;
+  box-shadow:var(--shadow-sm);
+}
+/* the pill carries the hue; the word stays ink so it is always legible on it */
+.chip{
+  display:inline-flex;align-items:center;align-self:flex-start;
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink);background:var(--ac-t);border:1px solid var(--ac);
+  border-radius:999px;padding:5px 11px;
+}
+.box.ac .lbl{
+  font:700 var(--t-h3)/1.25 var(--f-label);color:var(--ink);
+  letter-spacing:0;text-transform:none;margin:12px 0 8px;
+}
+.box.ac p{font-size:var(--t-small);line-height:1.5;margin:0}
+.stat-k{font-size:var(--t-small);line-height:1.35;color:var(--ink-2);margin:12px 0 10px}
+.stat-v{
+  font:900 var(--t-stat)/1.1 var(--f-label);letter-spacing:-.02em;
+  color:var(--ink);font-variant-numeric:tabular-nums;
+}
+.stat-v i{font-style:normal;color:var(--ink-3);font-weight:600;padding:0 3px}
+.stat-d{font:900 var(--t-caption)/1.45 var(--f-label);margin-top:8px;color:var(--ink)}
+.stat-d.nc{color:var(--ink-3)}
+
+.rc h3{margin:12px 0 8px}
+.rc p{font-size:var(--t-small);line-height:1.5;margin:0;color:var(--ink-2)}
+.rc .who{
+  font:900 var(--t-micro)/1.4 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:auto;padding-top:14px;
+  border-top:1px solid var(--rule);display:block;
+}
+/* the one action: full row, a heavier top rule, a bigger headline. No glow;
+   the brand has none, and a shadow is not an accent. */
+.rc.primary{
+  grid-column:1 / -1;border-top-width:6px;display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:8px 32px;align-items:start;
+}
+.rc.primary .chip{grid-column:1}
+.rc.primary h3{grid-column:1;font:900 24px/1.12 var(--f-label);letter-spacing:-.01em;margin:12px 0 0}
+.rc.primary p{grid-column:2;grid-row:1 / span 4;align-self:center;font-size:var(--t-body)}
+.rc.primary .terms{grid-column:1;margin-top:16px}
+.rc.primary .who{grid-column:1;border-top:none;padding-top:12px;margin-top:10px}
+/* what you get, what it costs, when you know */
+.terms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
+  padding-top:14px;border-top:1px solid var(--rule)}
+.tk{
+  display:block;font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:5px;
+}
+.tv{display:block;font-size:var(--t-small);line-height:1.4;color:var(--ink)}
+
+/* the three questions are numbered by a counter, not by hand */
+.trio.qs{counter-reset:q}
+.qs .box{counter-increment:q}
+.qs .chip.q::before{content:counter(q,decimal-leading-zero);font-variant-numeric:tabular-nums}
+
+/* the cost figure that opens the closing block of "what it is worth" */
+.costhead{margin-top:var(--g-block);padding-top:18px;border-top:1.5px solid var(--core-black)}
+.costhead .lbl{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);margin:0;
+}
+.costv{
+  font:900 var(--t-stat-xl)/1.0 var(--f-label);letter-spacing:-.02em;color:var(--ink);
+  font-variant-numeric:tabular-nums;margin:10px 0 4px;
+}
+.costv .u{font-size:16px;color:var(--ink-3)}
+.costhead .sup{font-size:var(--t-caption);line-height:1.45;color:var(--ink-2);margin:0}
+
+/* --- the figures table --------------------------------------------------- */
+.tbl-wrap{
+  overflow-x:auto;margin-top:var(--g-block);background:var(--card);
+  border:1px solid var(--rule);border-radius:18px;
+}
+table{border-collapse:collapse;width:100%;font-size:var(--t-small);min-width:640px}
+th{
+  text-align:right;font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);padding:16px 18px 10px;
+  border-bottom:2px solid var(--core-black);
+}
+th:first-child,td:first-child{text-align:left}
+td{
+  text-align:right;padding:11px 18px;border-bottom:1px solid var(--rule);
+  font-variant-numeric:tabular-nums;
+}
+td:first-child{font-weight:600}
+tbody tr:last-child td{border-bottom:none}
+.grp td{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);padding-top:18px;
+}
+/* the sign says which way it went; colour is reserved for the change itself */
+.up,.dn{color:var(--ink);font-weight:700}
+.nc{color:var(--ink-3);font-weight:600}
+
+/* --- disclosures --------------------------------------------------------- */
+details.fold{margin-top:var(--g-section)}
+details.fold > summary{
+  font:400 var(--t-h2)/1.0 var(--f-display);letter-spacing:-.01em;text-transform:uppercase;
+  cursor:pointer;list-style:none;display:flex;align-items:center;
+  justify-content:space-between;gap:16px;padding:0 0 8px;user-select:none;
+}
+details.fold > summary::-webkit-details-marker{display:none}
+.fold-ind{
+  font:900 var(--t-small)/1 var(--f-label);color:var(--ink);flex:none;
+  width:26px;height:26px;border:1.5px solid var(--orange);background:var(--tint-orange);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+}
+details.fold[open] > summary .fold-ind{transform:rotate(45deg)}
+/* a disclosure nested inside a figure, sized down from the page-level one */
+details.fold.sub{margin-top:var(--g-para)}
+details.fold.sub > summary{
+  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-2);padding:0 0 4px;
+}
+details.fold.sub > summary .fold-ind{width:20px;height:20px;font-size:var(--t-caption)}
+details.fold.sub p{font-size:var(--t-small);margin-top:10px}
+details.fold.sub .readout{margin-top:12px}
+
+/* --- tooltip, footer, keyboard ------------------------------------------ */
+#tip{
+  position:fixed;pointer-events:none;opacity:0;z-index:99;white-space:nowrap;
+  transition:opacity 140ms cubic-bezier(.2,.7,.2,1);
+  background:var(--core-black);color:var(--base-white);
+  font:500 var(--t-caption)/1.5 var(--f-body);padding:9px 12px;border-radius:12px;
+}
+#tip b{font-family:var(--f-label);font-weight:700}
+footer{
+  margin-top:var(--g-section);padding:22px 0 48px;border-top:3px solid var(--core-black);
+  color:var(--ink-3);font-size:var(--t-caption);
+}
+footer p{margin:0 0 6px;color:var(--ink-3)}
+.skip{
+  position:absolute;left:-9999px;top:0;z-index:100;text-decoration:none;
+  background:var(--core-black);color:var(--base-white);
+  font:700 var(--t-caption)/1.45 var(--f-label);padding:10px 16px;border-radius:0 0 10px 0;
+}
+.skip:focus{left:0}
+/* a scroll container is reachable by keyboard where it genuinely scrolls, so
+   it gets the page's ring rather than the user agent's default */
+a:focus-visible,summary:focus-visible,button:focus-visible,
+.ch-scroll:focus-visible,input:focus-visible + .dot{
+  outline:3px solid var(--blue);outline-offset:2px;border-radius:4px;
+}
+summary{cursor:pointer}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none !important}
+}
+
+/* --- the chart column takes its side rail once there is room for both ---- */
+@container wrap (min-width:1184px){
+  figure{grid-template-columns:minmax(0,1fr) 280px}
+  figure > figcaption{
+    grid-column:2;grid-row:1 / span 24;align-self:start;margin:0;
+    border-top:none;border-left:1px solid var(--rule);padding:2px 0 0 32px;
+  }
+  /* the definition runs the full width under chart one, so it keeps column one
+     and the caption takes the rail like every other figure */
+  figure.hasdef > .def{grid-column:1}
+}
+
+/* --- narrower ------------------------------------------------------------ */
+@media(max-width:1000px){
+  .wrap > *,header > *{grid-column:1 / -1}
+  .deck-row{grid-template-columns:minmax(0,1fr)}
+  .badge{grid-column:1;justify-self:start;margin-top:16px}
+}
+/* four verdict cards need about 270px each to hold a chip, a two-line title
+   and a paragraph. Below that they go to two. */
+@media(max-width:1199px){
+  .quad{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:900px){
+  .strip{grid-template-columns:minmax(0,1fr);row-gap:var(--g-block)}
+  .recs{grid-template-columns:minmax(0,1fr)}
+  .rc.primary{grid-template-columns:minmax(0,1fr)}
+  .rc.primary p{grid-column:1;grid-row:auto;margin-top:12px}
+  .rc.primary h3{font-size:21px}
+  .exec-row{grid-template-columns:2.2em minmax(0,1fr)}
+  .exec-l{grid-column:2;justify-self:start;margin-top:6px}
+}
+@media(max-width:879px){
+  .trio{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:700px){
+  .terms,.def{grid-template-columns:minmax(0,1fr)}
+  .def p + p{margin-top:12px}
+  .readout{grid-template-columns:12px minmax(0,1fr) auto auto;column-gap:10px}
+  .readout .c,.readout .pre,.ro .b,.ro .ar{display:none}
+}
+@media(max-width:560px){
+  .quad{grid-template-columns:minmax(0,1fr)}
+  .pair .cells{grid-template-columns:minmax(0,1fr)}
+  .cell{padding:18px 0;border-right:none;border-bottom:1px solid var(--rule)}
+  .cell:last-child{border-bottom:none}
+  .next{text-align:left}
+}
+
+/* --- print --------------------------------------------------------------- */
+@page{size:A4;margin:14mm}
+@media print{
+  .skip,.secnav,#tip,.seg-row,.chips,.next{display:none}
+  .wrap{max-width:none;padding:0;display:block}
+  .badge{border-color:var(--rule)}
+  details > *{display:block}
+  details.fold > summary{list-style:none}
+  details.fold > summary .fold-ind{display:none}
+  figure{grid-template-columns:minmax(0,1fr);break-inside:avoid;box-shadow:none}
+  figure > figcaption,figure.hasdef > .def{
+    grid-column:1;grid-row:auto;border-left:none;
+    border-top:1px solid var(--rule);padding:10px 0 0;margin-top:10px;
+  }
+  .box,.stat,.rc,.tbl-wrap,.exec-row{break-inside:avoid;box-shadow:none}
+  h2{break-after:avoid}
+  .ch-scroll{overflow:visible}
+  .ch-scroll > svg{width:100%;min-width:0;max-width:none}
+}

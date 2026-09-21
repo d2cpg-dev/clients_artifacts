@@ -232,7 +232,11 @@ figcaption{
    than shrinking its own labels out of legibility. */
 .ch-scroll{overflow-x:auto;scrollbar-width:thin}
 svg{display:block;height:auto}
-.ch-scroll > svg{width:100%;max-width:880px;min-width:740px;margin-inline:auto}
+/* min-width sets the floor the charts scroll at on a phone. At 740 the 13-unit
+   in-chart type landed on 10.93px, just under the 11px floor this page holds to;
+   745 puts it on 11.01 and still sits inside the 749px graphic zone, so the
+   desktop containers do not overflow and pick up a keyboard tab stop. */
+.ch-scroll > svg{width:100%;max-width:880px;min-width:745px;margin-inline:auto}
 
 /* --- controls: one family ------------------------------------------------ */
 .seg-row{display:flex;justify-content:space-between;align-items:flex-start;
@@ -501,7 +505,7 @@ summary{cursor:pointer}
       <p class="doc">Subscription Buy Box</p>
       <div class="kicker">Heart &amp; Soil &middot; new buy box live Thursday Sep 3, 2026</div>
       <nav class="secnav" aria-label="Jump to a section">
-        <a href="#take-rate">How many</a><a href="#confidence">How sure</a><a href="#mechanism">What changed</a><a href="#worth">What it is worth</a><a href="#open-questions">Still open</a><a href="#recommend">Recommendation</a>
+        <a href="#take-rate">How many</a><a href="#confidence">How sure</a><a href="#mechanism">What changed</a><a href="#worth">What it is worth</a><a href="#open-questions">Still open</a>
       </nav>
     </div>
 
@@ -537,12 +541,6 @@ summary{cursor:pointer}
           of that cycle to <b>2.4%</b> while three bottles rose to <b>75.2%</b>,
           so the long cycles became bulk purchases.</span>
         <a class="exec-l" href="#mechanism">What changed</a>
-      </div>
-      <div class="exec-row exec-act">
-        <span class="exec-t">Keep the new buy box and put that one plan back on Oct 2,
-          which needs your yes by <b>Sep 30</b>. Judge it on Nov 1. Retention at
-          60 days on Nov 11 settles the trade.</span>
-        <a class="exec-l" href="#recommend">What we recommend</a>
       </div>
     </div>
   </header>
@@ -688,7 +686,7 @@ summary{cursor:pointer}
     figure, because it multiplies three estimates across two systems.</p>
   <p>Those subscription figures are list prices. The Skio export carries no charged price on the
     subscription line, the order line or the change log, so we cannot yet see the effect of any
-    difference in discount between the old buy box and the new one. That is question three below.</p>
+    difference in discount between the old buy box and the new one.</p>
 
   <h2>Everything else, week by week</h2>
   <p>Take rate, new subscriptions, order value, conversion and traffic across the same range,
@@ -722,89 +720,6 @@ summary{cursor:pointer}
   <p>Returning customers moved less than new ones, 49.06% to 40.31%, a fall of
     8.8 points. They see the same buy box, so this is worth watching, though a returning customer
     who already has a subscription is a different decision from a first one.</p>
-
-  <h2 id="recommend">What we recommend</h2>
-  <div class="recs">
-    <div class="rc ac a-orange primary">
-      <span class="chip">Do this</span>
-      <h3>Let people pick one bottle at the longer cycles</h3>
-      <p>The combination already exists and still sells, it is just not what the box offers at 60 and 90 days. Untie quantity from cycle length in the group the box presents. It is a configuration change with no build, and you can undo it in a day if nothing moves. We read take rate on clean data the day before, on Oct 1, so the test starts against a fresh baseline.</p>
-      <span class="who">Your team &middot; live Oct 2 &middot; we need a yes by Sep 30</span>
-    </div>
-    <div class="rc ac a-blue">
-      <span class="chip">Hold</span>
-      <h3>Keep the new buy box</h3>
-      <p>Order value is up +17.8% and revenue per day is up +4.1%. Reverting gives that back to solve a problem that one plan may solve on its own.</p>
-      <span class="who">No action &middot; stated so it is not assumed</span>
-    </div>
-    <div class="rc ac a-deep">
-      <span class="chip">Measure</span>
-      <h3>Judge it against a number agreed in advance</h3>
-      <p>Run it for 30 days. Call it a success if new-customer take rate recovers at least 4 of the 7.5 points while new-customer order value holds above $95. At your volume, 10,015 orders over 30 days lets us read a move of about 2.4 points, so the threshold has room. Full recovery means the missing plan was the cause. No recovery means the cause is where the new buy box points people, and tile order is what we look at next.</p>
-      <span class="who">Joint call &middot; result Nov 1</span>
-    </div>
-    <div class="rc ac a-blue">
-      <span class="chip">Hold</span>
-      <h3>Change nothing else in the buy box, and run no sitewide promotion, while it runs</h3>
-      <p>Either one makes the test unreadable. A promotion sitting on top of a change is what made the first read of this misleading.</p>
-      <span class="who">No action &middot; Oct 2 to Nov 1</span>
-    </div>
-    <div class="rc ac a-neutral">
-      <span class="chip">Then decide</span>
-      <h3>Read retention at 60 and 90 days</h3>
-      <p>This is the one that settles it. Fewer, larger, less frequent subscriptions beat more, smaller, more frequent ones only if they survive long enough to bill again.</p>
-      <span class="who">Us &middot; Nov 11</span>
-    </div>
-  </div>
-
-  <h2>What happens when</h2>
-  <figure>
-    <p class="ch-tag">Schedule &middot; owners and dates</p>
-    <p class="ch-t">Your yes on Sep 30 sets every date after it</p>
-    <p class="ch-s">Five steps between Sep 30 and Nov 11. Each row names its
-      own owner on the right. Diamonds are single dates. The bar is the 30-day test
-      window.</p>
-    <div class="ch-scroll"><svg id="c5" viewBox="0 0 880 250" role="img"></svg></div>
-    <figcaption>The only date inside the next two weeks is Sep 30. Everything after
-      it depends on that yes.</figcaption>
-  </figure>
-  <p>Leaving the buy box exactly as it is costs roughly 760 new subscribers a month, worth about
-    $55,756 of monthly billings at list price for as long as those subscribers would have stayed,
-    against a first-order revenue gain of about $1,360 a day. We are not annualising the
-    subscriber figure. We have no retention data on the new plans, which is exactly what the
-    Nov 11 read is for.</p>
-  <figure>
-    <p class="ch-tag">If nothing changes &middot; twelve months</p>
-    <p class="ch-t">Holding the gap for a year is 9,115 subscriptions not started</p>
-    <p class="ch-s">Running total at the measured rate of 760 a month, with the same
-      confidence band as the headline. It counts subscriptions and puts no dollar figure on
-      them.</p>
-    <div class="ch-scroll"><svg id="c6" viewBox="0 0 880 276" role="img"></svg></div>
-    <figcaption>This assumes only that the gap stays where it is now. It says nothing about revenue,
-      because that depends on how long those subscriptions would have lasted, which is what the
-      Nov 11 retention read measures.</figcaption>
-  </figure>
-
-  <h2>Four questions for you</h2>
-  <div class="quad">
-    <div class="box ac a-deep"><span class="chip">Question one</span><span class="lbl">Was the bundling deliberate?</span>
-      <p>Tying quantity to cycle length, so 90 days means three bottles, is the single
-        biggest change in what people choose. Was that the intent, or a side effect of how the new
-        plans were set up? Your answer changes what we recommend.</p></div>
-    <div class="box ac a-deep"><span class="chip">Question two</span><span class="lbl">Anything else change?</span>
-      <p>Did anything else change on the site between Sep 1 and Sep 10? Flows,
-        pricing, ad mix, landing pages. We want to rule out anything else that could be driving this.</p></div>
-    <div class="box ac a-deep"><span class="chip">Question three</span><span class="lbl">Discount by tier</span>
-      <p>Can you send the subscribe-and-save discount by tier, old buy box and new? If the discount is the
-        same percentage at every tier our dollar figures are clean. If the new buy box discounts bigger
-        bundles harder, the fall is larger than we are stating.</p></div>
-    <div class="box ac a-deep"><span class="chip">Question four</span><span class="lbl">Why is Colostrum configured differently?</span>
-      <p>In the single-bottle option at 60 days, Grass-Fed Colostrum went from
-        7.4% of sign-ups to 63.1% while every other product drained out of
-        it. Its own price barely moved, $108.50 to $109.61, so the option now
-        looks more expensive only because of what is left in it. That reads like Colostrum sitting
-        outside the tiered buy box or carrying its own plan setup. Can you confirm how it is wired?</p></div>
-  </div>
 
   <details class="fold">
     <summary>Figures<span class="fold-ind">+</span></summary>

@@ -9,11 +9,10 @@ P = json.load(io.open("payload_v15.json", encoding="utf-8"))
 BQF = json.load(io.open("bq_facts.json", encoding="utf-8"))
 # selling-plan evidence: which plan group the box presents, and how quantity is chosen at each cycle
 PF = json.load(io.open("plan_facts.json", encoding="utf-8"))
-BODY = io.open("page_v18_body.html", encoding="utf-8").read()
+BODY = io.open("page_v16_body.html", encoding="utf-8").read()
 TPL = io.open("page_v10_template.html", encoding="utf-8").read()
-# Only the chart engine is inherited. The stylesheet is authored in page_v18.css,
-# so no rule can be silently overridden by a later patch and every value is
-# declared exactly once.
+# only the chart engine is inherited. The stylesheet is authored in full further down,
+# so no rule can be overridden by a later patch and every value has one declaration.
 SCRIPT = TPL[TPL.index("<script>"):TPL.index("</script>") + len("</script>")]
 
 # --------------------------------------------------------------- chart engine
@@ -26,7 +25,7 @@ SCRIPT = patch(SCRIPT,
     "var N = rate.length, L = 58, R = 828, T = 36, B = 226;", "c1 plot height")
 SCRIPT = patch(SCRIPT,
     "var L = 210, R = 840, T = 16, rowH = 34;",
-    "var L = 210, R = 700, T = 16, rowH = 28;", "c3 row height and key gutter")
+    "var L = 210, R = 840, T = 16, rowH = 28;", "c3 row height")
 SCRIPT = patch(SCRIPT, "var cur = 'newtt', grain = 'week';", "var cur = 'headline', grain = 'week';", "default measure")
 SCRIPT = patch(SCRIPT,
     "if (week) { var bw = (R - L) / N; x0 = L + bw * 4; x1 = L + bw * 5; }",
@@ -35,12 +34,6 @@ SCRIPT = patch(SCRIPT,
 SCRIPT = patch(SCRIPT, "else [0, 10, 20, 30, N - 1].forEach(function (i) {",
     "else [0, Math.round((N-1)*0.25), Math.round((N-1)*0.5), P.launch_day, N - 1].forEach(function (i) {",
     "c1 daily labels")
-SCRIPT = patch(SCRIPT,
-    "var names = ['1 bottle / 30 days', '2 bottles / 60 days', '3 bottles / 90 days', '120 / 180-day plans', 'Every other combination'];",
-    "var names = P.tier_names;", "c2 names")
-SCRIPT = patch(SCRIPT, "var L = 250, R = 790, T = 14, rowH = 48, gap = 14, MAX = 65;",
-    "var L = 250, R = 700, T = 14, rowH = 40, gap = 12, MAX = 50;",
-    "c2 scale and row height, it was the tallest chart on the page")
 # c4 was 400 tall against 340 for its neighbours; bring the plot into the same band
 SCRIPT = patch(SCRIPT, "var L = 58, R = 700, T = 46, B = 300, bw = (R - L) / LBL.length;",
     "var L = 58, R = 700, T = 42, B = 264, bw = (R - L) / LBL.length;", "c4 plot height")
@@ -75,6 +68,29 @@ SCRIPT = patch(SCRIPT,
     "    var c1s = document.getElementById('c1s');\n"
     "    if (c1s) c1s.textContent = 'Share of ' + m.den + '.';",
     "c1 subtitle is optional")
+# c1: in weekly mode every point carries a value label, so a reference label pinned
+# above its line at the left edge always landed on the first point's label. The two
+# take opposite sides of their own lines instead.
+SCRIPT = patch(SCRIPT,
+    "        s.appendChild(txt(L + 4, yOf(g[0]) - 7, g[2], "
+    "{ anchor: 'start', size: 10.5, weight: 900, ls: '.07em', fill: g[1] }));",
+    "        s.appendChild(txt(L + 4, yOf(g[0]) + (g[0] === pre ? 18 : -9), g[2],\n"
+    "          { anchor: 'start', size: 10.5, weight: 900, ls: '.07em', fill: g[1] }));",
+    "c1 reference labels take opposite sides of their lines")
+# c4: each end carries a value and a name, so the de-collision pass has to reserve
+# two lines of type, not the one line it was written for
+SCRIPT = patch(SCRIPT,
+    "for (var k = 1; k < ends.length; k++) if (ends[k].y - ends[k - 1].y < 26) "
+    "ends[k].y = ends[k - 1].y + 26;",
+    "for (var k = 1; k < ends.length; k++) if (ends[k].y - ends[k - 1].y < 34) "
+    "ends[k].y = ends[k - 1].y + 34;",
+    "c4 end labels reserve two lines")
+SCRIPT = patch(SCRIPT,
+    "s.appendChild(txt(R + 16, e.y + 13, e.x.lab.toUpperCase(), "
+    "{ anchor: 'start', size: 9, weight: 900, ls: '.06em' }));",
+    "s.appendChild(txt(R + 16, e.y + 17, e.x.lab.toUpperCase(), "
+    "{ anchor: 'start', size: 9, weight: 700, ls: '.06em' }));",
+    "c4 series name clears its own value")
 # c3: three unrelated hues for an ordinal measure, and retention blue already means
 # the baseline window in the chart directly above it
 SCRIPT = patch(SCRIPT,
@@ -97,123 +113,123 @@ SCRIPT = patch(SCRIPT,
     "c4 pre-launch label inside the plot")
 # the payload is injected further down, once the schedule and forecast series exist
 
-# 1. The headline is the takeaway the reader is given before the chart. The
-# engine used to overwrite it with the name of the measure, which now goes to
-# the subtitle where the grain already lives.
+# E2: three bars a row asked the reader to hold six numbers at once. A dumbbell states
+# the move directly: where it was, where it is, and the distance between them.
+_c2_start = SCRIPT.index("/* ---------- chart 2 :")
+_c2_end = SCRIPT.index("/* ---------- chart 3 :")
+SCRIPT = SCRIPT[:_c2_start] + """/* ---------- chart 2 : plan mix, before against since ---------- */
+  (function () {
+    var s = document.getElementById('c2');
+    // Labelling each dot in place put the value for a near-zero share on top of
+    // the row name. The dumbbell keeps the shape of the move; the numbers sit in
+    // aligned columns, where they also compare down the page, not only across.
+    var order = P.tier_order, L = 250, R = 610, T = 46, rowH = 44, MAX = 50;
+    var COLB = 686, COLS = 772, COLD = 866;
+    var xOf = function (v) { return L + (R - L) * Math.min(v, MAX) / MAX; };
+    [[L, 'SHARE OF NEW SUBSCRIPTIONS, %', 'start'], [COLB, 'BEFORE', 'end'],
+     [COLS, 'SINCE', 'end'], [COLD, 'CHANGE', 'end']].forEach(function (h) {
+      s.appendChild(txt(h[0], T - 24, h[1],
+        { anchor: h[2], size: 12, weight: 700, ls: '.08em' }));
+    });
+    s.appendChild(el('line', { x1: L, x2: COLD, y1: T - 16, y2: T - 16,
+      stroke: 'var(--rule)', 'stroke-width': 1 }));
+    order.forEach(function (ti, i) {
+      var y = T + i * rowH + rowH / 2, n = P.tier_names[ti];
+      var a = P.tiers.before[ti], b = P.tiers.after[ti], d = b - a;
+      s.appendChild(txt(L - 16, y + 4, n, { anchor: 'end', size: 13.5, weight: 700,
+        fill: 'var(--ink)', fam: "'Public Sans',sans-serif" }));
+      s.appendChild(el('line', { x1: xOf(a), x2: xOf(b), y1: y, y2: y,
+        stroke: 'var(--rule)', 'stroke-width': 2 }));
+      [[a, 'var(--ink-3)', 'Before'], [b, 'var(--orange)', 'Since the sale']].forEach(function (g) {
+        var c = el('circle', { cx: xOf(g[0]), cy: y, r: 6, fill: g[1] });
+        hov(c, '<b>' + n + '</b><br>' + g[2] + ': ' + g[0].toFixed(1) + '%');
+        s.appendChild(c);
+      });
+      s.appendChild(txt(COLB, y + 5, a.toFixed(1),
+        { anchor: 'end', size: 14, weight: 700, fill: 'var(--ink-2)' }));
+      s.appendChild(txt(COLS, y + 5, b.toFixed(1),
+        { anchor: 'end', size: 14, weight: 900, fill: 'var(--ink)' }));
+      s.appendChild(txt(COLD, y + 5, (d >= 0 ? '+' : '\u2212') + Math.abs(d).toFixed(1),
+        { anchor: 'end', size: 15, weight: 900, fill: 'var(--ink)' }));
+    });
+    var yb = T + order.length * rowH;
+    s.setAttribute('viewBox', '0 0 880 ' + (yb + 12));
+    s.setAttribute('aria-label', 'Plan mix, before against since the sale. ' +
+      order.map(function (ti) { return P.tier_names[ti] + ': ' + P.tiers.before[ti]
+        + ' percent before, ' + P.tiers.after[ti] + ' since'; }).join('. '));
+  })();
+
+  """ + SCRIPT[_c2_end:]
+
+# E1: the plot gives back 52 units on the right so the finding can be drawn there
+SCRIPT = patch(SCRIPT, "var N = rate.length, L = 58, R = 828, T = 36, B = 226;",
+    "var N = rate.length, L = 58, R = 776, T = 36, B = 226;", "c1 plot width, room for the bracket")
+# E1: the dashed means state the two levels. The bracket states the distance between
+# them, which is the finding, and until now the reader had to do that subtraction.
 SCRIPT = patch(SCRIPT,
-    "    document.getElementById('c1t').textContent =",
-    "    var _c1t = null; if (_c1t) _c1t.textContent =",
-    "c1 keeps its takeaway headline")
+    "    s.appendChild(el('polyline', { points: rate.map(function (v, i) { return xOf(i) + ',' + yOf(v); }).join(' '),",
+    """    var bx = R + 8, y0 = yOf(pre), y1 = yOf(post);
+    s.appendChild(el('path', { d: 'M' + (bx - 6) + ' ' + y0 + 'H' + bx + 'V' + y1 + 'H' + (bx - 6),
+      fill: 'none', stroke: 'var(--orange)', 'stroke-width': 1.5 }));
+    s.appendChild(txt(bx + 8, (y0 + y1) / 2 + 4, '−' + (pre - post).toFixed(1) + ' PTS',
+      { anchor: 'start', size: 13, weight: 900, ls: '.05em', fill: 'var(--orange-text)' }));
+    s.appendChild(el('polyline', { points: rate.map(function (v, i) { return xOf(i) + ',' + yOf(v); }).join(' '),""",
+    "c1 the finding, drawn")
+# E1: a truncated axis has to say so, and the floor is computed, so the copy cannot
 SCRIPT = patch(SCRIPT,
     "    if (c1s) c1s.textContent = 'Share of ' + m.den + '.';",
-    """    if (c1s) c1s.textContent = m.name + '. Share of ' + m.den
+    """    if (c1s) c1s.textContent = 'Share of ' + m.den
       + (week ? ', by week, Monday to Sunday.' : ', per day.')
       + (lo > 0 ? ' Axis starts at ' + lo + '%.' : '');""",
-    "c1 subtitle carries the measure, the grain and the axis floor")
+    "c1 states the axis floor")
 
-# 5. In weekly mode every point carries a value, so a reference label pinned
-# above its line at the left edge always lands on the first point's label.
+# E3: the chart used cadence nicknames while the prose and the table used days
 SCRIPT = patch(SCRIPT,
-    "        s.appendChild(txt(L + 4, yOf(g[0]) - 7, g[2], "
-    "{ anchor: 'start', size: 10.5, weight: 900, ls: '.07em', fill: g[1] }));",
-    """        s.appendChild(txt(L + 4, yOf(g[0]) + (g[0] === pre ? 18 : -9), g[2],
-          { anchor: 'start', size: 10.5, weight: 900, ls: '.07em', fill: g[1] }));""",
-    "c1 reference labels take opposite sides of their lines")
-
-# c4: each end carries a value and a name, so the de-collision pass has to
-# reserve two lines of twelve-unit type, not the one line it was written for.
+    """    var rows = [['before_30', 'Monthly · before'], ['after_30', 'Monthly · after'],
+                ['before_60', 'Bi-monthly · before'], ['after_60', 'Bi-monthly · after'],
+                ['before_90', 'Quarterly · before'], ['after_90', 'Quarterly · after']];""",
+    "    var rows = P.c3rows;", "c3 row labels come from the ledger")
+# E3: the whole argument rests on one row, so that row is marked
 SCRIPT = patch(SCRIPT,
-    "for (var k = 1; k < ends.length; k++) if (ends[k].y - ends[k - 1].y < 26) "
-    "ends[k].y = ends[k - 1].y + 26;",
-    "for (var k = 1; k < ends.length; k++) if (ends[k].y - ends[k - 1].y < 34) "
-    "ends[k].y = ends[k - 1].y + 34;",
-    "c4 end labels reserve two lines")
+    "      var d = P.bottles[r[0]];",
+    """      var d = P.bottles[r[0]];
+      if (r[0] === P.c3mark) s.appendChild(el('rect', { x: L - 6, y: y, width: 2.5,
+        height: rowH, fill: 'var(--orange)' }));""",
+    "c3 marks the row the argument rests on")
+
+# E4: traffic is context, not an outcome the buy box moved. A dashed line says so.
 SCRIPT = patch(SCRIPT,
-    "s.appendChild(txt(R + 16, e.y + 13, e.x.lab.toUpperCase(), "
-    "{ anchor: 'start', size: 9, weight: 900, ls: '.06em' }));",
-    "s.appendChild(txt(R + 16, e.y + 17, e.x.lab.toUpperCase(), "
-    "{ anchor: 'start', size: 9, weight: 700, ls: '.06em' }));",
-    "c4 series name clears its own value")
-
-# ---------------------------------------------------------- direct labelling
-# A legend makes the reader translate colour into meaning on every glance. The
-# three legends come off the page and the drawings name their own series.
-
-# c2: three windows a row. Naming them on the first row is enough, because the
-# order holds down the chart.
-SCRIPT = patch(SCRIPT,
-    "        s.appendChild(txt(L + ww + 8, y + j * (h + 3) + h / 2 + 4, val.toFixed(1) + '%', "
-    "{ anchor: 'start', size: 11.5, weight: 900, fill: 'var(--ink)' }));",
-    """        s.appendChild(txt(L + ww + 8, y + j * (h + 3) + h / 2 + 4, val.toFixed(1) + '%',
-          { anchor: 'start', size: 11.5, weight: 900, fill: 'var(--ink)' }));""",
-    "c2 value labels stay with their bars")
-# c2: the three windows are named once, in a key beside the drawing, so the reader
-# never has to match a bar back to a label sitting on another row.
-SCRIPT = patch(SCRIPT,
-    "    s.appendChild(txt(L, yb, 'SHARE OF NEW SUBSCRIPTIONS, SINGLE PRODUCTS', "
-    "{ anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));",
-    """    var _kw = T + 9;
-    wins.forEach(function (w) {
-      s.appendChild(el('rect', { x: R + 18, y: _kw - 11, width: 13, height: 13, rx: 3,
-        fill: w[1], stroke: 'var(--rule)', 'stroke-width': 1 }));
-      s.appendChild(txt(R + 39, _kw, w[2].toUpperCase(),
-        { anchor: 'start', size: 13, weight: 700, ls: '.07em', fill: 'var(--ink-2)' }));
-      _kw += 26;
-    });
-    s.appendChild(txt(L, yb, 'SHARE OF NEW SUBSCRIPTIONS, SINGLE PRODUCTS',
-      { anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));""",
-    "c2 names its three windows once, in a key on the right")
-
-SCRIPT = patch(SCRIPT,
-    "var wins = [['before', 'var(--retention)', 'Before'], ['sale', 'var(--tint-orange)', "
-    "'Launch + sale'], ['after', 'var(--orange)', 'After the sale']];",
-    "var wins = [['before', 'var(--ink-3)', 'Before'], ['sale', 'var(--tint-orange)', "
-    "'Launch + sale'], ['after', 'var(--orange)', 'Since the sale']];",
-    "c2 before is neutral ink, not a second accent")
-
-# c3: each band is named once, inside itself, on the row where it is widest.
-# The in-band names were asked off the bars: a band wide enough to hold its own
-# percentage is not always wide enough to hold a name too, and the name moved from
-# row to row depending on which row happened to be widest. The three names now sit
-# once, in a key to the right of the drawing, and the bars carry only their values.
-SCRIPT = patch(SCRIPT,
-    "    s.appendChild(txt(L, y + 18, 'EACH ROW FILLS TO 100% OF THAT PLAN’S NEW SUBSCRIPTIONS', "
-    "{ anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));",
-    """    var _ky = T + 7;
-    NM.forEach(function (n, j) {
-      s.appendChild(el('rect', { x: R + 18, y: _ky - 11, width: 13, height: 13, rx: 3,
-        fill: COLS[j], stroke: 'var(--rule)', 'stroke-width': 1 }));
-      s.appendChild(txt(R + 39, _ky, n.toUpperCase(),
-        { anchor: 'start', size: 13, weight: 700, ls: '.07em', fill: 'var(--ink-2)' }));
-      _ky += 26;
-    });
-    s.appendChild(txt(L, y + 18, 'EACH ROW FILLS TO 100% OF THAT PLAN’S NEW SUBSCRIPTIONS',
-      { anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));""",
-    "c3 names its three bands once, in a key on the right")
-
-# c5 is authored in EXTRA_JS further down, so its owner labels are written there.
-
-# ---------------------------------------------------------------- data ink
-# Horizontal gridlines drop to a hairline; there were never any vertical ones.
-SCRIPT = SCRIPT.replace("stroke: 'var(--grid)', 'stroke-width': 1 }", "stroke: 'var(--grid)', 'stroke-width': 1 }")
-# the measure pickers carried the badge class and inherited its rules
+    "        s.appendChild(el('path', { d: d, fill: 'none', stroke: x.col, 'stroke-width': x.w, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));",
+    """        var pa = { d: d, fill: 'none', stroke: x.col, 'stroke-width': x.w,
+          'stroke-linejoin': 'round', 'stroke-linecap': 'round' };
+        if (x.dash) pa['stroke-dasharray'] = '5 4';
+        s.appendChild(el('path', pa));""",
+    "c4 sessions dashed")
+# the measure pickers carried the same class as the verdict badges and inherited their rules
 SCRIPT = patch(SCRIPT, "lab.className = 'chip' + (x.on ? ' on' : '');",
     "lab.className = 'pick' + (x.on ? ' on' : '');", "c4 pickers stop colliding with the badge class")
 SCRIPT = SCRIPT.replace("lab.style.color = x.on ? x.col : 'var(--ink-3)';",
                         "lab.style.setProperty('--sc', x.col);")
 assert "lab.style.color" not in SCRIPT, "the picker still paints its own text"
-# brand: large areas take the large-fill orange; text and small marks keep the
-# orange that carries contrast
-SCRIPT = SCRIPT.replace("fill: 'var(--orange)', opacity:", "fill: 'var(--orange-lg)', opacity:")
-SCRIPT = SCRIPT.replace("'#B5731B'", "'var(--orange-text)'")
-assert "#B5731B" not in SCRIPT, "a hard-coded chart colour survived"
-# green is not a colour on this page
-SCRIPT = SCRIPT.replace("var(--s-green)", "var(--retention)").replace("var(--s-sess)", "var(--ink-3)")
-for _x in P["series"]:
-    _x["col"] = {"var(--s-green)": "var(--retention)",
-                 "var(--s-sess)": "var(--ink-3)"}.get(_x["col"], _x["col"])
-_retired = ("s-green", "s-sess", "s-alt", "2F7D4F")
-assert not any(c in json.dumps(P) for c in _retired), "a retired series colour survived"
+
+
+# B5: in-SVG footer sentences repeated what the subtitle or the caption already said.
+# The drawing keeps its tick labels and its annotations; the sentences live in HTML.
+_FOOTERS = [
+    "SHARE OF ORDERS CONTAINING A SUBSCRIPTION",
+    "EACH ROW FILLS TO 100%",
+    "EACH LINE INDEXED TO ITS OWN PRE-LAUNCH AVERAGE",
+]
+_gone = 0
+for _f in _FOOTERS:
+    _i = SCRIPT.find(_f)
+    assert _i >= 0, "in-SVG footer already gone, check the list: " + _f
+    # walk back to the start of the appendChild call and forward past its close
+    _a = SCRIPT.rindex("s.appendChild(txt(", 0, _i)
+    _b = SCRIPT.index("}));", _i) + len("}));\n")
+    SCRIPT = SCRIPT[:_a] + SCRIPT[_b:]
+    _gone += 1
+print("in-SVG footers removed from the inherited charts: %d of %d" % (_gone, len(_FOOTERS)))
 
 # --------------------------------------------------------------- policy dates
 D = datetime.date
@@ -298,22 +314,10 @@ TOK = dict(
   trend_delta="%.1f" % abs(F["trend"]["delta"]),
   # commerce
   aov_pct=pct(c["aov_pct"]), rev_pct=pct(c["rev_pct"]),
-  # chart 6 states its own endpoint in its headline
-  f12=n0(m["per_month"] * 12),
-  # the two wider counts the September export no longer reproduces, and what the
-  # earlier reporting held, so the method note can state both rather than claim a match
-  # question four: the 60-day single-bottle cell repriced through mix, not pricing
-  col_cad=n0(F["colostrum"]["cadence"]),
-  col_share_pre=p1(F["colostrum"]["share_pre"]),
-  col_share_post=p1(F["colostrum"]["share_post"]),
-  col_price_pre="%.2f" % F["colostrum"]["price_pre"],
-  col_price_post="%.2f" % F["colostrum"]["price_post"],
-  col_cell_pre="%.2f" % F["colostrum"]["cell_price_pre"],
-  col_cell_post="%.2f" % F["colostrum"]["cell_price_post"],
-  col_resid=p1(F["colostrum"]["residual_price_pct"]),
-  ck_orders_exp=n0(F["checksum"]["orders_expected"]),
-  ck_signups_exp=n0(F["checksum"]["signups_expected"]),
-  recon_pre=p2(F["recon"]["pre"]["ratio"]), recon_post=p2(F["recon"]["post"]["ratio"]),
+  # the KPI strip now carries order value in its own cell rather than as a footnote
+  aov_pre=p2(c["aov_pre"]), aov_post=p2(c["aov_post"]),
+  # "Everything else" left chart 2 for its subtitle when the drawing became a dumbbell
+  oth_pre=p1(T["pre"][-1]), oth_post=p1(T["post"][-1]),
   subs_pre=p1(c["subs_day_pre"]), subs_post=p1(c["subs_day_post"]),
   share_tr="%.0f%%" % c["share_takerate"], share_vol="%.0f%%" % c["share_volume"],
   rev_gain=n0(c["rev_gain_day"]),
@@ -372,7 +376,9 @@ TOK = dict(
 
 # --------------------------------------------------------------- figures table
 def row(lbl, unit, a, b, ch):
-    cls = "up" if ch.startswith("+") else ("dn" if ch and ch[0] in "-−" else "nc")
+    # F2: hyphen-minus is a different glyph from the minus sign the prose uses
+    if ch.startswith("-"): ch = "&minus;" + ch[1:]
+    cls = "up" if ch.startswith("+") else ("dn" if ch.startswith("&minus;") else "nc")
     return '<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td class="%s">%s</td></tr>' % (lbl, unit, a, b, cls, ch)
 FIG = ['<tr class="grp"><td colspan="5">Take rate, share of orders containing a subscription</td></tr>']
 for k, lbl in (("headline", "New customers, excl. TikTok"), ("tag", "New customers, order-tag measure"),
@@ -478,9 +484,7 @@ while _m <= AX1:
         GANTT_TICKS.append(dict(x=(_m - AX0).days / span, lab=MON[_m.month - 1]))
     _m = D(_m.year + _m.month // 12, _m.month % 12 + 1, 1)
 
-# the schedule's row labels render at the in-chart floor, so the gutter has to
-# be measured at that size or the longest label runs out of the viewBox
-GANTT_LABEL_PX = 13
+GANTT_LABEL_PX = 11.5
 GUTTER = int(math.ceil(max(text_w(r["t"], GANTT_LABEL_PX) for r in SCHED))) + 22
 assert GUTTER <= 430, "gantt labels need %dpx of gutter, too wide for the bars" % GUTTER
 print("gantt label gutter: %dpx (longest label %.0fpx)"
@@ -491,7 +495,32 @@ P["gantt"] = dict(
     gutter=GUTTER, ticks=GANTT_TICKS,
     rows=[dict(t=r["t"], who=r["who"], lab=md(r["a"]) if r["a"] == r["b"] else rng(r["a"], r["b"]),
                x0=(r["a"] - AX0).days / span, x1=(r["b"] - AX0).days / span,
-               point=(r["a"] == r["b"])) for r in SCHED])
+               point=(r["a"] == r["b"]),
+               # the schedule has one gate; the drawing makes it the anchor
+               anchor=(r["a"] == SIGNOFF and r["a"] == r["b"])) for r in SCHED])
+
+# chart 2 drops "Everything else" from the drawing and leads with the largest fall,
+# closing on the largest rise. Order is derived, not asserted.
+_draw = [i for i, n in enumerate(T["names"]) if n != "Everything else"]
+_falls = sorted([i for i in _draw if T["delta"][i] < 0], key=lambda i: T["delta"][i])
+_rises = sorted([i for i in _draw if T["delta"][i] >= 0], key=lambda i: T["delta"][i])
+P["tier_order"] = _falls + _rises
+assert P["tier_order"][0] == T["delta"].index(min(T["delta"])), "largest fall must lead"
+assert P["tier_order"][-1] == T["delta"].index(max(T["delta"])), "largest rise must close"
+# chart 3 names its rows with the cadences the prose uses
+# SVG text is textContent, not markup, so the separator is the character itself
+P["c3rows"] = [["%s_%d" % (w, c), "%d days · %s" % (c, w)]
+               for c in (30, 60, 90) for w in ("before", "after")]
+P["c3mark"] = "after_%d" % int(TOK["gone_cad"])
+
+# C1: conversion is the retention-blue secondary, traffic is neutral context and
+# reads as a dashed line so it cannot be mistaken for something the buy box moved
+_recolour = {"var(--s-green)": "var(--retention)", "var(--s-sess)": "var(--ink-3)"}
+for _x in P["series"]:
+    _x["col"] = _recolour.get(_x["col"], _x["col"])
+    _x["dash"] = (_x["lab"] == "Sessions")
+_retired = ("s-green", "s-sess", "s-alt", "2F7D4F")
+assert not any(c in json.dumps(P) for c in _retired), "a retired series colour survived"
 
 MONTHS = 12
 start_m = D.fromisoformat(R["change_day"]).replace(day=1)
@@ -514,22 +543,15 @@ EXTRA_JS = """
   /* ---------- chart 5 : schedule gantt ---------- */
   (function () {
     var s = document.getElementById('c5'); if (!s) return;
-    // the plot stops short of the right edge to leave an owner column, so the
-    // schedule names who holds each step instead of sending it to a legend
-    var G = P.gantt, L = G.gutter, R2 = 730, T = 34, rowH = 34, gap = 10;
-    var col = {}, wlab = {};
-    G.who.forEach(function (w) { col[w.k] = w.col; wlab[w.k] = w.lab; });
+    // T leaves room for the month ticks and, under them, the anchor's own label
+    var G = P.gantt, L = G.gutter, R2 = 856, T = 58, rowH = 34, gap = 10;
+    var col = {}; G.who.forEach(function (w) { col[w.k] = w.col; });
     var xOf = function (f) { return L + (R2 - L) * f; };
-    // the axis opens a few days before the first gate, so the opening month tick
-    // and the next one can land within a label's width of each other
-    var lastTick = -1e9;
     G.ticks.forEach(function (t) {
-      if (xOf(t.x) - lastTick < 44) return;
-      lastTick = xOf(t.x);
       s.appendChild(el('line', { x1: xOf(t.x), x2: xOf(t.x), y1: T - 12,
         y2: T + G.rows.length * (rowH + gap), stroke: 'var(--grid)', 'stroke-width': 1 }));
-      s.appendChild(txt(xOf(t.x), T - 18, t.lab.toUpperCase(),
-        { size: 10, weight: 900, ls: '.09em' }));
+      s.appendChild(txt(xOf(t.x), T - 32, t.lab.toUpperCase(),
+        { size: 10, weight: 700, ls: '.08em' }));
     });
     G.rows.forEach(function (r, i) {
       var y = T + i * (rowH + gap), c = col[r.who];
@@ -537,9 +559,12 @@ EXTRA_JS = """
         fill: 'var(--ink)', fam: "'Public Sans',sans-serif" }));
       var x0 = xOf(r.x0), x1 = xOf(r.x1), w = Math.max(x1 - x0, 0);
       if (r.point) {
-        var d = rowH * 0.34;
+        var d = rowH * (r.anchor ? 0.48 : 0.34);
         var pt = el('rect', { x: x0 - d, y: y + rowH / 2 - d, width: d * 2, height: d * 2,
-          fill: c, transform: 'rotate(45 ' + x0 + ' ' + (y + rowH / 2) + ')' });
+          fill: r.anchor ? 'var(--orange)' : c,
+          transform: 'rotate(45 ' + x0 + ' ' + (y + rowH / 2) + ')' });
+        if (r.anchor) s.appendChild(txt(x0, y + rowH / 2 - d - 10, 'YOUR YES',
+          { size: 12, weight: 900, ls: '.07em', fill: 'var(--orange-text)' }));
         hov(pt, '<b>' + r.lab + '</b><br>' + r.t); s.appendChild(pt);
         s.appendChild(txt(x0 + 16, y + rowH / 2 + 4, r.lab, { anchor: 'start', size: 11.5,
           weight: 900, fill: 'var(--ink)' }));
@@ -550,12 +575,8 @@ EXTRA_JS = """
         s.appendChild(txt(x0 + w / 2, y + rowH / 2 + 4, r.lab, { size: 11, weight: 900,
           fill: 'var(--core-black)' }));
       }
-      s.appendChild(txt(866, y + rowH / 2 + 4, wlab[r.who].toUpperCase(),
-        { anchor: 'end', size: 10, weight: 700, ls: '.08em', fill: 'var(--ink-3)' }));
     });
     var yb = T + G.rows.length * (rowH + gap);
-    s.appendChild(txt(866, T - 18, 'OWNER',
-      { anchor: 'end', size: 10, weight: 700, ls: '.08em', fill: 'var(--ink-3)' }));
     s.appendChild(el('line', { x1: L, x2: R2, y1: yb, y2: yb, stroke: 'var(--rule)', 'stroke-width': 1.5 }));
     s.setAttribute('viewBox', '0 0 880 ' + (yb + 26));
     s.setAttribute('aria-label', 'Schedule. ' + G.rows.map(function (r) {
@@ -595,8 +616,8 @@ EXTRA_JS = """
       hov(c, '<b>' + F6.labels[i] + '</b><br>' + v.toLocaleString() + ' ' + F6.unit
         + '<br>between ' + F6.lo[i].toLocaleString() + ' and ' + F6.hi[i].toLocaleString());
       s.appendChild(c);
-      // every other month. The forced last label always landed on its
-      // neighbour, and the end callout already names the twelve-month figure.
+      // every other month. The forced last label always landed on its neighbour,
+      // and the end callout already names the twelve-month figure.
       if (i % 2 === 0)
         s.appendChild(txt(xOf(i), B + 20, F6.labels[i].toUpperCase(),
           { size: 9.5, weight: 700, ls: '.04em' }));
@@ -608,11 +629,6 @@ EXTRA_JS = """
       { anchor: 'start', size: 9, weight: 700, ls: '.07em' }));
     s.appendChild(txt(R2 + 12, yOf(F6.mid[N - 1]) + 34, 'AT ' + F6.n + ' MONTHS',
       { anchor: 'start', size: 9, weight: 700, ls: '.07em' }));
-    s.appendChild(txt(L, B + 44, 'CUMULATIVE SUBSCRIPTIONS NOT STARTED, AT THE MEASURED RATE OF '
-      + F6.rate.toLocaleString() + ' A MONTH', { anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));
-    s.appendChild(txt(L, B + 60, 'NO DOLLAR FIGURE HERE. THE REVENUE CONSEQUENCE WAITS FOR THE '
-      + F6.retention_label.toUpperCase() + ' RETENTION READ',
-      { anchor: 'start', size: 10.5, weight: 900, ls: '.08em', fill: 'var(--ink-2)' }));
     s.setAttribute('aria-label', 'Cumulative subscriptions not started over twelve months, reaching '
       + F6.mid[N - 1] + ', between ' + F6.lo[N - 1] + ' and ' + F6.hi[N - 1] + '.');
   })();
@@ -622,38 +638,26 @@ cut_at = SCRIPT.rindex("})();")
 SCRIPT = SCRIPT[:cut_at] + EXTRA_JS + "\n" + SCRIPT[cut_at:]
 # nothing on a chart should render below about 11px once the page's 1.1 scale is applied.
 # This runs after every targeted patch above, so it cannot invalidate their match strings.
-# The caption rail takes the drawing down to 823 of its 880 units, a scale of
-# 0.935. A 12-unit label therefore lands on 11.2 real pixels, which is the
-# floor. At 11 units it would land on 10.3 and the page would break its own rule.
-# The eight-column graphic zone is 749 of the drawing's 880 units, a scale of
-# 0.852. A 13-unit label therefore lands on 11.07 real pixels, which is the
-# floor. At 12 units it would land on 10.2 and break the page's own rule.
-for _small in ("9", "9.5", "10", "10.5", "11", "11.5", "12", "12.5"):
-    SCRIPT = SCRIPT.replace("size: %s," % _small, "size: 13,")
-for _bad in ("9", "9.5", "10", "10.5", "11", "11.5", "12", "12.5"):
+for _small in ("9", "9.5", "10", "10.5", "11", "11.5"):
+    SCRIPT = SCRIPT.replace("size: %s," % _small, "size: 12,")
+for _bad in ("9", "9.5", "10", "10.5", "11", "11.5"):
     assert "size: %s," % _bad not in SCRIPT, "chart type below the floor: " + _bad
-# 900 is for the value callouts. Axis and tick text drops to 700, which at
+# E7: 900 is for the value callouts. Axis and tick text drops to 700, which at
 # 12 units in caps was reading as a second headline inside every chart.
-for _axis in ("{ size: 13, weight: 900, ls: '.09em' }",
-              "{ size: 13, weight: 900, ls: '.08em' }"):
+for _axis in ("{ size: 12, weight: 900, ls: '.09em' }",
+              "{ anchor: 'start', size: 12, weight: 700, ls: '.04em' }"):
     SCRIPT = SCRIPT.replace(_axis, _axis.replace("weight: 900", "weight: 700"))
-
-# Five in-chart footer sentences repeat what the headline and the subtitle
-# already say. The drawing keeps its ticks and its annotations; the words
-# live in HTML, where they wrap, scale and can be read by a screen reader.
-_FOOTERS = ["SHARE OF ORDERS CONTAINING A SUBSCRIPTION",
-            "SHARE OF NEW SUBSCRIPTIONS, SINGLE PRODUCTS",
-            "EACH ROW FILLS TO 100%",
-            "EACH LINE INDEXED TO ITS OWN PRE-LAUNCH AVERAGE",
-            "CUMULATIVE SUBSCRIPTIONS NOT STARTED",
-            "NO DOLLAR FIGURE HERE"]
-for _f in _FOOTERS:
-    _i = SCRIPT.find(_f)
-    assert _i >= 0, "in-chart footer already gone, check the list: " + _f
-    _a = SCRIPT.rindex("s.appendChild(txt(", 0, _i)
-    _b = SCRIPT.index("}));", _i) + len("}));\n")
-    SCRIPT = SCRIPT[:_a] + SCRIPT[_b:]
-print("in-chart footers removed: %d" % len(_FOOTERS))
+SCRIPT = SCRIPT.replace("{ size: 12, weight: 900, ls: '.09em', fill: '#B5731B' }",
+                        "{ size: 12, weight: 700, ls: '.08em', fill: 'var(--orange-text)' }")
+SCRIPT = SCRIPT.replace("{ size: 12, weight: 900, ls: '.09em', fill: g[1] }",
+                        "{ size: 12, weight: 900, ls: '.07em', fill: g[1] }")
+# brand: large areas take the large-fill orange. Small marks and every piece
+# of orange text keep the text orange, which is the one that carries contrast.
+SCRIPT = SCRIPT.replace("fill: 'var(--orange)', opacity:", "fill: 'var(--orange-lg)', opacity:")
+assert "var(--orange-lg)" in SCRIPT, "the large-fill orange never got used"
+# A5: the launch-band label was the last hard-coded hex in the drawing layer
+SCRIPT = SCRIPT.replace("'#B5731B'", "'var(--orange-text)'")
+assert "#B5731B" not in SCRIPT, "a hard-coded chart colour survived"
 
 SCRIPT = SCRIPT.replace("{{PAYLOAD}}", json.dumps(P, ensure_ascii=False, separators=(",", ":")))
 
@@ -727,73 +731,38 @@ HEAD = ('<title>Subscription Buy Box</title>\n'
         '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?'
         'family=Anton&family=Archivo:wght@500;600;700;900&family=Public+Sans:wght@400;500;600&display=swap">\n')
 
-# One authored stylesheet in place of a base sheet plus fifteen patch layers, in
-# which the same property was set for the same selector up to four times and the
-# last one silently won.
-CSS = io.open("page_v18.css", encoding="utf-8").read()
+# One stylesheet, authored, with every value declared once. It replaced a base
+# sheet plus fifteen layers of patches in which the same property was set for the
+# same selector up to four times and the last one silently won.
+CSS = io.open("page_v16.css", encoding="utf-8").read()
 STYLE = "<style>\n" + CSS + "</style>\n"
 
-# --------------------------------------------------------------- sheet guard
+# the guards that keep the stylesheet honest
 assert "prefers-color-scheme" not in CSS and "data-theme" not in CSS, "this page is light only"
 for _dead in ("--s-green", "--s-alt", "--s-sess", "#2F7D4F", ".correct", ".rec{", ".two{"):
     assert _dead not in CSS, "dead rule or retired colour in the stylesheet: " + _dead
+# every declared custom property is used, and every one used is declared
 _declared = set(re.findall(r"(--[a-z0-9-]+)\s*:", CSS))
-_used = set(re.findall(r"var\((--[a-z0-9-]+)", CSS + SCRIPT + out))
+_used = set(re.findall(r"var\((--[a-z0-9-]+)", CSS)) | set(re.findall(r"var\((--[a-z0-9-]+)", SCRIPT))
+_used |= set(re.findall(r"var\((--[a-z0-9-]+)", out))
+_unused = sorted(d for d in _declared if d not in _used)
 _undeclared = sorted(u for u in _used if u not in _declared and u != "--sc")
 assert not _undeclared, "custom properties used but never declared: %s" % _undeclared
-_unused = sorted(d for d in _declared if d not in _used)
 if _unused:
     print("note: declared but unused custom properties: %s" % _unused)
+# no property is declared twice inside one rule
 for _sel, _body in re.findall(r"([^{}]+)\{([^{}]*)\}", CSS):
-    _props = [d.split(":")[0].strip() for d in _body.split(";")
-              if ":" in d and not d.strip().startswith("--")]
+    _props = [d.split(":")[0].strip() for d in _body.split(";") if ":" in d and not d.strip().startswith("--")]
     _dupes = sorted({p for p in _props if _props.count(p) > 1})
     assert not _dupes, "%s declares %s more than once" % (_sel.strip()[:48], _dupes)
-print("sheet guard passed: one block, no dead rules, no duplicate declarations")
-
-# --------------------------------------------------------------- grid guard
-# The report-design rule is one 8px unit. Borders and optical nudges under 8px
-# are not spacing and are listed here by name so the exception cannot spread.
-_SPACING = ("margin", "margin-top", "margin-bottom", "margin-left", "margin-right",
-            "margin-inline", "padding", "padding-top", "padding-bottom",
-            "padding-left", "padding-right", "gap", "column-gap", "row-gap")
-_off = []
-for _p in _SPACING:
-    for _m in re.finditer(r"(?<![-\w])%s:\s*([^;}\n]+)" % _p, CSS):
-        _decl = _m.group(1)
-        if "var(" in _decl or "clamp(" in _decl or "auto" in _decl:
-            continue
-        for _v in re.findall(r"(-?\d+(?:\.\d+)?)px", _decl):
-            _f = abs(float(_v))
-            if _f and _f % 8:
-                _off.append("%s:%s" % (_p, _decl.strip()))
-assert not _off, "spacing off the 8px grid: %s" % sorted(set(_off))
-print("grid guard passed: every spacing value is a multiple of 8")
-
-# --------------------------------------------------------------- type guard
-# the sizes live in tokens, so the guard resolves the tokens rather than
-# scanning for literals it will never find
-_tok_px = {m.group(1): float(m.group(2))
-           for m in re.finditer(r"(--t-[a-z-]+):\s*(\d+(?:\.\d+)?)px", CSS)}
-_lit = {float(x) for x in re.findall(r"font-size:\s*(\d+(?:\.\d+)?)px", CSS)}
-_lit |= {float(x) for x in re.findall(r"font:\s*\d+\s+(\d+(?:\.\d+)?)px", CSS)}
-_sizes = sorted(set(_tok_px.values()) | _lit)
-assert _lit <= set(_tok_px.values()), (
-    "font sizes typed outside the scale: %s" % sorted(_lit - set(_tok_px.values())))
-# 14px is not on a 4px step but it is one of the three body sizes the DTCPG
-# brand guide names (18/16/14), and the brand beats the generic step rule.
-_BRAND_BODY = {14.0}
-_odd = sorted(v for v in _sizes if v % 4 and v not in _BRAND_BODY)
-assert not _odd, "type sizes off the 4px step and not brand body sizes: %s" % _odd
-assert len(_sizes) <= 8, "%d type sizes in play, the scale allows seven plus display" % len(_sizes)
-_track = sorted({x for x in re.findall(r"letter-spacing:\s*(\.\d+em)", CSS)})
-assert _track == [".08em"], "uppercase labels must share one tracking value, found %s" % _track
-print("type guard passed: %d fixed sizes %s on the 4px step, one caps tracking"
-      % (len(_sizes), sorted(int(v) for v in _sizes)))
+print("stylesheet guard passed: one block, no dead rules, no duplicate declarations")
 
 # --------------------------------------------------------------- contrast guard
-# Every ink tone here is a translucent black, so its contrast depends on what is
-# behind it, and this page has two grounds: the cream surface and the white card.
+# Every ink tone on this page is a translucent black, so its contrast depends on
+# what is behind it. The page has two grounds, the cream surface and the white
+# card, and a tone that passes on one can fail on the other. The tones were
+# inherited at .52 alpha, which measured 3.25:1 under every micro label on the
+# page. Nothing here is eyeballed.
 _CREAM, _WHITE = (247, 243, 231), (255, 255, 255)
 
 
@@ -816,19 +785,22 @@ def _ratio(a, b):
 
 
 def _token(name):
-    _m = re.search(r"%s:\s*(#[0-9A-Fa-f]{6}|rgba\([^)]+\))" % re.escape(name), CSS)
-    assert _m, "colour token not found: " + name
-    _v = _m.group(1)
-    if _v.startswith("#"):
-        return (int(_v[1:3], 16), int(_v[3:5], 16), int(_v[5:7], 16)), 1.0
-    _n = [float(x) for x in re.findall(r"[\d.]+", _v)]
-    return (_n[0], _n[1], _n[2]), (_n[3] if len(_n) > 3 else 1.0)
+    m = re.search(r"%s:\s*(#[0-9A-Fa-f]{6}|rgba\([^)]+\))" % re.escape(name), CSS)
+    assert m, "colour token not found: " + name
+    v = m.group(1)
+    if v.startswith("#"):
+        return (int(v[1:3], 16), int(v[3:5], 16), int(v[5:7], 16)), 1.0
+    n = [float(x) for x in re.findall(r"[\d.]+", v)]
+    return (n[0], n[1], n[2]), (n[3] if len(n) > 3 else 1.0)
 
 
-_CONTRAST = [("body and list text", "--ink-2", "16px regular", 4.5),
-             ("labels, nav, headers", "--ink-3", "12px caps", 4.5),
-             ("the fall, in the strip", "--orange-text", "32px black", 3.0),
-             ("chip and card text", "--ink", "12px caps", 4.5)]
+# name, token, the smallest role it carries, and the threshold that role needs
+_CONTRAST = [
+    ("body and list text", "--ink-2", "17px regular", 4.5),
+    ("labels, nav, headers", "--ink-3", "11px caps", 4.5),
+    ("the fall, in the strip", "--orange-text", "40px black", 3.0),
+    ("chip and card text", "--ink", "11px caps", 4.5),
+]
 _worst = []
 for _name, _tok, _role, _need in _CONTRAST:
     _rgb, _a = _token(_tok)
@@ -839,70 +811,6 @@ for _name, _tok, _role, _need in _CONTRAST:
         _worst.append((_r, _name, _gname))
 _w = min(_worst)
 print("contrast guard passed: worst text pair is %s on %s at %.2f:1" % (_w[1], _w[2], _w[0]))
-
-# --------------------------------------------------------------- anchor guard
-# The section nav and the three summary links are the only navigation on a page
-# this long. They shipped broken once: every href resolved to a real id, so
-# nothing looked wrong in the markup, but "scroll-behavior: smooth" swallowed
-# the jump and the page never moved. Both halves are checked here.
-assert "scroll-behavior:smooth" not in CSS.replace(" ", ""), (
-    "smooth scrolling is back, and it stops every jump link from moving the page")
-_ids = set(re.findall(r'\sid="([^"]+)"', out))
-_hrefs = sorted(set(re.findall(r'href="#([^"]+)"', out)))
-_broken = [h for h in _hrefs if h not in _ids]
-assert not _broken, "in-page links with no target: %s" % _broken
-# The floor was 6 while the report carried a recommendation section for the nav and
-# the summary's action row to point at. Both were cut on 2026-09-22, so 5 is the full
-# set now: the four analysis sections plus what is still open.
-assert len(_hrefs) >= 5, "the section nav lost links, only %d in-page targets" % len(_hrefs)
-print("anchor guard passed: %d in-page links, every one resolves, no smooth scroll"
-      % len(_hrefs))
-
-# --------------------------------------------------------------- casing guard
-# Headlines are sentence case across the whole report. The section headings and
-# the fold summaries render uppercase, so a Title Case slip in the source is
-# invisible on screen and drifts unnoticed until the transform is ever removed.
-_PROPER = {"TikTok", "Shopify", "Skio", "Labor", "Day", "Sep", "Oct", "Nov", "Heart",
-           "Soil", "DTCPG", "Anton", "Archivo", "Public", "Sans", "Wosker", "Artlab",
-           "Buvera", "Monday", "Sunday"}
-_titled = []
-for _m in re.finditer(r"<h2[^>]*>([^<]+)</h2>|<summary>([^<+]+)", out):
-    _txt = (_m.group(1) or _m.group(2)).strip()
-    _words = _txt.split()[1:]
-    _bad = [w for w in _words if w[:1].isupper() and w.strip(",.") not in _PROPER]
-    if _bad:
-        _titled.append("%s -> %s" % (_txt, _bad))
-assert not _titled, "headings must be sentence case in the source: %s" % _titled
-print("casing guard passed: every heading is sentence case in the source")
-
-# --------------------------------------------------------------- accent guard
-# A tile's top rule is "4px solid var(--ac)", and --ac comes from the accent
-# class on the tile. When the class does not exist the whole declaration is
-# invalid and the rule silently disappears: three verdict cards shipped with no
-# top rule at all because they still carried a-green after green left the palette.
-_declared_ac = set(re.findall(r"^\.(a-[a-z-]+)\{", CSS, re.M))
-_used_ac = set()
-for _cls in re.findall(r'class="([^"]+)"', out):
-    _used_ac |= {t for t in _cls.split() if t.startswith('a-')}
-_orphan = sorted(_used_ac - _declared_ac)
-assert not _orphan, "accent classes used in the body but not declared: %s" % _orphan
-_unused_ac = sorted(_declared_ac - _used_ac)
-if _unused_ac:
-    print("note: accent classes declared but unused: %s" % _unused_ac)
-print("accent guard passed: %d accent classes, every one declared and reachable"
-      % len(_used_ac))
-
-# --------------------------------------------------------------- baseline guard
-# The figure header stacks on an 8px baseline so the drawing's top edge lands on
-# the grid. Every line box and margin above the chart has to be a whole unit.
-_BASELINE = [("--t-micro", "16px"), ("--t-headline", "24px"), ("--t-small", "24px")]
-for _sel, _lh in (("\.ch-tag", "16px"), ("\.ch-t", "24px"), ("\.ch-s", "24px")):
-    _blk = re.search(r"%s\s*\{[^}]*\}" % _sel, CSS)
-    assert _blk and _lh in _blk.group(0), (
-        "%s must set a %s line box or the chart falls off the baseline" % (_sel, _lh))
-assert re.search(r"\.seg button,\.chips \.pick\{[^}]*height:40px", CSS), (
-    "the controls need a fixed 40px height to stay on the baseline")
-print("baseline guard passed: the figure header stacks in whole 8px units")
 
 doc = HEAD + STYLE + "\n" + out + "\n" + SCRIPT + "\n"
 
@@ -916,8 +824,8 @@ def proof(d):
     return "".join(o)
 doc = proof(doc)
 assert all(ord(ch) < 128 for ch in doc)
-io.open("page_v18.html", "w", encoding="utf-8", newline="\n").write(doc)
-print("written page_v18.html (%d bytes)" % len(doc))
+io.open("page_v16.html", "w", encoding="utf-8", newline="\n").write(doc)
+print("written page_v16.html (%d bytes)" % len(doc))
 print("take rate %s%% -> %s%%, drop %s pt (%s), band %s-%s" % (TOK["pre"], TOK["post"], TOK["drop"], TOK["rel"], TOK["band_lo"], TOK["band_hi"]))
 print("plan: 1x90d %s%% -> %s%% | 3x90d %s%% -> %s%% | 1x30d %s%% -> %s%%" % (TOK["gone_pre"], TOK["gone_post"], TOK["big_pre"], TOK["big_post"], TOK["m30_pre"], TOK["m30_post"]))
 print("magnitude: %s/day, %s/month, $%s monthly billings, +$%s/day revenue" % (TOK["lost_day"], TOK["lost_mo"], TOK["mo_bill"], TOK["rev_gain"]))

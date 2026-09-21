@@ -52,5 +52,8 @@ assert not non_ascii, "non-ascii characters present: %r" % sorted(set(non_ascii)
 io.open(OUT, "w", encoding="utf-8", newline="\n").write(doc)
 print("wrote %s (%d bytes)" % (os.path.relpath(OUT, REPO), len(doc)))
 print("  head %d bytes, body %d bytes" % (len(head), len(body)))
-for probe in ("Nothing was removed", "Let people pick one bottle", "noindex"):
+# "Let people pick one bottle" was the lead recommendation; that section was cut on
+# 2026-09-22, so the probe moved to a line in the mechanism section, which is now
+# where the report ends its argument.
+for probe in ("Nothing was removed", "the long cycles have become bulk", "noindex"):
     print("  contains %-32s %s" % (repr(probe), probe in doc))
