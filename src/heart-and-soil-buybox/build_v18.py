@@ -9,9 +9,9 @@ P = json.load(io.open("payload_v15.json", encoding="utf-8"))
 BQF = json.load(io.open("bq_facts.json", encoding="utf-8"))
 # selling-plan evidence: which plan group the box presents, and how quantity is chosen at each cycle
 PF = json.load(io.open("plan_facts.json", encoding="utf-8"))
-BODY = io.open("page_v17_body.html", encoding="utf-8").read()
+BODY = io.open("page_v18_body.html", encoding="utf-8").read()
 TPL = io.open("page_v10_template.html", encoding="utf-8").read()
-# Only the chart engine is inherited. The stylesheet is authored in page_v17.css,
+# Only the chart engine is inherited. The stylesheet is authored in page_v18.css,
 # so no rule can be silently overridden by a later patch and every value is
 # declared exactly once.
 SCRIPT = TPL[TPL.index("<script>"):TPL.index("</script>") + len("</script>")]
@@ -452,7 +452,9 @@ while _m <= AX1:
         GANTT_TICKS.append(dict(x=(_m - AX0).days / span, lab=MON[_m.month - 1]))
     _m = D(_m.year + _m.month // 12, _m.month % 12 + 1, 1)
 
-GANTT_LABEL_PX = 11.5
+# the schedule's row labels render at the in-chart floor, so the gutter has to
+# be measured at that size or the longest label runs out of the viewBox
+GANTT_LABEL_PX = 13
 GUTTER = int(math.ceil(max(text_w(r["t"], GANTT_LABEL_PX) for r in SCHED))) + 22
 assert GUTTER <= 430, "gantt labels need %dpx of gutter, too wide for the bars" % GUTTER
 print("gantt label gutter: %dpx (longest label %.0fpx)"
@@ -492,7 +494,12 @@ EXTRA_JS = """
     var col = {}, wlab = {};
     G.who.forEach(function (w) { col[w.k] = w.col; wlab[w.k] = w.lab; });
     var xOf = function (f) { return L + (R2 - L) * f; };
+    // the axis opens a few days before the first gate, so the opening month tick
+    // and the next one can land within a label's width of each other
+    var lastTick = -1e9;
     G.ticks.forEach(function (t) {
+      if (xOf(t.x) - lastTick < 44) return;
+      lastTick = xOf(t.x);
       s.appendChild(el('line', { x1: xOf(t.x), x2: xOf(t.x), y1: T - 12,
         y2: T + G.rows.length * (rowH + gap), stroke: 'var(--grid)', 'stroke-width': 1 }));
       s.appendChild(txt(xOf(t.x), T - 18, t.lab.toUpperCase(),
@@ -592,14 +599,17 @@ SCRIPT = SCRIPT[:cut_at] + EXTRA_JS + "\n" + SCRIPT[cut_at:]
 # The caption rail takes the drawing down to 823 of its 880 units, a scale of
 # 0.935. A 12-unit label therefore lands on 11.2 real pixels, which is the
 # floor. At 11 units it would land on 10.3 and the page would break its own rule.
-for _small in ("9", "9.5", "10", "10.5", "11", "11.5"):
-    SCRIPT = SCRIPT.replace("size: %s," % _small, "size: 12,")
-for _bad in ("9", "9.5", "10", "10.5", "11", "11.5"):
+# The eight-column graphic zone is 749 of the drawing's 880 units, a scale of
+# 0.852. A 13-unit label therefore lands on 11.07 real pixels, which is the
+# floor. At 12 units it would land on 10.2 and break the page's own rule.
+for _small in ("9", "9.5", "10", "10.5", "11", "11.5", "12", "12.5"):
+    SCRIPT = SCRIPT.replace("size: %s," % _small, "size: 13,")
+for _bad in ("9", "9.5", "10", "10.5", "11", "11.5", "12", "12.5"):
     assert "size: %s," % _bad not in SCRIPT, "chart type below the floor: " + _bad
 # 900 is for the value callouts. Axis and tick text drops to 700, which at
 # 12 units in caps was reading as a second headline inside every chart.
-for _axis in ("{ size: 12, weight: 900, ls: '.09em' }",
-              "{ size: 12, weight: 900, ls: '.08em' }"):
+for _axis in ("{ size: 13, weight: 900, ls: '.09em' }",
+              "{ size: 13, weight: 900, ls: '.08em' }"):
     SCRIPT = SCRIPT.replace(_axis, _axis.replace("weight: 900", "weight: 700"))
 
 # Five in-chart footer sentences repeat what the headline and the subtitle
@@ -694,7 +704,7 @@ HEAD = ('<title>Subscription Buy Box</title>\n'
 # One authored stylesheet in place of a base sheet plus fifteen patch layers, in
 # which the same property was set for the same selector up to four times and the
 # last one silently won.
-CSS = io.open("page_v17.css", encoding="utf-8").read()
+CSS = io.open("page_v18.css", encoding="utf-8").read()
 STYLE = "<style>\n" + CSS + "</style>\n"
 
 # --------------------------------------------------------------- sheet guard
@@ -877,8 +887,8 @@ def proof(d):
     return "".join(o)
 doc = proof(doc)
 assert all(ord(ch) < 128 for ch in doc)
-io.open("page_v17.html", "w", encoding="utf-8", newline="\n").write(doc)
-print("written page_v17.html (%d bytes)" % len(doc))
+io.open("page_v18.html", "w", encoding="utf-8", newline="\n").write(doc)
+print("written page_v18.html (%d bytes)" % len(doc))
 print("take rate %s%% -> %s%%, drop %s pt (%s), band %s-%s" % (TOK["pre"], TOK["post"], TOK["drop"], TOK["rel"], TOK["band_lo"], TOK["band_hi"]))
 print("plan: 1x90d %s%% -> %s%% | 3x90d %s%% -> %s%% | 1x30d %s%% -> %s%%" % (TOK["gone_pre"], TOK["gone_post"], TOK["big_pre"], TOK["big_post"], TOK["m30_pre"], TOK["m30_post"]))
 print("magnitude: %s/day, %s/month, $%s monthly billings, +$%s/day revenue" % (TOK["lost_day"], TOK["lost_mo"], TOK["mo_bill"], TOK["rev_gain"]))

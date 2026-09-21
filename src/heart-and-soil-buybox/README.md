@@ -6,7 +6,7 @@ hand-edited. Edit the source and rebuild; do not edit the HTML.
 ## Rebuild
 
 ```
-python build_v17.py     # writes page_v17.html, the artifact-shaped fragment
+python build_v18.py     # writes page_v18.html, the artifact-shaped fragment
 python qa_v15.py        # 117 checks on the ledger, non-zero exit on any failure
 python wrap_pages.py    # wraps the fragment into ../../heart-and-soil-buybox-review.html
 ```
@@ -53,37 +53,47 @@ To re-derive the ledgers from source, put the five exports in a local `Downloads
 
 ## The build that is published
 
-`build_v17.py` is the one `wrap_pages.py` wraps. It is a presentation pass over v15:
-same section order, same headings, same analysis, every number identical. What changed
-is everything around the numbers.
+`build_v18.py` is the one `wrap_pages.py` wraps. It is a presentation pass over v15:
+same section order, same headings, same analysis, every number identical. `qa_v18_diff.py`
+proves that on every build.
 
-- one authored stylesheet, `page_v17.css`, in place of a base sheet plus fifteen patch
-  layers in which 143 of 178 spacing declarations sat off an 8px grid
+The layout is a **twelve-column compound grid**. At the 1280px brand maximum with 48px
+outer margins the content field is 1184px, which puts a column at 76.67px: eight columns
+is 781px and four is 379px. Reading prose holds the eight-column graphic zone so every
+paragraph shares a flowline with the chart beneath it. Each figure is a nested twelve:
+the drawing takes the eight-column graphic zone (749px inside the tile's padding) and the
+reading takes the four-column narrative rail beside it (363px), a 66/32 split. Below a
+1100px container the formation collapses and both take the full field.
+
+Other things it does differently from the sheet it replaced, which was a base stylesheet
+plus fifteen patch layers with 143 of 178 spacing declarations off the grid:
+
 - every margin, padding and gap is a multiple of 8, enforced at build time
-- nineteen font sizes collapsed to six tokens plus two clamped display sizes, and
-  thirteen letter-spacing values to one for every uppercase label
-- six subject labels became takeaway headlines, each built from ledger tokens so a
-  headline cannot drift from the figure it states
-- the three legends came off: chart 2 names its windows on the first row, chart 3 names
-  each band inside itself on the row where it is widest, chart 5 gives every row an
-  owner column. Six in-chart footer sentences went with them
-- colour means one thing each. Orange is the change and nothing else; green is gone
+- nineteen font sizes became six tokens plus two clamped display sizes; thirteen
+  letter-spacing values became one for every uppercase label
+- six subject labels became takeaway headlines built from ledger tokens, so a headline
+  cannot drift from the figure it states
+- the three legends came off and the drawings name their own series: chart 2 on its first
+  row, chart 3 inside each band on the row where it is widest, chart 5 in an owner column
+- colour means one thing each. Orange is the change and nothing else; there is no green
+- in-chart type has a 13-unit floor, which lands on 11.07px in the 749px zone
 
-Four guards run on every build, and each one exists because the thing it checks broke
-once: the sheet guard rejects duplicate declarations and dead rules, the grid guard
-rejects spacing off the 8px unit, the type guard rejects a ninth size or a second caps
-tracking, the contrast guard computes WCAG ratios against both the cream ground and the
-white card, and the anchor guard rejects a jump link with no target or any return of
-`scroll-behavior: smooth`, which once silently swallowed every link in the section nav.
+Ten guards run on every build, and each exists because the thing it checks broke once:
+one stylesheet with no duplicate declarations or dead rules, spacing on the 8px unit, no
+ninth type size or second caps tracking, WCAG ratios against both the cream ground and the
+white card, every jump link resolving and `scroll-behavior: smooth` rejected (it once
+silently swallowed the entire section nav), sentence case in every heading source, every
+`a-*` accent class declared (three verdict cards once shipped with no top rule because
+they still carried a retired class), and the figure header stacking in whole 8px units.
 
 ```
-python build_v17.py      # writes page_v17.html
-python qa_v17_diff.py    # proves the design pass moved no number
+python build_v18.py      # writes page_v18.html
+python qa_v18_diff.py    # proves the design pass moved no number
 python wrap_pages.py     # wraps it into ../../heart-and-soil-buybox-review.html
 ```
 
-`build_v15.py` is kept because it is the version this one is checked against. An earlier
-v16 pass was rejected on its layout and is not in the repository.
+`build_v15.py` is kept because it is the reference v18 is checked against, and v17 is the
+previous published build. A v16 pass was rejected on its layout and is not in the repository.
 
 ## Reading order for the analysis itself
 

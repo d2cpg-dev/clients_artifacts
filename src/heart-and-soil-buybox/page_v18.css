@@ -83,12 +83,21 @@ body{
 /* --- shell -------------------------------------------------------------- */
 /* 1280px is the brand maximum. The wrapper is a grid so that nothing inside
    it can collapse a margin into its neighbour. */
+/* Twelve columns, because 12 divides into 2, 3, 4 and 6. At the 1280px brand
+   maximum with 48px outer margins the content field is 1184px, which puts a
+   column at 76.67px: eight columns is 781px and four is 379px, the 2/1
+   compound formation the report is built on. */
 .wrap{
   max-width:1280px;margin:0 auto;padding:32px clamp(24px,5vw,48px) 0;
-  display:grid;grid-template-columns:minmax(0,1fr);row-gap:0;
-  align-content:start;container-type:inline-size;container-name:wrap;
+  display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;
+  row-gap:0;align-content:start;container-type:inline-size;container-name:wrap;
 }
-.wrap > *{min-width:0}
+/* reading prose holds the eight-column graphic zone, so every paragraph shares
+   a flowline with the chart beneath it */
+.wrap > *{grid-column:1 / span 8;min-width:0}
+/* bands run the full field */
+.wrap > header,.wrap > h2,.wrap > figure,.wrap > .quad,.wrap > .trio,
+.wrap > .recs,.wrap > details.fold,.wrap > .ranges,.wrap > footer{grid-column:1 / -1}
 
 /* --- masthead ----------------------------------------------------------- */
 .mast{
@@ -181,16 +190,17 @@ li::marker{color:var(--ink-3);font-weight:700}
 /* --- the figure tile ----------------------------------------------------- */
 /* One anatomy, every time: category tag, takeaway headline, what is counted,
    controls if any, the drawing, then the reading. */
+/* A compound 2/1 tile: the drawing takes the eight-column graphic zone and the
+   reading takes the four-column narrative rail beside it, on a nested twelve.
+   The hairline is an inset shadow, not a border, so it takes no layout space;
+   as a border it pushed the stack 1px and put every chart off the baseline. */
 figure{
   margin:var(--g-block) 0 0;background:var(--card);
   border-radius:18px;padding:var(--pad-card);
-  /* the hairline is an inset shadow, not a border, so it takes no layout space.
-     As a border it pushed the whole stack 1px and put every chart's top edge
-     off the baseline while the content above it measured a clean 120 or 248. */
   box-shadow:inset 0 0 0 1px var(--rule),var(--shadow-sm);
-  display:grid;grid-template-columns:minmax(0,1fr);column-gap:32px;
+  display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;
 }
-figure > *{grid-column:1;min-width:0}
+figure > *{grid-column:1 / span 8;min-width:0}
 /* Everything above the drawing sits on an 8px baseline: 16px, 24px and 24px
    line boxes with 8px and 16px margins. A headline that wraps adds another 24,
    so the chart's top edge lands on the grid at every width. */
@@ -211,7 +221,7 @@ figcaption{
    than shrinking its own labels out of legibility. */
 .ch-scroll{overflow-x:auto;scrollbar-width:thin}
 svg{display:block;height:auto}
-.ch-scroll > svg{width:100%;max-width:880px;min-width:812px;margin-inline:auto}
+.ch-scroll > svg{width:100%;max-width:880px;min-width:740px;margin-inline:auto}
 
 /* --- controls: one family ------------------------------------------------ */
 .seg-row{display:flex;justify-content:space-between;align-items:flex-start;
@@ -360,6 +370,15 @@ details.fold > summary::-webkit-details-marker{display:none}
   border-radius:50%;display:flex;align-items:center;justify-content:center;
 }
 details.fold[open] > summary .fold-ind{transform:rotate(45deg)}
+/* In-page inlay: methodology, definitions and the raw figures table open in
+   place rather than sending the reader somewhere else. Native <details> snaps,
+   so the revealed block is animated on its own, and the motion is dropped
+   entirely for anyone who has asked for reduced motion. */
+details.fold[open] > *:not(summary){animation:inlay 240ms var(--ease) both}
+@keyframes inlay{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+  details.fold[open] > *:not(summary){animation:none}
+}
 details.fold.sub{margin:var(--g-head) 0 0}
 details.fold.sub > summary{
   font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
@@ -401,12 +420,23 @@ summary{cursor:pointer}
 @media(prefers-reduced-motion:reduce){*{transition:none !important}}
 
 /* --- the reading moves beside the drawing once there is room for both ---- */
-@container wrap (min-width:1184px){
-  figure{grid-template-columns:minmax(0,1fr) 280px}
+/* the narrative rail takes columns 9 to 12 once the tile is wide enough to
+   hold both zones; below that it drops under the drawing and the drawing
+   takes all twelve */
+@container wrap (min-width:1100px){
   figure > figcaption{
-    grid-column:2;grid-row:1 / span 24;align-self:start;margin:0;
-    border-top:none;border-left:1px solid var(--rule);padding:0 0 0 32px;
+    grid-column:9 / -1;grid-row:1 / span 24;align-self:start;margin:0;
+    border-top:none;border-left:1px solid var(--rule);padding:0 0 0 24px;
   }
+}
+@container wrap (max-width:1099.98px){
+  figure > *{grid-column:1 / -1}
+}
+/* Below the width that holds both zones, the 2/1 formation collapses and the
+   eight-column span goes with it. Left in place it made a paragraph 443px wide
+   on a tablet and 220px on a phone, which is a column of single words. */
+@media(max-width:1100px){
+  .wrap > *{grid-column:1 / -1}
 }
 
 /* --- narrower ------------------------------------------------------------ */

@@ -61,7 +61,7 @@
   --f-label:'Archivo',sans-serif;
   --f-body:'Public Sans',system-ui,sans-serif;
   --t-display:clamp(32px,4vw,44px);   /* h1 */
-  --t-section:clamp(24px,2.6vw,32px); /* h2 and fold summaries */
+  --t-section:clamp(24px,2.6vw,28px); /* h2 and fold summaries */
   --t-headline:20px;                  /* chart headline, card title, h3 */
   --t-body:16px;                      /* reading prose */
   --t-small:14px;                     /* card body, caption, table, subtitle */
@@ -70,6 +70,9 @@
   --t-stat-xl:32px;                   /* KPI strip */
 
   /* --- space: the only vertical gaps on the page ----------------------- */
+  /* a section heading and a KPI number were both 32px, so fourteen elements
+     tied for loudest and nothing read as the answer. The heading steps down;
+     the strip keeps 32 and is the loudest thing after the masthead. */
   --g-section:40px;  /* between sections */
   --g-block:24px;    /* between blocks inside a section */
   --g-head:16px;     /* under a heading */
@@ -91,12 +94,21 @@ body{
 /* --- shell -------------------------------------------------------------- */
 /* 1280px is the brand maximum. The wrapper is a grid so that nothing inside
    it can collapse a margin into its neighbour. */
+/* Twelve columns, because 12 divides into 2, 3, 4 and 6. At the 1280px brand
+   maximum with 48px outer margins the content field is 1184px, which puts a
+   column at 76.67px: eight columns is 781px and four is 379px, the 2/1
+   compound formation the report is built on. */
 .wrap{
   max-width:1280px;margin:0 auto;padding:32px clamp(24px,5vw,48px) 0;
-  display:grid;grid-template-columns:minmax(0,1fr);row-gap:0;
-  align-content:start;container-type:inline-size;container-name:wrap;
+  display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;
+  row-gap:0;align-content:start;container-type:inline-size;container-name:wrap;
 }
-.wrap > *{min-width:0}
+/* reading prose holds the eight-column graphic zone, so every paragraph shares
+   a flowline with the chart beneath it */
+.wrap > *{grid-column:1 / span 8;min-width:0}
+/* bands run the full field */
+.wrap > header,.wrap > h2,.wrap > figure,.wrap > .quad,.wrap > .trio,
+.wrap > .recs,.wrap > details.fold,.wrap > .ranges,.wrap > footer{grid-column:1 / -1}
 
 /* --- masthead ----------------------------------------------------------- */
 .mast{
@@ -189,20 +201,28 @@ li::marker{color:var(--ink-3);font-weight:700}
 /* --- the figure tile ----------------------------------------------------- */
 /* One anatomy, every time: category tag, takeaway headline, what is counted,
    controls if any, the drawing, then the reading. */
+/* A compound 2/1 tile: the drawing takes the eight-column graphic zone and the
+   reading takes the four-column narrative rail beside it, on a nested twelve.
+   The hairline is an inset shadow, not a border, so it takes no layout space;
+   as a border it pushed the stack 1px and put every chart off the baseline. */
 figure{
-  margin:var(--g-block) 0 0;background:var(--card);border:1px solid var(--rule);
-  border-radius:18px;padding:var(--pad-card);box-shadow:var(--shadow-sm);
-  display:grid;grid-template-columns:minmax(0,1fr);column-gap:32px;
+  margin:var(--g-block) 0 0;background:var(--card);
+  border-radius:18px;padding:var(--pad-card);
+  box-shadow:inset 0 0 0 1px var(--rule),var(--shadow-sm);
+  display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;
 }
-figure > *{grid-column:1;min-width:0}
+figure > *{grid-column:1 / span 8;min-width:0}
+/* Everything above the drawing sits on an 8px baseline: 16px, 24px and 24px
+   line boxes with 8px and 16px margins. A headline that wraps adds another 24,
+   so the chart's top edge lands on the grid at every width. */
 .ch-tag{
-  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
+  font:900 var(--t-micro)/16px var(--f-label);letter-spacing:.08em;
   text-transform:uppercase;color:var(--ink-3);margin:0;max-width:none;
 }
-.ch-t{font:700 var(--t-headline)/1.3 var(--f-label);margin:8px 0 0;color:var(--ink);max-width:56ch}
-.ch-s{font-size:var(--t-small);line-height:1.5;color:var(--ink-2);margin:8px 0 16px;max-width:74ch}
+.ch-t{font:700 var(--t-headline)/24px var(--f-label);margin:8px 0 0;color:var(--ink);max-width:56ch}
+.ch-s{font-size:var(--t-small);line-height:24px;color:var(--ink-2);margin:8px 0 16px;max-width:74ch}
 figcaption{
-  font-size:var(--t-small);line-height:1.5;color:var(--ink-2);
+  font-size:var(--t-small);line-height:24px;color:var(--ink-2);
   margin-top:16px;padding-top:16px;border-top:1px solid var(--rule);
 }
 
@@ -212,17 +232,20 @@ figcaption{
    than shrinking its own labels out of legibility. */
 .ch-scroll{overflow-x:auto;scrollbar-width:thin}
 svg{display:block;height:auto}
-.ch-scroll > svg{width:100%;max-width:880px;min-width:812px;margin-inline:auto}
+.ch-scroll > svg{width:100%;max-width:880px;min-width:740px;margin-inline:auto}
 
 /* --- controls: one family ------------------------------------------------ */
 .seg-row{display:flex;justify-content:space-between;align-items:flex-start;
   gap:8px 24px;flex-wrap:wrap;margin:0 0 16px}
 .seg{display:flex;flex-wrap:wrap;gap:8px;margin:0}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+/* a fixed 40px height, because font size plus padding plus a 1.5px border never
+   resolves to a whole number of units and drags the drawing off the baseline */
 .seg button,.chips .pick{
   display:inline-flex;align-items:center;gap:8px;position:relative;cursor:pointer;
-  font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
-  padding:8px 16px;border:1.5px solid var(--rule);border-radius:999px;
+  height:40px;
+  font:900 var(--t-micro)/1 var(--f-label);letter-spacing:.08em;text-transform:uppercase;
+  padding:0 16px;border:1.5px solid var(--rule);border-radius:999px;
   background:transparent;color:var(--ink-3);user-select:none;
   transition:background 160ms var(--ease),color 160ms var(--ease),border-color 160ms var(--ease);
 }
@@ -358,6 +381,15 @@ details.fold > summary::-webkit-details-marker{display:none}
   border-radius:50%;display:flex;align-items:center;justify-content:center;
 }
 details.fold[open] > summary .fold-ind{transform:rotate(45deg)}
+/* In-page inlay: methodology, definitions and the raw figures table open in
+   place rather than sending the reader somewhere else. Native <details> snaps,
+   so the revealed block is animated on its own, and the motion is dropped
+   entirely for anyone who has asked for reduced motion. */
+details.fold[open] > *:not(summary){animation:inlay 240ms var(--ease) both}
+@keyframes inlay{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+  details.fold[open] > *:not(summary){animation:none}
+}
 details.fold.sub{margin:var(--g-head) 0 0}
 details.fold.sub > summary{
   font:900 var(--t-micro)/1.3 var(--f-label);letter-spacing:.08em;
@@ -399,12 +431,23 @@ summary{cursor:pointer}
 @media(prefers-reduced-motion:reduce){*{transition:none !important}}
 
 /* --- the reading moves beside the drawing once there is room for both ---- */
-@container wrap (min-width:1184px){
-  figure{grid-template-columns:minmax(0,1fr) 280px}
+/* the narrative rail takes columns 9 to 12 once the tile is wide enough to
+   hold both zones; below that it drops under the drawing and the drawing
+   takes all twelve */
+@container wrap (min-width:1100px){
   figure > figcaption{
-    grid-column:2;grid-row:1 / span 24;align-self:start;margin:0;
-    border-top:none;border-left:1px solid var(--rule);padding:0 0 0 32px;
+    grid-column:9 / -1;grid-row:1 / span 24;align-self:start;margin:0;
+    border-top:none;border-left:1px solid var(--rule);padding:0 0 0 24px;
   }
+}
+@container wrap (max-width:1099.98px){
+  figure > *{grid-column:1 / -1}
+}
+/* Below the width that holds both zones, the 2/1 formation collapses and the
+   eight-column span goes with it. Left in place it made a paragraph 443px wide
+   on a tablet and 220px on a phone, which is a column of single words. */
+@media(max-width:1100px){
+  .wrap > *{grid-column:1 / -1}
 }
 
 /* --- narrower ------------------------------------------------------------ */
@@ -504,7 +547,7 @@ summary{cursor:pointer}
     </div>
   </header>
 
-  <h2>What We Measured</h2>
+  <h2>What we measured</h2>
   <p>Take rate here is the share of <b>new-customer orders that contain a subscription</b>. A cart
     holding a subscription and a one-off item counts once. Renewals are excluded from both sides, and
     the TikTok channel is excluded because the buy box never appears there. Over
@@ -514,7 +557,7 @@ summary{cursor:pointer}
     Aug 7 to 11 out of it for two independent reasons: a sitewide cart promotion ran across those
     days, and a Skio data migration of 55,410 records landed in the same window.</p>
 
-  <h2 id="take-rate">How Many Subscribed</h2>
+  <h2 id="take-rate">How many subscribed</h2>
   <p>The buttons cut the same orders 4 ways. The second one counts from a different Shopify field
     entirely, the subscription app's own first-order tag, so it is a genuine second opinion on the same
     question. The right-hand pair switches between days and Monday-to-Sunday weeks. The launch and the
@@ -547,7 +590,7 @@ summary{cursor:pointer}
     Sep 3, the first day the new buy box was live and before the sale had built,
     read 51.41%.</p>
 
-  <h2 id="confidence">How Sure We Are</h2>
+  <h2 id="confidence">How sure we are</h2>
   <p>The daily numbers barely overlap. The weakest of the 40 days before the change was
     54.74%. 8 of the 9 days since the sale came in below that. The single
     exception reached 57.27%. Comparing every post-change day against every pre-change day, the
@@ -564,15 +607,15 @@ summary{cursor:pointer}
       27,806 now. The online store on its own gives 7.0 points.</p>
   </details>
   <div class="quad">
-    <div class="box ac a-green"><span class="chip">Ruled out</span><span class="lbl">Traffic does not explain it</span>
+    <div class="box ac a-neutral"><span class="chip">Ruled out</span><span class="lbl">Traffic does not explain it</span>
       <p>Across the 40 clean days before the change, daily take rate and daily sessions are
         effectively uncorrelated, at a correlation of -0.03. Restricting the comparison to pre-change days at
         similar traffic widens the fall rather than narrowing it.</p></div>
-    <div class="box ac a-green"><span class="chip">Ruled out</span><span class="lbl">It is not a tracking gap</span>
+    <div class="box ac a-neutral"><span class="chip">Ruled out</span><span class="lbl">It is not a tracking gap</span>
       <p>99.5% of subscriptions created since the sale trace to a Shopify order the same day.
         Shopify reports more subscribing orders than Skio holds subscriptions in every window we
         checked, so there is no pool of sign-ups going unrecorded.</p></div>
-    <div class="box ac a-green"><span class="chip">Checked</span><span class="lbl">Reading plans as they stand today is safe</span>
+    <div class="box ac a-neutral"><span class="chip">Checked</span><span class="lbl">Reading plans as they stand today is safe</span>
       <p>Only 4.4% of pre-change subscriptions have ever had a line edited, and
         0.8% within their first 9 days. That is far too little to manufacture
         the basket shift below.</p></div>
@@ -582,7 +625,7 @@ summary{cursor:pointer}
         Seasonality does not behave that way. We still cannot close it with data we do not have.</p></div>
   </div>
 
-  <h2 id="mechanism">What Changed In The Buy Box</h2>
+  <h2 id="mechanism">What changed in the buy box</h2>
   <p>Nothing was removed. The buy box swapped which group of plans it puts in front of people.
     The group that used to take almost every sign-up went from 12,406 subscriptions before
     the change to 165 since. The group that replaced it went from 542 to
@@ -619,7 +662,7 @@ summary{cursor:pointer}
       bottles, which is where the extra order value comes from.</figcaption>
   </figure>
 
-  <h2 id="worth">What It Is Worth</h2>
+  <h2 id="worth">What it is worth</h2>
   <p>Each subscription now commits more product. Bottles per subscription went from 1.57 to
     2.25, and list value per subscription from $92.19 to $130.45. The third card is
     the one that decides the economics, and it is flat.</p>
@@ -645,7 +688,7 @@ summary{cursor:pointer}
     subscription line, the order line or the change log, so we cannot yet see the effect of any
     difference in discount between the old buy box and the new one. That is question three below.</p>
 
-  <h2>Everything Else, Week By Week</h2>
+  <h2>Everything else, week by week</h2>
   <p>Take rate, new subscriptions, order value, conversion and traffic across the same range,
     Jul 20 to Sep 16, 2026. Tick any combination. They do not share a unit, so each line runs against its own
     pre-launch average, the rule at one hundred. Hover any point for the underlying number.</p>
@@ -664,7 +707,7 @@ summary{cursor:pointer}
       order volume, which tracks traffic and has nothing to do with the buy box.</figcaption>
   </figure>
 
-  <h2 id="open-questions">What We Cannot Answer Yet</h2>
+  <h2 id="open-questions">What we cannot answer yet</h2>
   <p>Whether this trade is good depends on how long the new subscriptions last, and the oldest of them
     is 9 days old. A 90-day plan has to survive three months to bill a second
     time. Nothing in this data tells you whether it will.</p>
@@ -678,7 +721,7 @@ summary{cursor:pointer}
     4.1 points. They see the same buy box, so this is worth watching, though a returning customer
     who already has a subscription is a different decision from a first one.</p>
 
-  <h2 id="recommend">What We Recommend</h2>
+  <h2 id="recommend">What we recommend</h2>
   <div class="recs">
     <div class="rc ac a-orange primary">
       <span class="chip">Do this</span>
@@ -704,7 +747,7 @@ summary{cursor:pointer}
       <p>Either one makes the test unreadable. A promotion sitting on top of a change is what made the first read of this misleading.</p>
       <span class="who">No action &middot; Oct 2 to Nov 1</span>
     </div>
-    <div class="rc ac a-green">
+    <div class="rc ac a-neutral">
       <span class="chip">Then decide</span>
       <h3>Read retention at 60 and 90 days</h3>
       <p>This is the one that settles it. Fewer, larger, less frequent subscriptions beat more, smaller, more frequent ones only if they survive long enough to bill again.</p>
@@ -712,7 +755,7 @@ summary{cursor:pointer}
     </div>
   </div>
 
-  <h2>What Happens When</h2>
+  <h2>What happens when</h2>
   <figure>
     <p class="ch-tag">Schedule &middot; owners and dates</p>
     <p class="ch-t">Your yes on Sep 30 sets every date after it</p>
@@ -740,7 +783,7 @@ summary{cursor:pointer}
       Nov 11 retention read measures.</figcaption>
   </figure>
 
-  <h2>Three Questions For You</h2>
+  <h2>Three questions for you</h2>
   <div class="trio">
     <div class="box ac a-deep"><span class="chip">Question one</span><span class="lbl">Was the bundling deliberate?</span>
       <p>Tying quantity to cycle length, so 90 days means three bottles, is the single
@@ -807,7 +850,7 @@ summary{cursor:pointer}
       </tbody></table></div>
   </details>
 
-  <h2>Method And Limits</h2>
+  <h2>Method and limits</h2>
   <p>We hold any read on a change that overlaps a promotion until there are at least
     14 clean days after the promotion ends. The earlier read on this question was
     taken before those days existed, which is why this one reverses it.</p>
@@ -837,7 +880,7 @@ summary{cursor:pointer}
 
 <script>
 (function () {
-  var P = {"defs":{"headline":{"name":"New customers, excl. TikTok","den":"new-customer orders on every channel but TikTok","rate":[55.372,60.34,60.274,58.791,58.17,60.635,64.42,58.182,62.342,60.883,62.5,63.957,57.218,58.055,55.381,60.59,54.737,56.667,52.929,47.266,50.687,47.07,55.682,61.013,57.857,58.268,62.176,58.252,59.481,57.908,56.235,59.268,58.435,64.571,64.021,58.753,58.713,59.673,59.314,59.615,57.538,66.047,58.056,61.058,58.667,51.414,58.636,60.849,64.23,69.174,54.369,47.967,48.753,51.987,53.628,53.582,48.229,57.273,50.882],"num":[201,213,176,214,178,191,239,192,197,193,235,236,218,191,247,226,208,187,253,242,295,241,343,241,243,222,240,240,229,227,230,243,239,226,242,245,219,219,242,248,229,284,227,254,264,200,258,258,246,469,224,177,176,157,170,187,177,189,202],"dn":[363,353,292,364,306,315,371,330,316,317,376,369,381,329,446,373,380,330,478,512,582,512,616,395,420,381,386,412,385,392,409,410,409,350,378,417,373,367,408,416,398,430,391,416,450,389,440,424,383,678,412,369,361,302,317,349,367,330,397],"wnum":[1412,1462,1658,1770,1636,1686,1707,1560,568],"wden":[2364,2418,3101,3122,2733,2809,2893,2788,1094],"wrate":[59.729,60.463,53.467,56.694,59.861,60.021,59.004,55.954,51.92],"win":{"before":{"r":59.55376059322034,"d":15104},"sale":{"r":61.840968020743304,"d":2314},"after":{"r":51.77902621722846,"d":3204}}},"tag":{"name":"New customers, order-tag measure","den":"new-customer orders, counted from the subscription first-order tag","rate":[55.096,60.34,59.932,58.791,56.863,60.635,63.612,57.273,61.709,60.883,61.702,61.789,56.955,57.143,54.709,60.054,54.474,55.758,52.51,47.07,50.344,47.07,55.032,61.013,57.143,58.005,61.917,58.01,58.961,57.653,56.235,59.024,58.435,64.0,63.757,58.273,58.445,59.401,59.314,59.375,57.035,65.814,57.801,60.577,58.222,51.157,58.409,60.849,64.23,68.142,46.602,47.967,48.476,51.987,52.997,53.295,48.229,57.273,50.378],"num":[200,213,175,214,174,191,236,189,195,193,232,228,217,188,244,224,207,184,251,241,293,241,339,241,240,221,239,239,227,226,230,242,239,224,241,243,218,218,242,247,227,283,226,252,262,199,257,258,246,462,192,177,175,157,168,186,177,189,200],"dn":[363,353,292,364,306,315,371,330,316,317,376,369,381,329,446,373,380,330,478,512,582,512,616,395,420,381,386,412,385,392,409,410,409,350,378,417,373,367,408,416,398,430,391,416,450,389,440,424,383,678,412,369,361,302,317,349,367,330,397],"wnum":[1403,1442,1644,1760,1629,1678,1700,1517,566],"wden":[2364,2418,3101,3122,2733,2809,2893,2788,1094],"wrate":[59.349,59.636,53.015,56.374,59.605,59.737,58.763,54.412,51.737],"win":{"before":{"r":59.13003177966102,"d":15104},"sale":{"r":61.45203111495246,"d":2314},"after":{"r":50.593008739076154,"d":3204}}},"store":{"name":"New customers, online store only","den":"new-customer orders placed on the online store","rate":[60.976,65.625,66.023,63.303,60.932,62.162,65.915,60.526,68.31,64.948,67.246,65.625,71.906,59.502,63.185,62.89,62.539,60.194,53.996,47.327,51.323,49.16,56.684,64.402,61.125,61.08,62.903,58.647,62.921,62.254,61.602,64.096,62.198,65.294,64.641,63.061,61.032,61.19,61.183,60.652,58.995,66.093,62.011,62.626,66.839,54.648,62.944,61.52,64.305,70.579,61.756,55.305,54.259,53.147,53.922,55.06,52.96,61.13,56.936],"num":[200,210,171,207,170,184,234,184,194,189,232,231,215,191,242,222,202,186,250,239,291,234,335,237,239,215,234,234,224,221,223,241,232,222,234,239,213,216,238,242,223,269,222,248,258,194,248,251,236,463,218,172,172,152,165,185,170,184,197],"dn":[328,320,259,327,279,296,355,304,284,291,345,352,299,321,383,353,323,309,463,505,567,476,591,368,391,352,372,399,356,355,362,376,373,340,362,379,349,353,389,399,378,407,358,396,386,355,394,408,367,656,353,311,317,286,306,336,321,301,346],"wnum":[1376,1436,1632,1728,1597,1640,1657,1527,551],"wden":[2164,2196,2903,2949,2524,2654,2664,2565,968],"wrate":[63.586,65.392,56.218,58.596,63.273,61.794,62.2,59.532,56.921],"win":{"before":{"r":63.095921883974725,"d":13928},"sale":{"r":63.85321100917431,"d":2180},"after":{"r":56.13486270420577,"d":2877}}},"ret":{"name":"Returning customers","den":"returning-customer orders, excluding TikTok","rate":[44.972,46.154,44.481,46.626,49.481,56.391,59.506,50.269,47.333,51.005,55.128,55.747,56.106,52.616,47.326,48.432,42.81,49.39,53.445,47.87,47.045,50.163,50.816,63.78,61.29,61.326,58.974,56.267,61.882,60.541,60.355,53.506,58.743,58.544,61.31,54.377,56.395,54.0,55.076,53.806,55.132,54.958,55.556,62.291,50.739,51.169,55.751,58.483,54.581,65.45,57.672,47.619,45.17,56.075,54.789,47.078,48.127,52.553,44.079],"num":[161,138,137,152,143,150,241,187,142,203,172,194,170,181,177,139,131,162,256,191,207,307,405,243,228,222,184,202,263,224,204,206,215,185,206,205,194,189,217,205,188,194,230,261,206,197,349,293,280,735,218,140,159,180,143,145,167,175,134],"dn":[358,299,308,326,289,266,405,372,300,398,312,348,303,344,374,287,306,328,479,399,440,612,797,381,372,362,312,359,425,370,338,385,366,316,336,377,344,350,394,381,341,353,414,419,406,385,626,501,513,1123,378,294,352,321,261,308,347,333,304],"wnum":[1122,1249,1263,1791,1503,1392,1816,1720,476],"wden":[2251,2377,2613,3195,2536,2540,3264,3037,984],"wrate":[49.845,52.545,48.335,56.056,59.267,54.803,55.637,56.635,48.374],"win":{"before":{"r":54.556474614945806,"d":14024},"sale":{"r":58.89453621346887,"d":3148},"after":{"r":50.41407867494824,"d":2898}}}},"days":["2026-07-20","2026-07-21","2026-07-22","2026-07-23","2026-07-24","2026-07-25","2026-07-26","2026-07-27","2026-07-28","2026-07-29","2026-07-30","2026-07-31","2026-08-01","2026-08-02","2026-08-03","2026-08-04","2026-08-05","2026-08-06","2026-08-07","2026-08-08","2026-08-09","2026-08-10","2026-08-11","2026-08-12","2026-08-13","2026-08-14","2026-08-15","2026-08-16","2026-08-17","2026-08-18","2026-08-19","2026-08-20","2026-08-21","2026-08-22","2026-08-23","2026-08-24","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-08-29","2026-08-30","2026-08-31","2026-09-01","2026-09-02","2026-09-03","2026-09-04","2026-09-05","2026-09-06","2026-09-07","2026-09-08","2026-09-09","2026-09-10","2026-09-11","2026-09-12","2026-09-13","2026-09-14","2026-09-15","2026-09-16"],"weeks":[{"label":"Jul 20","n":7,"full":true},{"label":"Jul 27","n":7,"full":true},{"label":"Aug 3","n":7,"full":true},{"label":"Aug 10","n":7,"full":true},{"label":"Aug 17","n":7,"full":true},{"label":"Aug 24","n":7,"full":true},{"label":"Aug 31","n":7,"full":true},{"label":"Sep 7","n":7,"full":true},{"label":"Sep 14","n":3,"full":false}],"launch_day":45,"sale_end":49,"ld":49,"launch_week":6,"sale_week":7,"tiers":{"before":[46.82,11.24,7.87,4.48,3.08,26.51],"sale":[29.41,6.13,1.18,9.82,25.96,27.5],"after":[36.83,5.48,0.8,9.96,22.33,24.6]},"tier_names":["1 bottle / 30 days","1 bottle / 60 days","1 bottle / 90 days","2 bottles / 60 days","3 bottles / 90 days","Everything else"],"bottles":{"before_30":{"n":8458,"p":[71.8,18.0,10.2]},"before_60":{"n":2361,"p":[61.7,24.6,13.7]},"before_90":{"n":2146,"p":[47.5,24.9,27.6]},"after_30":{"n":1393,"p":[73.3,19.5,7.2]},"after_60":{"n":472,"p":[32.2,58.5,9.3]},"after_90":{"n":829,"p":[2.7,1.8,95.5]}},"series":[{"lab":"Take rate","sub":"new customers","col":"var(--core-black)","unit":"%","v":[59.729,60.463,53.467,56.694,59.861,60.021,59.004,55.954,51.92],"base":58.3725,"on":true,"w":3.0},{"lab":"New subscriptions","sub":"started per day","col":"var(--deep)","unit":"n","v":[201.7,208.9,236.9,252.9,233.7,240.9,243.9,222.9,189.3],"base":229.1667,"on":true,"w":2.2},{"lab":"Order value","sub":"new-customer AOV","col":"var(--orange)","unit":"$","v":[87.49,87.2,85.28,87.88,87.07,90.42,100.82,111.23,100.67],"base":87.5567,"on":true,"w":2.2},{"lab":"Conversion","sub":"store-wide","col":"var(--retention)","unit":"%","v":[1.282,1.016,0.79,0.918,0.778,1.261,1.415,1.701,1.859],"base":1.0075,"on":false,"w":2.0},{"lab":"Sessions","sub":"store-wide, per day","col":"var(--ink-3)","unit":"n","v":[47770,60049,57890,45860,43624,32721,36658,29706,25766],"base":47985.6667,"on":false,"w":2.0}],"grid":["Jul 20","Jul 27","Aug 3","Aug 10","Aug 17","Aug 24","Aug 31","Sep 7","Sep 14"],"prew":{"start":"Jul 20","end":"Aug 24","n":6},"gantt":{"who":[{"k":"you","lab":"You","col":"var(--orange)"},{"k":"us","lab":"Us","col":"var(--blue)"},{"k":"your_team","lab":"Your team","col":"var(--retention)"},{"k":"joint","lab":"Joint","col":"var(--deep)"}],"gutter":330,"ticks":[{"x":0.0,"lab":"Sep"},{"x":0.08163265306122448,"lab":"Oct"},{"x":0.7142857142857143,"lab":"Nov"}],"rows":[{"t":"Your yes on restoring the single bottle every 90 days","who":"you","lab":"Sep 30","x0":0.061224489795918366,"x1":0.061224489795918366,"point":true},{"t":"We re-read take rate on two more clean weeks","who":"us","lab":"Oct 1","x0":0.08163265306122448,"x1":0.08163265306122448,"point":true},{"t":"Plan back in the buy box, 30-day test runs","who":"your_team","lab":"Oct 2 to Nov 1","x0":0.10204081632653061,"x1":0.7142857142857143,"point":false},{"t":"Nothing else changes in the buy box, no promotion","who":"you","lab":"Oct 2 to Nov 1","x0":0.10204081632653061,"x1":0.7142857142857143,"point":false},{"t":"Test result and the decision on the missing plan","who":"joint","lab":"Nov 1","x0":0.7142857142857143,"x1":0.7142857142857143,"point":true},{"t":"60-day retention read on the September cohort","who":"us","lab":"Nov 11","x0":0.9183673469387755,"x1":0.9183673469387755,"point":true}]},"forecast":{"n":12,"unit":"subscriptions not started","labels":["Month 1","Month 2","Month 3","Month 4","Month 5","Month 6","Month 7","Month 8","Month 9","Month 10","Month 11","Month 12"],"mid":[842,1684,2526,3367,4209,5051,5893,6735,7577,8419,9261,10102],"lo":[541,1083,1624,2166,2707,3249,3790,4331,4873,5414,5956,6497],"hi":[1191,2382,3573,4764,5956,7147,8338,9529,10720,11911,13102,14293],"rate":842,"rate_lo":541,"rate_hi":1191,"retention_label":"Nov 11"}};
+  var P = {"defs":{"headline":{"name":"New customers, excl. TikTok","den":"new-customer orders on every channel but TikTok","rate":[55.372,60.34,60.274,58.791,58.17,60.635,64.42,58.182,62.342,60.883,62.5,63.957,57.218,58.055,55.381,60.59,54.737,56.667,52.929,47.266,50.687,47.07,55.682,61.013,57.857,58.268,62.176,58.252,59.481,57.908,56.235,59.268,58.435,64.571,64.021,58.753,58.713,59.673,59.314,59.615,57.538,66.047,58.056,61.058,58.667,51.414,58.636,60.849,64.23,69.174,54.369,47.967,48.753,51.987,53.628,53.582,48.229,57.273,50.882],"num":[201,213,176,214,178,191,239,192,197,193,235,236,218,191,247,226,208,187,253,242,295,241,343,241,243,222,240,240,229,227,230,243,239,226,242,245,219,219,242,248,229,284,227,254,264,200,258,258,246,469,224,177,176,157,170,187,177,189,202],"dn":[363,353,292,364,306,315,371,330,316,317,376,369,381,329,446,373,380,330,478,512,582,512,616,395,420,381,386,412,385,392,409,410,409,350,378,417,373,367,408,416,398,430,391,416,450,389,440,424,383,678,412,369,361,302,317,349,367,330,397],"wnum":[1412,1462,1658,1770,1636,1686,1707,1560,568],"wden":[2364,2418,3101,3122,2733,2809,2893,2788,1094],"wrate":[59.729,60.463,53.467,56.694,59.861,60.021,59.004,55.954,51.92],"win":{"before":{"r":59.55376059322034,"d":15104},"sale":{"r":61.840968020743304,"d":2314},"after":{"r":51.77902621722846,"d":3204}}},"tag":{"name":"New customers, order-tag measure","den":"new-customer orders, counted from the subscription first-order tag","rate":[55.096,60.34,59.932,58.791,56.863,60.635,63.612,57.273,61.709,60.883,61.702,61.789,56.955,57.143,54.709,60.054,54.474,55.758,52.51,47.07,50.344,47.07,55.032,61.013,57.143,58.005,61.917,58.01,58.961,57.653,56.235,59.024,58.435,64.0,63.757,58.273,58.445,59.401,59.314,59.375,57.035,65.814,57.801,60.577,58.222,51.157,58.409,60.849,64.23,68.142,46.602,47.967,48.476,51.987,52.997,53.295,48.229,57.273,50.378],"num":[200,213,175,214,174,191,236,189,195,193,232,228,217,188,244,224,207,184,251,241,293,241,339,241,240,221,239,239,227,226,230,242,239,224,241,243,218,218,242,247,227,283,226,252,262,199,257,258,246,462,192,177,175,157,168,186,177,189,200],"dn":[363,353,292,364,306,315,371,330,316,317,376,369,381,329,446,373,380,330,478,512,582,512,616,395,420,381,386,412,385,392,409,410,409,350,378,417,373,367,408,416,398,430,391,416,450,389,440,424,383,678,412,369,361,302,317,349,367,330,397],"wnum":[1403,1442,1644,1760,1629,1678,1700,1517,566],"wden":[2364,2418,3101,3122,2733,2809,2893,2788,1094],"wrate":[59.349,59.636,53.015,56.374,59.605,59.737,58.763,54.412,51.737],"win":{"before":{"r":59.13003177966102,"d":15104},"sale":{"r":61.45203111495246,"d":2314},"after":{"r":50.593008739076154,"d":3204}}},"store":{"name":"New customers, online store only","den":"new-customer orders placed on the online store","rate":[60.976,65.625,66.023,63.303,60.932,62.162,65.915,60.526,68.31,64.948,67.246,65.625,71.906,59.502,63.185,62.89,62.539,60.194,53.996,47.327,51.323,49.16,56.684,64.402,61.125,61.08,62.903,58.647,62.921,62.254,61.602,64.096,62.198,65.294,64.641,63.061,61.032,61.19,61.183,60.652,58.995,66.093,62.011,62.626,66.839,54.648,62.944,61.52,64.305,70.579,61.756,55.305,54.259,53.147,53.922,55.06,52.96,61.13,56.936],"num":[200,210,171,207,170,184,234,184,194,189,232,231,215,191,242,222,202,186,250,239,291,234,335,237,239,215,234,234,224,221,223,241,232,222,234,239,213,216,238,242,223,269,222,248,258,194,248,251,236,463,218,172,172,152,165,185,170,184,197],"dn":[328,320,259,327,279,296,355,304,284,291,345,352,299,321,383,353,323,309,463,505,567,476,591,368,391,352,372,399,356,355,362,376,373,340,362,379,349,353,389,399,378,407,358,396,386,355,394,408,367,656,353,311,317,286,306,336,321,301,346],"wnum":[1376,1436,1632,1728,1597,1640,1657,1527,551],"wden":[2164,2196,2903,2949,2524,2654,2664,2565,968],"wrate":[63.586,65.392,56.218,58.596,63.273,61.794,62.2,59.532,56.921],"win":{"before":{"r":63.095921883974725,"d":13928},"sale":{"r":63.85321100917431,"d":2180},"after":{"r":56.13486270420577,"d":2877}}},"ret":{"name":"Returning customers","den":"returning-customer orders, excluding TikTok","rate":[44.972,46.154,44.481,46.626,49.481,56.391,59.506,50.269,47.333,51.005,55.128,55.747,56.106,52.616,47.326,48.432,42.81,49.39,53.445,47.87,47.045,50.163,50.816,63.78,61.29,61.326,58.974,56.267,61.882,60.541,60.355,53.506,58.743,58.544,61.31,54.377,56.395,54.0,55.076,53.806,55.132,54.958,55.556,62.291,50.739,51.169,55.751,58.483,54.581,65.45,57.672,47.619,45.17,56.075,54.789,47.078,48.127,52.553,44.079],"num":[161,138,137,152,143,150,241,187,142,203,172,194,170,181,177,139,131,162,256,191,207,307,405,243,228,222,184,202,263,224,204,206,215,185,206,205,194,189,217,205,188,194,230,261,206,197,349,293,280,735,218,140,159,180,143,145,167,175,134],"dn":[358,299,308,326,289,266,405,372,300,398,312,348,303,344,374,287,306,328,479,399,440,612,797,381,372,362,312,359,425,370,338,385,366,316,336,377,344,350,394,381,341,353,414,419,406,385,626,501,513,1123,378,294,352,321,261,308,347,333,304],"wnum":[1122,1249,1263,1791,1503,1392,1816,1720,476],"wden":[2251,2377,2613,3195,2536,2540,3264,3037,984],"wrate":[49.845,52.545,48.335,56.056,59.267,54.803,55.637,56.635,48.374],"win":{"before":{"r":54.556474614945806,"d":14024},"sale":{"r":58.89453621346887,"d":3148},"after":{"r":50.41407867494824,"d":2898}}}},"days":["2026-07-20","2026-07-21","2026-07-22","2026-07-23","2026-07-24","2026-07-25","2026-07-26","2026-07-27","2026-07-28","2026-07-29","2026-07-30","2026-07-31","2026-08-01","2026-08-02","2026-08-03","2026-08-04","2026-08-05","2026-08-06","2026-08-07","2026-08-08","2026-08-09","2026-08-10","2026-08-11","2026-08-12","2026-08-13","2026-08-14","2026-08-15","2026-08-16","2026-08-17","2026-08-18","2026-08-19","2026-08-20","2026-08-21","2026-08-22","2026-08-23","2026-08-24","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-08-29","2026-08-30","2026-08-31","2026-09-01","2026-09-02","2026-09-03","2026-09-04","2026-09-05","2026-09-06","2026-09-07","2026-09-08","2026-09-09","2026-09-10","2026-09-11","2026-09-12","2026-09-13","2026-09-14","2026-09-15","2026-09-16"],"weeks":[{"label":"Jul 20","n":7,"full":true},{"label":"Jul 27","n":7,"full":true},{"label":"Aug 3","n":7,"full":true},{"label":"Aug 10","n":7,"full":true},{"label":"Aug 17","n":7,"full":true},{"label":"Aug 24","n":7,"full":true},{"label":"Aug 31","n":7,"full":true},{"label":"Sep 7","n":7,"full":true},{"label":"Sep 14","n":3,"full":false}],"launch_day":45,"sale_end":49,"ld":49,"launch_week":6,"sale_week":7,"tiers":{"before":[46.82,11.24,7.87,4.48,3.08,26.51],"sale":[29.41,6.13,1.18,9.82,25.96,27.5],"after":[36.83,5.48,0.8,9.96,22.33,24.6]},"tier_names":["1 bottle / 30 days","1 bottle / 60 days","1 bottle / 90 days","2 bottles / 60 days","3 bottles / 90 days","Everything else"],"bottles":{"before_30":{"n":8458,"p":[71.8,18.0,10.2]},"before_60":{"n":2361,"p":[61.7,24.6,13.7]},"before_90":{"n":2146,"p":[47.5,24.9,27.6]},"after_30":{"n":1393,"p":[73.3,19.5,7.2]},"after_60":{"n":472,"p":[32.2,58.5,9.3]},"after_90":{"n":829,"p":[2.7,1.8,95.5]}},"series":[{"lab":"Take rate","sub":"new customers","col":"var(--core-black)","unit":"%","v":[59.729,60.463,53.467,56.694,59.861,60.021,59.004,55.954,51.92],"base":58.3725,"on":true,"w":3.0},{"lab":"New subscriptions","sub":"started per day","col":"var(--deep)","unit":"n","v":[201.7,208.9,236.9,252.9,233.7,240.9,243.9,222.9,189.3],"base":229.1667,"on":true,"w":2.2},{"lab":"Order value","sub":"new-customer AOV","col":"var(--orange)","unit":"$","v":[87.49,87.2,85.28,87.88,87.07,90.42,100.82,111.23,100.67],"base":87.5567,"on":true,"w":2.2},{"lab":"Conversion","sub":"store-wide","col":"var(--retention)","unit":"%","v":[1.282,1.016,0.79,0.918,0.778,1.261,1.415,1.701,1.859],"base":1.0075,"on":false,"w":2.0},{"lab":"Sessions","sub":"store-wide, per day","col":"var(--ink-3)","unit":"n","v":[47770,60049,57890,45860,43624,32721,36658,29706,25766],"base":47985.6667,"on":false,"w":2.0}],"grid":["Jul 20","Jul 27","Aug 3","Aug 10","Aug 17","Aug 24","Aug 31","Sep 7","Sep 14"],"prew":{"start":"Jul 20","end":"Aug 24","n":6},"gantt":{"who":[{"k":"you","lab":"You","col":"var(--orange)"},{"k":"us","lab":"Us","col":"var(--blue)"},{"k":"your_team","lab":"Your team","col":"var(--retention)"},{"k":"joint","lab":"Joint","col":"var(--deep)"}],"gutter":370,"ticks":[{"x":0.0,"lab":"Sep"},{"x":0.08163265306122448,"lab":"Oct"},{"x":0.7142857142857143,"lab":"Nov"}],"rows":[{"t":"Your yes on restoring the single bottle every 90 days","who":"you","lab":"Sep 30","x0":0.061224489795918366,"x1":0.061224489795918366,"point":true},{"t":"We re-read take rate on two more clean weeks","who":"us","lab":"Oct 1","x0":0.08163265306122448,"x1":0.08163265306122448,"point":true},{"t":"Plan back in the buy box, 30-day test runs","who":"your_team","lab":"Oct 2 to Nov 1","x0":0.10204081632653061,"x1":0.7142857142857143,"point":false},{"t":"Nothing else changes in the buy box, no promotion","who":"you","lab":"Oct 2 to Nov 1","x0":0.10204081632653061,"x1":0.7142857142857143,"point":false},{"t":"Test result and the decision on the missing plan","who":"joint","lab":"Nov 1","x0":0.7142857142857143,"x1":0.7142857142857143,"point":true},{"t":"60-day retention read on the September cohort","who":"us","lab":"Nov 11","x0":0.9183673469387755,"x1":0.9183673469387755,"point":true}]},"forecast":{"n":12,"unit":"subscriptions not started","labels":["Month 1","Month 2","Month 3","Month 4","Month 5","Month 6","Month 7","Month 8","Month 9","Month 10","Month 11","Month 12"],"mid":[842,1684,2526,3367,4209,5051,5893,6735,7577,8419,9261,10102],"lo":[541,1083,1624,2166,2707,3249,3790,4331,4873,5414,5956,6497],"hi":[1191,2382,3573,4764,5956,7147,8338,9529,10720,11911,13102,14293],"rate":842,"rate_lo":541,"rate_hi":1191,"retention_label":"Nov 11"}};
   var NS = 'http://www.w3.org/2000/svg';
   function el(n, a) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); return e; }
   function txt(x, y, s, o) {
@@ -874,20 +917,20 @@ summary{cursor:pointer}
     var xOf = week ? function (i) { return L + (R - L) * ((i + 0.5) / N); } : function (i) { return L + (R - L) * (i / (N - 1)); };
     for (var v = lo; v <= hi; v += 5) {
       s.appendChild(el('line', { x1: L, x2: R, y1: yOf(v), y2: yOf(v), stroke: 'var(--grid)', 'stroke-width': 1 }));
-      s.appendChild(txt(L - 10, yOf(v) + 4, v + '%', { anchor: 'end', size: 12, weight: 600 }));
+      s.appendChild(txt(L - 10, yOf(v) + 4, v + '%', { anchor: 'end', size: 13, weight: 600 }));
     }
     var a = P.launch_day, b = P.sale_end, x0, x1;
     if (week) { var bw = (R - L) / N; x0 = L + bw * P.launch_week; x1 = L + bw * (P.sale_week + 1); }
     else { var half = (xOf(1) - xOf(0)) / 2; x0 = xOf(a) - half; x1 = xOf(b) + half; }
     s.appendChild(el('rect', { x: x0, y: T - 12, width: x1 - x0, height: B - T + 12, fill: 'var(--orange-lg)', opacity: .15 }));
     s.appendChild(txt((x0 + x1) / 2, T - 18, week ? 'LAUNCH WEEK' : 'LAUNCH + LABOR DAY SALE',
-      { size: 12, weight: 900, ls: '.09em', fill: 'var(--orange-text)' }));
+      { size: 13, weight: 900, ls: '.09em', fill: 'var(--orange-text)' }));
     var pre = m.win.before.r, post = m.win.after.r;
     [[pre, 'var(--ink-3)', 'BEFORE ' + pre.toFixed(1) + '%'], [post, 'var(--core-black)', 'AFTER THE SALE ' + post.toFixed(1) + '%']]
       .forEach(function (g) {
         s.appendChild(el('line', { x1: L, x2: R, y1: yOf(g[0]), y2: yOf(g[0]), stroke: g[1], 'stroke-width': 2, 'stroke-dasharray': '4 5' }));
         s.appendChild(txt(L + 4, yOf(g[0]) + (g[0] === pre ? 18 : -9), g[2],
-          { anchor: 'start', size: 12, weight: 900, ls: '.07em', fill: g[1] }));
+          { anchor: 'start', size: 13, weight: 900, ls: '.07em', fill: g[1] }));
       });
     s.appendChild(el('polyline', { points: rate.map(function (v, i) { return xOf(i) + ',' + yOf(v); }).join(' '),
       fill: 'none', stroke: 'var(--core-black)', 'stroke-width': week ? 2.6 : 2.2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
@@ -901,12 +944,12 @@ summary{cursor:pointer}
       s.appendChild(c);
     });
     if (week) rate.forEach(function (v, i) {
-      s.appendChild(txt(xOf(i), yOf(v) - 13, v.toFixed(1) + '%', { size: 12.5, weight: 900, fill: 'var(--ink)' }));
-      s.appendChild(txt(xOf(i), B + 22, P.weeks[i].label.toUpperCase(), { size: 12, weight: 700, ls: '.05em' }));
-      if (!P.weeks[i].full) s.appendChild(txt(xOf(i), B + 36, P.weeks[i].n + ' DAYS', { size: 12, weight: 700, ls: '.05em' }));
+      s.appendChild(txt(xOf(i), yOf(v) - 13, v.toFixed(1) + '%', { size: 13, weight: 900, fill: 'var(--ink)' }));
+      s.appendChild(txt(xOf(i), B + 22, P.weeks[i].label.toUpperCase(), { size: 13, weight: 700, ls: '.05em' }));
+      if (!P.weeks[i].full) s.appendChild(txt(xOf(i), B + 36, P.weeks[i].n + ' DAYS', { size: 13, weight: 700, ls: '.05em' }));
     });
     else [0, Math.round((N-1)*0.25), Math.round((N-1)*0.5), P.launch_day, N - 1].forEach(function (i) {
-      s.appendChild(txt(xOf(i), B + 22, short(P.days[i]).toUpperCase(), { size: 12, weight: 700, ls: '.05em' }));
+      s.appendChild(txt(xOf(i), B + 22, short(P.days[i]).toUpperCase(), { size: 13, weight: 700, ls: '.05em' }));
     });
     s.appendChild(el('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--rule)', 'stroke-width': 1.5 }));
         s.setAttribute('aria-label', m.name + ' take rate, ' + (week ? 'weekly' : 'daily') + '. Before the change '
@@ -948,9 +991,9 @@ summary{cursor:pointer}
         hov(r, '<b>' + n + '</b><br>' + w[2] + ': ' + val.toFixed(1) + '%');
         s.appendChild(r);
         s.appendChild(txt(L + ww + 8, y + j * (h + 3) + h / 2 + 4, val.toFixed(1) + '%',
-          { anchor: 'start', size: 12, weight: 900, fill: 'var(--ink)' }));
+          { anchor: 'start', size: 13, weight: 900, fill: 'var(--ink)' }));
         if (i === 0) s.appendChild(txt(L + ww + 56, y + j * (h + 3) + h / 2 + 4, w[2].toUpperCase(),
-          { anchor: 'start', size: 12, weight: 700, ls: '.08em', fill: 'var(--ink-3)' }));
+          { anchor: 'start', size: 13, weight: 700, ls: '.08em', fill: 'var(--ink-3)' }));
       });
     });
     var yb = T + names.length * (rowH + gap) - gap + 26;
@@ -977,7 +1020,7 @@ summary{cursor:pointer}
       if (i && i % 2 === 0) y += 16;
       var d = P.bottles[r[0]];
       s.appendChild(txt(L - 12, y + rowH / 2 + 1, r[1], { anchor: 'end', size: 13, weight: 700, fill: 'var(--ink)', fam: "'Public Sans',sans-serif" }));
-      s.appendChild(txt(L - 12, y + rowH / 2 + 16, d.n.toLocaleString() + ' subscriptions', { anchor: 'end', size: 12, weight: 500, fam: "'Public Sans',sans-serif" }));
+      s.appendChild(txt(L - 12, y + rowH / 2 + 16, d.n.toLocaleString() + ' subscriptions', { anchor: 'end', size: 13, weight: 500, fam: "'Public Sans',sans-serif" }));
       var x = L;
       d.p.forEach(function (v, j) {
         if (v <= 0) return;
@@ -988,7 +1031,7 @@ summary{cursor:pointer}
         var _lab = v.toFixed(1) + '%';
         if (i === widest[j] && v > 20) _lab += '   ' + NM[j].toUpperCase();
         if (v > 7) s.appendChild(txt(x + w / 2, y + rowH / 2 + 5, _lab,
-          { size: 12.5, weight: 900, fill: j === 2 ? 'var(--base-white)' : 'var(--ink)' }));
+          { size: 13, weight: 900, fill: j === 2 ? 'var(--base-white)' : 'var(--ink)' }));
         x += w;
       });
       y += rowH + 10;
@@ -1035,14 +1078,14 @@ summary{cursor:pointer}
       var yOf = function (v) { return B - (v - lo) / (hi - lo) * (B - T); };
       var xOf = function (i) { return L + bw * (i + .5); };
       s.appendChild(el('rect', { x: L + bw * P.launch_week, y: T - 10, width: bw * (P.sale_week - P.launch_week + 1), height: B - T + 10, fill: 'var(--orange-lg)', opacity: .13 }));
-      s.appendChild(txt(L + bw * (P.launch_week + (P.sale_week - P.launch_week + 1) / 2), T - 16, 'LAUNCH + SALE', { size: 12, weight: 900, ls: '.09em', fill: 'var(--orange-text)' }));
+      s.appendChild(txt(L + bw * (P.launch_week + (P.sale_week - P.launch_week + 1) / 2), T - 16, 'LAUNCH + SALE', { size: 13, weight: 900, ls: '.09em', fill: 'var(--orange-text)' }));
       for (var g = Math.ceil(lo / st) * st; g <= hi + .001; g += st) {
         var base = Math.abs(g - 100) < .001;
         s.appendChild(el('line', { x1: L, x2: R, y1: yOf(g), y2: yOf(g), stroke: base ? 'var(--ink-3)' : 'var(--grid)', 'stroke-width': base ? 1.5 : 1 }));
-        s.appendChild(txt(L - 10, yOf(g) + 4, Math.round(g), { anchor: 'end', size: 12, weight: base ? 900 : 600, fill: base ? 'var(--ink-2)' : 'var(--ink-3)' }));
+        s.appendChild(txt(L - 10, yOf(g) + 4, Math.round(g), { anchor: 'end', size: 13, weight: base ? 900 : 600, fill: base ? 'var(--ink-2)' : 'var(--ink-3)' }));
       }
-      s.appendChild(txt(L + 4, yOf(100) - 9, 'PRE-LAUNCH', { anchor: 'start', size: 12, weight: 900, ls: '.08em' }));
-      LBL.forEach(function (l, i) { s.appendChild(txt(xOf(i), B + 22, l.toUpperCase(), { size: 12, weight: 700, ls: '.04em' })); });
+      s.appendChild(txt(L + 4, yOf(100) - 9, 'PRE-LAUNCH', { anchor: 'start', size: 13, weight: 900, ls: '.08em' }));
+      LBL.forEach(function (l, i) { s.appendChild(txt(xOf(i), B + 22, l.toUpperCase(), { size: 13, weight: 700, ls: '.04em' })); });
       s.appendChild(el('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--rule)', 'stroke-width': 1.5 }));
       var ends = [];
       on.forEach(function (x) {
@@ -1064,7 +1107,7 @@ summary{cursor:pointer}
       ends.forEach(function (e) {
         s.appendChild(el('line', { x1: xOf(e.i) + 6, x2: R + 12, y1: yOf(e.x.idx[e.i]), y2: e.y - 4, stroke: e.x.col, 'stroke-width': 1, opacity: .5 }));
         s.appendChild(txt(R + 16, e.y, fmt(e.x.v[e.i], e.x.unit), { anchor: 'start', size: 13, weight: 900, fill: e.x.col }));
-        s.appendChild(txt(R + 16, e.y + 17, e.x.lab.toUpperCase(), { anchor: 'start', size: 12, weight: 700, ls: '.06em' }));
+        s.appendChild(txt(R + 16, e.y + 17, e.x.lab.toUpperCase(), { anchor: 'start', size: 13, weight: 700, ls: '.06em' }));
       });
             s.setAttribute('aria-label', 'Weekly outcome metrics indexed to their own pre-launch average. '
         + on.map(function (x) { var i = x.idx.length - 1; while (i >= 0 && x.idx[i] === null) i--;
@@ -1100,15 +1143,20 @@ summary{cursor:pointer}
     var col = {}, wlab = {};
     G.who.forEach(function (w) { col[w.k] = w.col; wlab[w.k] = w.lab; });
     var xOf = function (f) { return L + (R2 - L) * f; };
+    // the axis opens a few days before the first gate, so the opening month tick
+    // and the next one can land within a label's width of each other
+    var lastTick = -1e9;
     G.ticks.forEach(function (t) {
+      if (xOf(t.x) - lastTick < 44) return;
+      lastTick = xOf(t.x);
       s.appendChild(el('line', { x1: xOf(t.x), x2: xOf(t.x), y1: T - 12,
         y2: T + G.rows.length * (rowH + gap), stroke: 'var(--grid)', 'stroke-width': 1 }));
       s.appendChild(txt(xOf(t.x), T - 18, t.lab.toUpperCase(),
-        { size: 12, weight: 700, ls: '.09em' }));
+        { size: 13, weight: 700, ls: '.09em' }));
     });
     G.rows.forEach(function (r, i) {
       var y = T + i * (rowH + gap), c = col[r.who];
-      s.appendChild(txt(L - 16, y + rowH / 2 + 4, r.t, { anchor: 'end', size: 12, weight: 600,
+      s.appendChild(txt(L - 16, y + rowH / 2 + 4, r.t, { anchor: 'end', size: 13, weight: 600,
         fill: 'var(--ink)', fam: "'Public Sans',sans-serif" }));
       var x0 = xOf(r.x0), x1 = xOf(r.x1), w = Math.max(x1 - x0, 0);
       if (r.point) {
@@ -1116,21 +1164,21 @@ summary{cursor:pointer}
         var pt = el('rect', { x: x0 - d, y: y + rowH / 2 - d, width: d * 2, height: d * 2,
           fill: c, transform: 'rotate(45 ' + x0 + ' ' + (y + rowH / 2) + ')' });
         hov(pt, '<b>' + r.lab + '</b><br>' + r.t); s.appendChild(pt);
-        s.appendChild(txt(x0 + 16, y + rowH / 2 + 4, r.lab, { anchor: 'start', size: 12,
+        s.appendChild(txt(x0 + 16, y + rowH / 2 + 4, r.lab, { anchor: 'start', size: 13,
           weight: 900, fill: 'var(--ink)' }));
       } else {
         var bar = el('rect', { x: x0, y: y + 5, width: w, height: rowH - 10, rx: 5, fill: c,
           opacity: .85 });
         hov(bar, '<b>' + r.lab + '</b><br>' + r.t); s.appendChild(bar);
-        s.appendChild(txt(x0 + w / 2, y + rowH / 2 + 4, r.lab, { size: 12, weight: 900,
+        s.appendChild(txt(x0 + w / 2, y + rowH / 2 + 4, r.lab, { size: 13, weight: 900,
           fill: 'var(--core-black)' }));
       }
       s.appendChild(txt(866, y + rowH / 2 + 4, wlab[r.who].toUpperCase(),
-        { anchor: 'end', size: 12, weight: 700, ls: '.08em', fill: 'var(--ink-3)' }));
+        { anchor: 'end', size: 13, weight: 700, ls: '.08em', fill: 'var(--ink-3)' }));
     });
     var yb = T + G.rows.length * (rowH + gap);
     s.appendChild(txt(866, T - 18, 'OWNER',
-      { anchor: 'end', size: 12, weight: 700, ls: '.08em', fill: 'var(--ink-3)' }));
+      { anchor: 'end', size: 13, weight: 700, ls: '.08em', fill: 'var(--ink-3)' }));
     s.appendChild(el('line', { x1: L, x2: R2, y1: yb, y2: yb, stroke: 'var(--rule)', 'stroke-width': 1.5 }));
     s.setAttribute('viewBox', '0 0 880 ' + (yb + 26));
     s.setAttribute('aria-label', 'Schedule. ' + G.rows.map(function (r) {
@@ -1156,7 +1204,7 @@ summary{cursor:pointer}
       s.appendChild(el('line', { x1: L, x2: R2, y1: yOf(g), y2: yOf(g),
         stroke: 'var(--grid)', 'stroke-width': 1 }));
       s.appendChild(txt(L - 10, yOf(g) + 4, g.toLocaleString(),
-        { anchor: 'end', size: 12, weight: 600 }));
+        { anchor: 'end', size: 13, weight: 600 }));
     }
     var band = '';
     F6.hi.forEach(function (v, i) { band += (i ? 'L' : 'M') + xOf(i) + ' ' + yOf(v); });
@@ -1174,15 +1222,15 @@ summary{cursor:pointer}
       // neighbour, and the end callout already names the twelve-month figure.
       if (i % 2 === 0)
         s.appendChild(txt(xOf(i), B + 20, F6.labels[i].toUpperCase(),
-          { size: 12, weight: 700, ls: '.04em' }));
+          { size: 13, weight: 700, ls: '.04em' }));
     });
     s.appendChild(el('line', { x1: L, x2: R2, y1: B, y2: B, stroke: 'var(--rule)', 'stroke-width': 1.5 }));
     s.appendChild(txt(R2 + 12, yOf(F6.mid[N - 1]) - 2, F6.mid[N - 1].toLocaleString(),
       { anchor: 'start', size: 15, weight: 900, fill: 'var(--ink)' }));
     s.appendChild(txt(R2 + 12, yOf(F6.mid[N - 1]) + 17, 'SUBSCRIPTIONS',
-      { anchor: 'start', size: 12, weight: 700, ls: '.07em' }));
+      { anchor: 'start', size: 13, weight: 700, ls: '.07em' }));
     s.appendChild(txt(R2 + 12, yOf(F6.mid[N - 1]) + 34, 'AT ' + F6.n + ' MONTHS',
-      { anchor: 'start', size: 12, weight: 700, ls: '.07em' }));
+      { anchor: 'start', size: 13, weight: 700, ls: '.07em' }));
             s.setAttribute('aria-label', 'Cumulative subscriptions not started over twelve months, reaching '
       + F6.mid[N - 1] + ', between ' + F6.lo[N - 1] + ' and ' + F6.hi[N - 1] + '.');
   })();
