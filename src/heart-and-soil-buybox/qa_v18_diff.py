@@ -29,8 +29,14 @@ def payload(doc):
 
 
 da, db = payload(A), payload(B)
-check("the payload has the same keys", sorted(da) == sorted(db),
-      str(set(da) ^ set(db)))
+# "revmix" is chart 7, added 2026-09-22 for the revenue-weighted section. It is new
+# data rather than a re-cut of v15's, and it comes from rev_facts.py, which refuses to
+# write its ledger unless that ledger reproduces facts_v15.json's revenue per day and
+# the take-rate identity closes. Every other key must still match v15 exactly.
+ADDED = {"revmix"}
+check("the payload has the same keys, apart from the declared additions",
+      sorted(set(da) | ADDED) == sorted(set(db) | ADDED) and ADDED <= set(db),
+      str((set(da) ^ set(db)) - ADDED))
 moved = [k for k in da if json.dumps(da[k], sort_keys=True) != json.dumps(db[k], sort_keys=True)]
 # the schedule's "gutter" is the pixel width reserved for its row labels, a
 # layout value that moves when in-chart type changes. Everything else in the

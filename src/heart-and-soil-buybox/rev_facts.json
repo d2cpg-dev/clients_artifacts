@@ -1,0 +1,36 @@
+{
+  "_provenance": {
+    "source": "Shopify line-basis sales export with net_sales, f_linerevenue.csv",
+    "pulled": "2026-09-22",
+    "range": "2026-07-20 to 2026-09-20",
+    "note": "New-customer net sales split by line type. Reproduces facts_v15.json new-customer revenue per day exactly on both windows, and the take-rate identity closes on both."
+  },
+  "windows": {
+    "pre": {
+      "days": 40,
+      "sub_total": 742515.48,
+      "one_total": 578148.65,
+      "sub_day": 18562.89,
+      "one_day": 14453.72,
+      "tot_day": 33016.6,
+      "share": 56.2229,
+      "sub_per_order": 82.5476
+    },
+    "post": {
+      "days": 13,
+      "sub_total": 242643.51,
+      "one_total": 204252.61,
+      "sub_day": 18664.89,
+      "one_day": 15711.74,
+      "tot_day": 34376.62,
+      "share": 54.2953,
+      "sub_per_order": 107.3644
+    }
+  },
+  "delta": {
+    "share_pt": -1.9276,
+    "sub_day_pct": 0.5495,
+    "one_day_pct": 8.7038,
+    "sub_per_order_pct": 30.0636
+  }
+}

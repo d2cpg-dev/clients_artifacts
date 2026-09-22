@@ -6,7 +6,7 @@
       <p class="doc">Subscription Buy Box</p>
       <div class="kicker">Heart &amp; Soil &middot; new buy box live {{change_day_long}}</div>
       <nav class="secnav" aria-label="Jump to a section">
-        <a href="#take-rate">How many</a><a href="#confidence">How sure</a><a href="#mechanism">What changed</a><a href="#worth">What it is worth</a><a href="#open-questions">Still open</a>
+        <a href="#take-rate">How many</a><a href="#confidence">How sure</a><a href="#mechanism">What changed</a><a href="#worth">What it is worth</a><a href="#dollars">In dollars</a><a href="#open-questions">Still open</a>
       </nav>
     </div>
 
@@ -188,6 +188,38 @@
   <p>Those subscription figures are list prices. The Skio export carries no charged price on the
     subscription line, the order line or the change log, so we cannot yet see the effect of any
     difference in discount between the old buy box and the new one.</p>
+
+  <h2 id="dollars">If you count dollars instead of orders</h2>
+  <p>The take rate above counts decisions. A cart holding a subscription and a one-off counts once,
+    because the customer either chose a subscription on that visit or did not. A fair question is
+    what the same period looks like weighted by money rather than by orders, so we ran it.</p>
+  <p>Measured that way, subscription revenue is {{rw_pre}}% of what new customers spent before the
+    change and {{rw_post}}% since, a fall of {{rw_drop}} points against the {{drop_r}} points the
+    order count shows. The gap between those two numbers is not a disagreement. It is the whole
+    story in one line: fewer customers subscribe, and the ones who still do commit more money each
+    time, because subscription spend per subscribing order went from ${{rw_sub_ord_pre}} to
+    ${{rw_sub_ord_post}}, {{rw_sub_ord_pct}}. The larger basket cancels most of the smaller
+    headcount.</p>
+  <figure>
+    <p class="ch-tag">New-customer money &middot; per day</p>
+    <p class="ch-t">Subscription revenue is flat at {{rw_subday_pct}}; the growth is all on the
+      other side</p>
+    <p class="ch-s">Net sales per day from new customers, split by line type. One-time covers
+      everything that is not a subscription line. Both bars sit on one scale, so the wider bar is
+      the larger business, and the figure on the right of each is the subscription share.</p>
+    <div class="ch-scroll"><svg id="c7" viewBox="0 0 880 200" role="img"></svg></div>
+    <figcaption>Subscription dollars stand still while everything else grows, which is what moves
+      the subscription share of revenue down even though total revenue is up.</figcaption>
+  </figure>
+  <p>That is the finding the money view adds. Subscription revenue per day moved
+    {{rw_subday_pct}}, which is standing still. Everything else new customers bought moved
+    {{rw_oneday_pct}}. Total new-customer revenue is up {{rev_pct}} a day, and all of that increase
+    comes from the non-subscription side, from customers who would previously have subscribed and
+    now buy once instead, at a larger basket.</p>
+  <p>So the two ways of counting point the same way. The order count says fewer people are choosing
+    a subscription. The money count says the subscription business itself is no bigger than it was.
+    The forward-looking figure above agrees with both: committed spend per subscription per month
+    is flat, because the larger order now arrives less often.</p>
 
   <h2>Everything else, week by week</h2>
   <p>Take rate, new subscriptions, order value, conversion and traffic across the same range,

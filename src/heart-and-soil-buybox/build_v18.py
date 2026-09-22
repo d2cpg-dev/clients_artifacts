@@ -7,6 +7,9 @@ import json, io, re, datetime, math
 F = json.load(io.open("facts_v15.json", encoding="utf-8"))
 P = json.load(io.open("payload_v15.json", encoding="utf-8"))
 BQF = json.load(io.open("bq_facts.json", encoding="utf-8"))
+# revenue-weighted share, written by rev_facts.py, which will not produce this file
+# unless it first reproduces facts_v15.json's revenue per day and the take-rate identity
+RVF = json.load(io.open("rev_facts.json", encoding="utf-8"))
 # selling-plan evidence: which plan group the box presents, and how quantity is chosen at each cycle
 PF = json.load(io.open("plan_facts.json", encoding="utf-8"))
 BODY = io.open("page_v18_body.html", encoding="utf-8").read()
@@ -274,6 +277,7 @@ pts  = lambda x: "%.1f" % abs(x)
 p1   = lambda x: "%.1f" % x
 p2   = lambda x: "%.2f" % x
 n0   = lambda x: format(int(round(x)), ",")
+pc   = lambda x: "%+.1f%%" % x   # a signed percentage change, e.g. +30.1%
 def sci(p):
     if p >= 1e-3: return "%.4f" % p
     e = int(math.floor(math.log10(p)))
@@ -336,6 +340,16 @@ TOK = dict(
   col_cell_pre="%.2f" % F["colostrum"]["cell_price_pre"],
   col_cell_post="%.2f" % F["colostrum"]["cell_price_post"],
   col_resid=p1(F["colostrum"]["residual_price_pct"]),
+  # the revenue-weighted section
+  rw_pre=p2(RVF["windows"]["pre"]["share"]), rw_post=p2(RVF["windows"]["post"]["share"]),
+  rw_drop=p2(abs(RVF["delta"]["share_pt"])),
+  rw_sub_ord_pre=n0(RVF["windows"]["pre"]["sub_per_order"]),
+  rw_sub_ord_post=n0(RVF["windows"]["post"]["sub_per_order"]),
+  rw_sub_ord_pct=pc(RVF["delta"]["sub_per_order_pct"]),
+  rw_subday_pre=n0(RVF["windows"]["pre"]["sub_day"]),
+  rw_subday_post=n0(RVF["windows"]["post"]["sub_day"]),
+  rw_subday_pct=pc(RVF["delta"]["sub_day_pct"]),
+  rw_oneday_pct=pc(RVF["delta"]["one_day_pct"]),
   ck_orders_exp=n0(F["checksum"]["orders_expected"]),
   ck_signups_exp=n0(F["checksum"]["signups_expected"]),
   recon_pre=p2(F["recon"]["pre"]["ratio"]), recon_post=p2(F["recon"]["post"]["ratio"]),
@@ -535,7 +549,70 @@ P["forecast"] = dict(
     retention_label=md(RETENTION))
 
 # --------------------------------------------------------------- new charts
+# chart 7 reads its two bars straight off the revenue ledger
+P["revmix"] = {
+    "rows": [
+        {"lab": "Before", "sub": RVF["windows"]["pre"]["sub_day"],
+         "one": RVF["windows"]["pre"]["one_day"], "share": RVF["windows"]["pre"]["share"]},
+        {"lab": "Since the sale", "sub": RVF["windows"]["post"]["sub_day"],
+         "one": RVF["windows"]["post"]["one_day"], "share": RVF["windows"]["post"]["share"]},
+    ],
+    "names": ["Subscription", "One-time"],
+}
+
 EXTRA_JS = """
+  /* ---------- chart 7 : where the new-customer money comes from ---------- */
+  (function () {
+    var s = document.getElementById('c7'); if (!s) return;
+    // the plot stops at 640 so the row's share label and then the key both fit
+    // inside the 880-unit frame; at 700 the key ran 143 units past the edge
+    var D = P.revmix, L = 250, R = 640, T = 26, rowH = 46, gap = 26;
+    var COLS = ['var(--core-black)', 'var(--ramp-lo)'];
+    var MAX = 0;
+    D.rows.forEach(function (r) { if (r.sub + r.one > MAX) MAX = r.sub + r.one; });
+    var y = T;
+    D.rows.forEach(function (r) {
+      s.appendChild(txt(L - 16, y + rowH / 2 + 5, r.lab, { anchor: 'end', size: 14,
+        weight: 700, fill: 'var(--ink)', fam: "'Public Sans',sans-serif" }));
+      var x = L;
+      [r.sub, r.one].forEach(function (v, j) {
+        var w = (R - L) * v / MAX;
+        var rect = el('rect', { x: x, y: y, width: Math.max(w - (j ? 2 : 0), 1),
+          height: rowH, fill: COLS[j] });
+        hov(rect, '<b>' + r.lab + ' &middot; ' + D.names[j] + '</b><br>$'
+          + Math.round(v).toLocaleString() + ' a day');
+        s.appendChild(rect);
+        var _vt = txt(x + w / 2, y + rowH / 2 + 5, '$' + Math.round(v).toLocaleString(),
+          { size: 13, weight: 900, fill: j === 0 ? 'var(--base-white)' : 'var(--ink)' });
+        s.appendChild(_vt);
+        if (_vt.getComputedTextLength() > w - 10) s.removeChild(_vt);
+        x += w;
+      });
+      // the key names the dark band, so the number alone is enough here
+      s.appendChild(txt(x + 10, y + rowH / 2 + 5, r.share.toFixed(1) + '%',
+        { anchor: 'start', size: 13, weight: 900, fill: 'var(--ink)' }));
+      y += rowH + gap;
+    });
+    var _kx = R + 18, _ky = T + 9;
+    Array.prototype.forEach.call(s.querySelectorAll('text'), function (t) {
+      var b = t.getBBox();
+      if (b.x + b.width + 18 > _kx) _kx = b.x + b.width + 18;
+    });
+    D.names.forEach(function (n, j) {
+      s.appendChild(el('rect', { x: _kx, y: _ky - 11, width: 13, height: 13, rx: 3,
+        fill: COLS[j], stroke: 'var(--rule)', 'stroke-width': 1 }));
+      s.appendChild(txt(_kx + 21, _ky, n.toUpperCase(), { anchor: 'start', size: 13,
+        weight: 700, ls: '.07em', fill: 'var(--ink-2)' }));
+      _ky += 26;
+    });
+    s.appendChild(txt(L, y + 4, 'NET SALES PER DAY, NEW CUSTOMERS, BOTH BARS ON ONE SCALE',
+      { anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));
+    s.setAttribute('viewBox', '0 0 880 ' + (y + 20));
+    s.setAttribute('aria-label', 'New-customer net sales per day split by line type. '
+      + D.rows.map(function (r) { return r.lab + ': $' + Math.round(r.sub) + ' subscription and $'
+        + Math.round(r.one) + ' other, ' + r.share.toFixed(1) + ' percent subscription'; }).join('. '));
+  })();
+
   /* ---------- chart 5 : schedule gantt ---------- */
   (function () {
     var s = document.getElementById('c5'); if (!s) return;
