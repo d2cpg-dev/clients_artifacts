@@ -13,6 +13,23 @@ def num(x):
 
 F = json.load(io.open("facts_v15.json", encoding="utf-8"))
 A = load("a_orders.csv"); B = load("b_signups.csv"); C = load("c_linebasis.csv"); E = load("e_sessions.csv")
+
+# These must match facts_v15.py exactly. They did not, and the plotted series drifted
+# from the prose for a long time without anything catching it:
+#   - renewal channels were never dropped here, so the returning-customer line plotted
+#     about 88 percent against a true 49 percent, since a renewal is always a returning
+#     customer and always a subscription
+#   - the seeding channel was dropped from the ledger on 2026-09-23 but not from here,
+#     leaving the headline and order-tag lines about two points under their own
+#     reference lines
+# The window figures always came from facts_v15.json, which is why the summary numbers
+# looked right while the line drawn through them did not. The assertion at the bottom
+# now ties the series back to the ledger so this cannot happen silently again.
+_DROP = {"Skio Subscriptions (YC S20)", "Heart & Soil Subscriptions", "The Lobby"}
+A = [r for r in A if r["Sales channel"] not in _DROP]
+B = [r for r in B if r["Sales channel"] not in _DROP]
+C = [r for r in C if r["Sales channel"] not in _DROP]
+
 DAYS = sorted(set(r["Day"] for r in A))
 TT = "AfterShip for TikTok"
 cust = lambda r: r["New or returning customer"].strip()
@@ -101,6 +118,24 @@ P = dict(defs=DEFS, days=DAYS, weeks=WEEKS,
                   for k, v in F["bottles"].items()},
          series=SERIES, grid=[w["label"] for w in WEEKS],
          prew=dict(start=lab(WK[PREW[0]]), end=lab(WK[PREW[-1]]), n=len(PREW)))
+# The window figures are copied from the ledger and the daily series are computed here,
+# so the only thing that proves the line matches the number printed on it is summing the
+# series back up. Every measure, both windows, numerator and denominator.
+_FAIL = []
+for _k in sorted(DEFS):
+    _d = DEFS[_k]
+    for _lab, _days, _fk in (("before", PRE, "pre"), ("after", POST, "post")):
+        _idx = [DAYS.index(_x) for _x in _days]
+        _n = int(round(sum(_d["num"][i] for i in _idx)))
+        _den = int(round(sum(_d["dn"][i] for i in _idx)))
+        _f = F["takerate"][_k][_fk]
+        if _n != _f["n"] or _den != _f["d"]:
+            _FAIL.append("%s %s: series n=%d d=%d, ledger n=%d d=%d"
+                         % (_k, _lab, _n, _den, _f["n"], _f["d"]))
+assert not _FAIL, ("the plotted series do not sum to the ledger, so the charts would "
+                   "disagree with the prose:\n  " + "\n  ".join(_FAIL))
+print("series reconcile to facts_v15.json on every measure and both windows")
+
 json.dump(P, io.open("payload_v15.json", "w", encoding="utf-8"), ensure_ascii=False)
 print("payload_v15.json: %d days, %d weeks, defs %s" % (len(DAYS), len(WEEKS), sorted(DEFS)))
 print("  launch_week=%d sale_week=%d  pre-launch weeks %d (%s to %s)"
