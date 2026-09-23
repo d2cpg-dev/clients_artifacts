@@ -31,6 +31,32 @@ C = [r for r in C if r["Sales channel"] not in _RENEW_CH]
 print("dropped renewal channels: a_orders %d -> %d rows, c_linebasis %d -> %d"
       % (_before[0], len(A), _before[1], len(C)))
 
+# The Lobby is product seeding for creators, confirmed by Tim at Heart & Soil on
+# 2026-09-23: roughly 400 orders a month, mostly tagged new because each one is a
+# new creator, and the channel is being retired within about a month. Shopify books
+# $0 gross and $0 net on every one of them and exactly one item per order, and not a
+# single one has ever carried a subscription. They are not purchases, so they belong
+# in neither side of a take-rate ratio, and while they sat in the denominator they
+# were also diluting average order value.
+#
+# The count over the checksum window is taken BEFORE the rows are dropped, because
+# the client's own reported figure still includes these orders and the report has to
+# reconcile against it rather than quietly disagree by that amount.
+_SEED_CH = {"The Lobby"}
+_SEED_CK0, _SEED_CK1 = "2026-08-06", "2026-09-02"   # the denominator checksum window
+SEED_CK = int(sum(num(r["Orders"]) for r in A
+                  if r["Sales channel"] in _SEED_CH
+                  and r["New or returning customer"].strip() == "New"
+                  and _SEED_CK0 <= r["Day"] <= _SEED_CK1))
+SEED_TOTAL = int(sum(num(r["Orders"]) for r in A if r["Sales channel"] in _SEED_CH))
+_pre_seed = len(A), len(C), len(B), len(Dp)
+A = [r for r in A if r["Sales channel"] not in _SEED_CH]
+C = [r for r in C if r["Sales channel"] not in _SEED_CH]
+B = [r for r in B if r["Sales channel"] not in _SEED_CH]
+Dp = [r for r in Dp if r["Sales channel"] not in _SEED_CH]
+print("dropped seeding channel %s: %d orders over the checksum window, %d in range"
+      % (sorted(_SEED_CH), SEED_CK, SEED_TOTAL))
+
 DAYS = sorted(set(r["Day"] for r in A))
 TT = "AfterShip for TikTok"
 RENEW = {"Skio Subscriptions (YC S20)", "Heart & Soil Subscriptions"}
@@ -364,7 +390,23 @@ F["checksum"] = dict(
     signups_expected=14635,
     denom_aug6_sep2=int(sum(denN[d] for d in DAYS if "2026-08-06" <= d <= "2026-09-02")),
     denom_expected=11823,
+    # the client's 11,823 still counts the seeding orders, so the report reconciles
+    # to it by naming the gap rather than claiming a match it no longer has
+    seed_in_denom=SEED_CK,
+    seed_total=SEED_TOTAL,
 )
+# The denominator used to match the client's 11,823 exactly. Since the seeding
+# channel came out it is lower by exactly those orders, and that is the claim the
+# report now makes, so it has to hold arithmetically or the copy is wrong.
+_k = F["checksum"]
+assert _k["denom_aug6_sep2"] + _k["seed_in_denom"] == _k["denom_expected"], (
+    "the denominator no longer reconciles: %d excluding seeding + %d seeding = %d, "
+    "against the %d reported" % (_k["denom_aug6_sep2"], _k["seed_in_denom"],
+                                 _k["denom_aug6_sep2"] + _k["seed_in_denom"],
+                                 _k["denom_expected"]))
+print("denominator reconciles: %s excl. seeding + %s seeding = %s, the reported figure"
+      % tuple(format(_k[x], ",") for x in
+              ("denom_aug6_sep2", "seed_in_denom", "denom_expected")))
 
 json.dump(F, io.open("facts_v15.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 

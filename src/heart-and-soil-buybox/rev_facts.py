@@ -35,6 +35,10 @@ num = lambda x: float((x or "").strip() or 0)
 # channels the subscription app bills renewals through are not placed orders
 TT = "AfterShip for TikTok"
 RENEW = {"Skio Subscriptions (YC S20)", "Heart & Soil Subscriptions"}
+# The Lobby is creator seeding, excluded from facts_v15.py since 2026-09-23. It books
+# $0 gross and $0 net, so dropping it changes nothing here today. It is filtered
+# anyway, so the two ledgers cannot drift apart if that channel ever books revenue.
+SEED = {"The Lobby"}
 R = F["range"]
 CHANGE_DAY, SALE_END = R["change_day"], R["sale_end"]
 PROMO0, PROMO1 = R["promo_start"], R["promo_end"]
@@ -48,7 +52,8 @@ assert len(PRE) == R["pre_days"] and len(POST) == R["post_days"], \
 
 keep = lambda r: (r["New or returning customer"].strip() == "New"
                   and r["Sales channel"].strip() != TT
-                  and r["Sales channel"].strip() not in RENEW)
+                  and r["Sales channel"].strip() not in RENEW
+                  and r["Sales channel"].strip() not in SEED)
 
 sub, one = collections.defaultdict(float), collections.defaultdict(float)
 for r in rows:

@@ -140,9 +140,39 @@ SCRIPT = patch(SCRIPT,
 SCRIPT = patch(SCRIPT,
     "        s.appendChild(txt(L + 4, yOf(g[0]) - 7, g[2], "
     "{ anchor: 'start', size: 10.5, weight: 900, ls: '.07em', fill: g[1] }));",
-    """        s.appendChild(txt(L + 4, yOf(g[0]) + (g[0] === pre ? 18 : -9), g[2],
+    """        // A fixed offset only works while the reference line sits clear of the
+        // data. When the baseline moved up two points on 2026-09-23 the BEFORE label
+        // landed on the first weekly marker; moving it to the other side then put it
+        // on that marker's value label. So the occupied band covers both the marker
+        // and, in weekly mode, the value printed above it, and the label takes the
+        // first offset that is clear rather than one of two fixed sides.
+        // yy is a baseline, so the label's ink runs from yy-11 to yy+3. A marker is
+        // yOf(v)+-5, and in weekly mode its value sits 13 above that. Writing those
+        // as signed bands rather than a symmetric distance matters: a symmetric test
+        // of 15 called a 15.3 gap clear when the true clearance needed is 15.7.
+        // The two reference labels also have to clear each other. In daily mode the
+        // lines sit close enough that the first one, moving off the data, lands where
+        // the second one wants to be. The first placed wins and the second adapts.
+        if (g[0] === pre) s.__refy = [];
+        var _busy = function (yy) {
+          if (s.__refy.some(function (py) { return Math.abs(py - yy) < 15; })) return true;
+          return rate.some(function (v, i) {
+            if (xOf(i) < L - 4 || xOf(i) > L + 150) return false;
+            var d = yy - yOf(v);
+            if (d > -10 && d < 19) return true;
+            return week && d > -28 && d < 2;
+          });
+        };
+        var _cands = g[0] === pre ? [18, 32, 46, -9, -23, 60] : [-9, -23, 18, 32, -37, 46];
+        var _ly = yOf(g[0]) + _cands[0];
+        for (var _ci = 0; _ci < _cands.length; _ci++) {
+          var _try = yOf(g[0]) + _cands[_ci];
+          if (!_busy(_try) && _try > T + 10 && _try < B - 4) { _ly = _try; break; }
+        }
+        s.__refy.push(_ly);
+        s.appendChild(txt(L + 4, _ly, g[2],
           { anchor: 'start', size: 10.5, weight: 900, ls: '.07em', fill: g[1] }));""",
-    "c1 reference labels take opposite sides of their lines")
+    "c1 reference labels choose a side the data is not already using")
 
 # c4: each end carries a value and a name, so the de-collision pass has to
 # reserve two lines of twelve-unit type, not the one line it was written for.
@@ -350,6 +380,11 @@ TOK = dict(
   rw_subday_post=n0(RVF["windows"]["post"]["sub_day"]),
   rw_subday_pct=pc(RVF["delta"]["sub_day_pct"]),
   rw_oneday_pct=pc(RVF["delta"]["one_day_pct"]),
+  # the seeding channel that came out on 2026-09-23, and the client figure it
+  # reconciles against now that the denominator no longer matches it outright
+  ck_denom_exp=n0(F["checksum"]["denom_expected"]),
+  ck_seed=n0(F["checksum"]["seed_in_denom"]),
+  ck_seed_total=n0(F["checksum"]["seed_total"]),
   ck_orders_exp=n0(F["checksum"]["orders_expected"]),
   ck_signups_exp=n0(F["checksum"]["signups_expected"]),
   recon_pre=p2(F["recon"]["pre"]["ratio"]), recon_post=p2(F["recon"]["post"]["ratio"]),

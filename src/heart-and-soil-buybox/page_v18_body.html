@@ -49,9 +49,10 @@
   <h2>What we measured</h2>
   <p>Take rate here is the share of <b>new-customer orders that contain a subscription</b>. A cart
     holding a subscription and a one-off item counts once. Renewals are excluded from both sides, and
-    the TikTok channel is excluded because the buy box never appears there. Over
-    {{denom_window}} this denominator is {{ck_denom}} orders, which reproduces the figure behind your
-    earlier reporting exactly.</p>
+    the TikTok channel is excluded because the buy box never appears there, as is The Lobby,
+    which is creator seeding rather than purchasing. Over {{denom_window}} this denominator is
+    {{ck_denom}} orders. Your own reporting shows {{ck_denom_exp}} for the same window, and the
+    difference is exactly the {{ck_seed}} seeding orders we now leave out.</p>
   <p>The baseline is the {{pre_days}} clean days from {{pre_start}} to {{pre_end}}. We cut
     {{promo_long}} out of it for two independent reasons: a sitewide cart promotion ran across those
     days, and a Skio data migration of {{migration}} records landed in the same window.</p>
@@ -91,8 +92,8 @@
 
   <h2 id="confidence">How sure we are</h2>
   <p>The daily numbers barely overlap. The weakest of the {{pre_days}} days before the change was
-    {{min_pre}}%. {{below_n}} of the {{post_days}} days since the sale came in below that. The single
-    exception reached {{max_post}}%. Comparing every post-change day against every pre-change day, the
+    {{min_pre}}%. {{below_n}} of the {{post_days}} days since the sale came in below that, and the
+    best day since reached {{max_post}}%. Comparing every post-change day against every pre-change day, the
     post day is lower in {{pairs_lower}} of {{pairs_total}} pairings, which on a rank test that assumes
     nothing about the shape of the data gives a probability of {{mw_p}}.</p>
   <p>Every way we cut it lands between {{spread_lo}} and {{spread_hi}} points, and when we ran the
@@ -107,9 +108,10 @@
   </details>
   <div class="quad">
     <div class="box ac a-neutral"><span class="chip">Ruled out</span><span class="lbl">Traffic does not explain it</span>
-      <p>Across the {{pre_days}} clean days before the change, daily take rate and daily sessions are
-        effectively uncorrelated, at a correlation of {{traffic_r}}. Restricting the comparison to pre-change days at
-        similar traffic widens the fall rather than narrowing it.</p></div>
+      <p>Across the {{pre_days}} clean days before the change, daily take rate and daily sessions move
+        together only weakly, at a correlation of {{traffic_r}}. Comparing against pre-change days at
+        similar traffic still gives {{matched_drop}} points against the {{drop_r}} we report, so the
+        fall holds with traffic roughly held constant.</p></div>
     <div class="box ac a-neutral"><span class="chip">Ruled out</span><span class="lbl">It is not a tracking gap</span>
       <p>{{same_day}}% of subscriptions created since the sale trace to a Shopify order the same
         day, so nothing is arriving unattached. Across the baseline the two systems agree to
@@ -270,7 +272,7 @@
   <details class="fold">
     <summary>How we measured it<span class="fold-ind">+</span></summary>
   <ul>
-    <li>Take rate counts orders rather than line items, so a cart holding both a subscription and a one-off item counts once. Renewals are removed from both sides and the TikTok channel is excluded throughout. Over {{denom_window}} the denominator is {{ck_denom}} orders, matching your earlier reporting exactly.</li>
+    <li>Take rate counts orders rather than line items, so a cart holding both a subscription and a one-off item counts once. Renewals are removed from both sides. Two sales channels are excluded throughout: TikTok, where the buy box never appears, and The Lobby, which is creator seeding. Shopify records no gross sales, no net sales and one item on every Lobby order, and none has ever carried a subscription, so they would only dilute both the take rate and average order value.</li>
     <li>Windows: baseline {{pre_start}} to {{pre_end}} excluding {{promo_long}}, launch and Labor Day sale {{sale_long}}, since the sale {{post_long}}.</li>
     <li>{{promo_long}} is excluded for two independent reasons: a sitewide cart promotion, and a Skio migration of {{migration}} records landing in the same days.</li>
     <li>Migration records are excluded from the plan analysis. The pre-change base is {{plan_base}} subscriptions rather than the {{plan_base_bloated}} that would appear if they were left in.</li>
@@ -280,7 +282,7 @@
     <li>Sessions and conversion are store-wide rather than new-customer only, so they set context and do not decompose the take rate.</li>
     <li>Confidence interval is a day-level cluster bootstrap over {{boot_n}} resamples, cross-checked against a quasi-binomial interval with a dispersion correction of {{phi}}. Both are reported in the figures table.</li>
     <li>Shopify data is a set of five exports pulled {{pulled_long}} covering {{range_long}}. The Skio pull covers the same window. {{tail_note}}</li>
-    <li>The new-customer denominator over {{denom_window}} is {{ck_denom}} orders, matching your earlier reporting exactly. Two wider counts over {{ck_window}} do not: this pull gives {{ck_orders}} orders and {{ck_signups}} tagged sign-ups against the {{ck_orders_exp}} and {{ck_signups_exp}} reported earlier. The September export separates the subscription app into its own sales channel, so the totals are not drawn on the same base. Every new-customer figure in this report reproduces the earlier pull day for day.</li>
+    <li>The new-customer denominator over {{denom_window}} is {{ck_denom}} orders against the {{ck_denom_exp}} in your earlier reporting, a difference of exactly the {{ck_seed}} seeding orders now excluded. Across the whole range that channel accounts for {{ck_seed_total}} orders. Two wider counts over {{ck_window}} do not: this pull gives {{ck_orders}} orders and {{ck_signups}} tagged sign-ups against the {{ck_orders_exp}} and {{ck_signups_exp}} reported earlier. The September export separates the subscription app into its own sales channel, so the totals are not drawn on the same base. Every new-customer figure in this report reproduces the earlier pull day for day.</li>
   </ul>
   </details>
 

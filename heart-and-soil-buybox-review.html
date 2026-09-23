@@ -514,24 +514,24 @@ summary{cursor:pointer}
 
     <div class="strip">
       <div class="cell"><div class="lbl">Subscription take rate</div>
-        <div class="val">52.07<span class="u">%</span></div>
-        <div class="sup">from 59.55% across the 40 days before the change</div></div>
+        <div class="val">54.22<span class="u">%</span></div>
+        <div class="sup">from 61.49% across the 40 days before the change</div></div>
       <div class="cell"><div class="lbl">The fall</div>
-        <div class="val o">&minus;7.5<span class="u"> pts</span></div>
-        <div class="sup">13% relative &middot; confident between 5 and 10 points</div></div>
+        <div class="val o">&minus;7.3<span class="u"> pts</span></div>
+        <div class="sup">12% relative &middot; confident between 5 and 10 points</div></div>
       <div class="cell"><div class="lbl">Subscribers not started</div>
-        <div class="val b">760</div>
-        <div class="sup">a month &middot; between 508 and 1,015 on that range</div></div>
+        <div class="val b">709</div>
+        <div class="sup">a month &middot; between 488 and 975 on that range</div></div>
       <div class="cell"><div class="lbl">New-customer revenue</div>
         <div class="val">+4.1%</div>
-        <div class="sup">per day, on order value up +17.8%</div></div>
+        <div class="sup">per day, on order value up +18.8%</div></div>
     </div>
 
     <div class="exec">
       <div class="exec-row">
-        <span class="exec-t">Take rate on new-customer orders fell from <b>59.55%</b> across the
-          40 clean days before the change to <b>52.07%</b> in the 13 days since
-          the sale, about 7.5 points. At your volume that is roughly 760 fewer new
+        <span class="exec-t">Take rate on new-customer orders fell from <b>61.49%</b> across the
+          40 clean days before the change to <b>54.22%</b> in the 13 days since
+          the sale, about 7.3 points. At your volume that is roughly 709 fewer new
           subscribers a month.</span>
         <a class="exec-l" href="#confidence">How sure we are</a>
       </div>
@@ -548,9 +548,10 @@ summary{cursor:pointer}
   <h2>What we measured</h2>
   <p>Take rate here is the share of <b>new-customer orders that contain a subscription</b>. A cart
     holding a subscription and a one-off item counts once. Renewals are excluded from both sides, and
-    the TikTok channel is excluded because the buy box never appears there. Over
-    Aug 6 to Sep 2 this denominator is 11,823 orders, which reproduces the figure behind your
-    earlier reporting exactly.</p>
+    the TikTok channel is excluded because the buy box never appears there, as is The Lobby,
+    which is creator seeding rather than purchasing. Over Aug 6 to Sep 2 this denominator is
+    11,603 orders. Your own reporting shows 11,823 for the same window, and the
+    difference is exactly the 220 seeding orders we now leave out.</p>
   <p>The baseline is the 40 clean days from Jul 20 to Sep 2. We cut
     Aug 7 to 11 out of it for two independent reasons: a sitewide cart promotion ran across those
     days, and a Skio data migration of 55,410 records landed in the same window.</p>
@@ -565,7 +566,7 @@ summary{cursor:pointer}
     </div>
   <figure>
     <p class="ch-tag">Take rate &middot; new-customer orders</p>
-    <p class="ch-t" id="c1t">Take rate fell 7.5 points and has not come back</p>
+    <p class="ch-t" id="c1t">Take rate fell 7.3 points and has not come back</p>
     <p class="ch-s" id="c1s"></p>
     <div class="seg-row">
       <div class="seg" role="group" aria-label="Choose a measure">
@@ -583,32 +584,33 @@ summary{cursor:pointer}
     <figcaption id="c1cap"></figcaption>
   </figure>
   <p>Two details in that chart carry most of the weight. The sale peak is real and it is large:
-    Labor Day itself ran 69.17% on 1.8 times a normal day's orders, which is why a
+    Labor Day itself ran 69.28% on 1.9 times a normal day's orders, which is why a
     window containing it tells you very little. And the fall was already there on day one.
     Sep 3, the first day the new buy box was live and before the sale had built,
-    read 51.41%.</p>
+    read 53.05%.</p>
 
   <h2 id="confidence">How sure we are</h2>
   <p>The daily numbers barely overlap. The weakest of the 40 days before the change was
-    54.74%. 10 of the 13 days since the sale came in below that. The single
-    exception reached 59.26%. Comparing every post-change day against every pre-change day, the
-    post day is lower in 489 of 520 pairings, which on a rank test that assumes
-    nothing about the shape of the data gives a probability of about 2 in 1,000,000.</p>
-  <p>Every way we cut it lands between 6.0 and 8.3 points, and when we ran the
+    57.54%. 10 of the 13 days since the sale came in below that, and the
+    best day since reached 61.20%. Comparing every post-change day against every pre-change day, the
+    post day is lower in 485 of 520 pairings, which on a rank test that assumes
+    nothing about the shape of the data gives a probability of about 3 in 1,000,000.</p>
+  <p>Every way we cut it lands between 6.0 and 7.7 points, and when we ran the
     same method on 14 earlier dates where nothing had happened, the largest false fall it
-    produced was 1.8 points against the 7.5 we are reporting.</p>
+    produced was 2.0 points against the 7.3 we are reporting.</p>
   <details class="fold sub">
     <summary>How we cut it<span class="fold-ind">+</span></summary>
-    <p>The order-tag measure gives 7.9 points. Standardising for day of week gives
-      7.8 points. Comparing only against pre-change days at similar traffic gives
-      8.3 points, across 8 days averaging 29,840 sessions against
-      32,411 now. The online store on its own gives 6.0 points.</p>
+    <p>The order-tag measure gives 7.7 points. Standardising for day of week gives
+      7.4 points. Comparing only against pre-change days at similar traffic gives
+      7.2 points, across 8 days averaging 29,840 sessions against
+      32,402 now. The online store on its own gives 6.0 points.</p>
   </details>
   <div class="quad">
     <div class="box ac a-neutral"><span class="chip">Ruled out</span><span class="lbl">Traffic does not explain it</span>
-      <p>Across the 40 clean days before the change, daily take rate and daily sessions are
-        effectively uncorrelated, at a correlation of -0.03. Restricting the comparison to pre-change days at
-        similar traffic widens the fall rather than narrowing it.</p></div>
+      <p>Across the 40 clean days before the change, daily take rate and daily sessions move
+        together only weakly, at a correlation of 0.23. Comparing against pre-change days at
+        similar traffic still gives 7.2 points against the 7.3 we report, so the
+        fall holds with traffic roughly held constant.</p></div>
     <div class="box ac a-neutral"><span class="chip">Ruled out</span><span class="lbl">It is not a tracking gap</span>
       <p>99.5% of subscriptions created since the sale trace to a Shopify order the same
         day, so nothing is arriving unattached. Across the baseline the two systems agree to
@@ -682,7 +684,7 @@ summary{cursor:pointer}
   </div>
   <p>Bigger shipments are arriving further apart, which nets out at about the same monthly
     commitment per subscriber. Combine that with the lower take rate and the dollars new customers
-    sign up to spend each month are down 6%. We give that as a band of roughly 2% to 11% rather than a single
+    sign up to spend each month are down 6%. We give that as a band of roughly 2% to 10% rather than a single
     figure, because it multiplies three estimates across two systems.</p>
   <p>Those subscription figures are list prices. The Skio export carries no charged price on the
     subscription line, the order line or the change log, so we cannot yet see the effect of any
@@ -693,7 +695,7 @@ summary{cursor:pointer}
     because the customer either chose a subscription on that visit or did not. A fair question is
     what the same period looks like weighted by money rather than by orders, so we ran it.</p>
   <p>Measured that way, subscription revenue is 56.22% of what new customers spent before the
-    change and 54.30% since, a fall of 1.93 points against the 7.5 points the
+    change and 54.30% since, a fall of 1.93 points against the 7.3 points the
     order count shows. The gap between those two numbers is not a disagreement. It is the whole
     story in one line: fewer customers subscribe, and the ones who still do commit more money each
     time, because subscription spend per subscribing order went from $83 to
@@ -735,7 +737,7 @@ summary{cursor:pointer}
     <details class="fold sub"><summary>Values<span class="fold-ind">+</span></summary>
       <div class="readout" id="c4r"></div></details>
     <figcaption>New subscriptions per day fall further than take rate alone, from 224.9 to
-      173.8 a day. About 52% of that is the take rate and 48% is lower
+      173.8 a day. About 49% of that is the take rate and 51% is lower
       order volume, which tracks traffic and has nothing to do with the buy box.</figcaption>
   </figure>
 
@@ -745,12 +747,12 @@ summary{cursor:pointer}
     time. Nothing in this data tells you whether it will.</p>
   <details class="fold sub">
     <summary>The last few days<span class="fold-ind">+</span></summary>
-    <p>The first half of the post-sale window ran 51.71% and the second half
-      53.25%, a move of 1.5 points, which is well inside the daily noise. We
+    <p>The first half of the post-sale window ran 54.06% and the second half
+      54.87%, a move of 0.8 points, which is well inside the daily noise. We
       would not read it either way.</p>
   </details>
-  <p>Returning customers moved less than new ones, 49.06% to 40.31%, a fall of
-    8.8 points. They see the same buy box, so this is worth watching, though a returning customer
+  <p>Returning customers moved less than new ones, 49.37% to 40.96%, a fall of
+    8.4 points. They see the same buy box, so this is worth watching, though a returning customer
     who already has a subscription is a different decision from a first one.</p>
 
   <details class="fold">
@@ -759,17 +761,17 @@ summary{cursor:pointer}
       <thead><tr><th scope="col">Measure</th><th scope="col">Unit</th><th scope="col">Before</th><th scope="col">Since the sale</th><th scope="col">Change</th></tr></thead>
       <tbody>
 <tr class="grp"><td colspan="5">Take rate, share of orders containing a subscription</td></tr>
-<tr><td>New customers, excl. TikTok</td><td>%</td><td>59.55</td><td>52.07</td><td class="dn">-7.5 pt</td></tr>
-<tr><td>New customers, order-tag measure</td><td>%</td><td>59.10</td><td>51.20</td><td class="dn">-7.9 pt</td></tr>
+<tr><td>New customers, excl. TikTok</td><td>%</td><td>61.49</td><td>54.22</td><td class="dn">-7.3 pt</td></tr>
+<tr><td>New customers, order-tag measure</td><td>%</td><td>61.02</td><td>53.31</td><td class="dn">-7.7 pt</td></tr>
 <tr><td>New customers, online store only</td><td>%</td><td>63.10</td><td>57.07</td><td class="dn">-6.0 pt</td></tr>
-<tr><td>Returning customers</td><td>%</td><td>49.06</td><td>40.31</td><td class="dn">-8.8 pt</td></tr>
-<tr><td>Day one, Sep 3</td><td>%</td><td>&mdash;</td><td>51.41</td><td class="nc">&mdash;</td></tr>
-<tr><td>Labor Day, Sep 7</td><td>%</td><td>&mdash;</td><td>69.17</td><td class="nc">&mdash;</td></tr>
-<tr><td>Day-of-week standardised</td><td>pt</td><td>&mdash;</td><td>&mdash;</td><td class="dn">-7.8 pt</td></tr>
-<tr><td>Matched on comparable traffic</td><td>pt</td><td>&mdash;</td><td>&mdash;</td><td class="dn">-8.3 pt</td></tr>
-<tr><td>Bootstrap 95% interval</td><td>pt</td><td>&mdash;</td><td>&mdash;</td><td class="nc">&minus;9.5 to &minus;5.4</td></tr>
-<tr><td>Quasi-binomial 95% interval</td><td>pt</td><td>&mdash;</td><td>&mdash;</td><td class="nc">&minus;9.7 to &minus;5.2</td></tr>
-<tr><td>New-customer orders</td><td>orders</td><td>15,104</td><td>4,340</td><td class="nc">377.6 &rarr; 333.8 /day</td></tr>
+<tr><td>Returning customers</td><td>%</td><td>49.37</td><td>40.96</td><td class="dn">-8.4 pt</td></tr>
+<tr><td>Day one, Sep 3</td><td>%</td><td>&mdash;</td><td>53.05</td><td class="nc">&mdash;</td></tr>
+<tr><td>Labor Day, Sep 7</td><td>%</td><td>&mdash;</td><td>69.28</td><td class="nc">&mdash;</td></tr>
+<tr><td>Day-of-week standardised</td><td>pt</td><td>&mdash;</td><td>&mdash;</td><td class="dn">-7.4 pt</td></tr>
+<tr><td>Matched on comparable traffic</td><td>pt</td><td>&mdash;</td><td>&mdash;</td><td class="dn">-7.2 pt</td></tr>
+<tr><td>Bootstrap 95% interval</td><td>pt</td><td>&mdash;</td><td>&mdash;</td><td class="nc">&minus;9.2 to &minus;5.1</td></tr>
+<tr><td>Quasi-binomial 95% interval</td><td>pt</td><td>&mdash;</td><td>&mdash;</td><td class="nc">&minus;9.5 to &minus;5.1</td></tr>
+<tr><td>New-customer orders</td><td>orders</td><td>14,628</td><td>4,168</td><td class="nc">365.7 &rarr; 320.6 /day</td></tr>
 <tr class="grp"><td colspan="5">Plan mix, single-product subscriptions</td></tr>
 <tr><td>1 bottle / 30 days</td><td>%</td><td>46.75</td><td>36.90</td><td class="dn">-9.9 pt</td></tr>
 <tr><td>1 bottle / 60 days</td><td>%</td><td>11.30</td><td>5.91</td><td class="dn">-5.4 pt</td></tr>
@@ -792,11 +794,11 @@ summary{cursor:pointer}
 <tr><td>Subscriptions per subscribing order</td><td>n</td><td>1.0313</td><td>1.0687</td><td class="up">+3.6%</td></tr>
 <tr><td>Subscriptions counted</td><td>subs</td><td>12,949</td><td>3,689</td><td class="nc">&mdash;</td></tr>
 <tr class="grp"><td colspan="5">Order value, volume and traffic</td></tr>
-<tr><td>New-customer order value</td><td>$</td><td>87.44</td><td>102.97</td><td class="up">+17.8%</td></tr>
+<tr><td>New-customer order value</td><td>$</td><td>90.28</td><td>107.22</td><td class="up">+18.8%</td></tr>
 <tr><td>New-customer revenue per day</td><td>$</td><td>33,017</td><td>34,377</td><td class="up">+4.1%</td></tr>
 <tr><td>New subscriptions per day</td><td>n</td><td>224.9</td><td>173.8</td><td class="dn">-22.7%</td></tr>
-<tr><td>Units per order</td><td>units</td><td>2.23</td><td>2.62</td><td class="up">+17.5%</td></tr>
-<tr><td>Sessions per day, store-wide</td><td>n</td><td>47,639</td><td>32,411</td><td class="dn">-32.0%</td></tr>
+<tr><td>Units per order</td><td>units</td><td>2.25</td><td>2.67</td><td class="up">+18.4%</td></tr>
+<tr><td>Sessions per day, store-wide</td><td>n</td><td>47,639</td><td>32,402</td><td class="dn">-32.0%</td></tr>
 <tr><td>Conversion rate, store-wide</td><td>%</td><td>1.00</td><td>1.61</td><td class="up">+60.8%</td></tr>
 <tr class="grp"><td colspan="5">Data quality</td></tr>
 <tr><td>Single-product coverage of all subscriptions</td><td>%</td><td>84.1</td><td>84.7</td><td class="nc">0.5 pt spread</td></tr>
@@ -812,7 +814,7 @@ summary{cursor:pointer}
   <details class="fold">
     <summary>How we measured it<span class="fold-ind">+</span></summary>
   <ul>
-    <li>Take rate counts orders rather than line items, so a cart holding both a subscription and a one-off item counts once. Renewals are removed from both sides and the TikTok channel is excluded throughout. Over Aug 6 to Sep 2 the denominator is 11,823 orders, matching your earlier reporting exactly.</li>
+    <li>Take rate counts orders rather than line items, so a cart holding both a subscription and a one-off item counts once. Renewals are removed from both sides. Two sales channels are excluded throughout: TikTok, where the buy box never appears, and The Lobby, which is creator seeding. Shopify records no gross sales, no net sales and one item on every Lobby order, and none has ever carried a subscription, so they would only dilute both the take rate and average order value.</li>
     <li>Windows: baseline Jul 20 to Sep 2 excluding Aug 7 to 11, launch and Labor Day sale Sep 3 to 7, since the sale Sep 8 to 20.</li>
     <li>Aug 7 to 11 is excluded for two independent reasons: a sitewide cart promotion, and a Skio migration of 55,410 records landing in the same days.</li>
     <li>Migration records are excluded from the plan analysis. The pre-change base is 15,388 subscriptions rather than the 32,714 that would appear if they were left in.</li>
@@ -820,9 +822,9 @@ summary{cursor:pointer}
     <li>Subscription plans are read as they stand today rather than as first chosen. Only 3.1% of pre-change subscriptions have ever had a line edited, against 0.6% since the change.</li>
     <li>Every subscription dollar figure is a list price. The Skio export carries priceWithoutDiscount and no charged price on the subscription line, the order line or the change log.</li>
     <li>Sessions and conversion are store-wide rather than new-customer only, so they set context and do not decompose the take rate.</li>
-    <li>Confidence interval is a day-level cluster bootstrap over 40,000 resamples, cross-checked against a quasi-binomial interval with a dispersion correction of 1.82. Both are reported in the figures table.</li>
+    <li>Confidence interval is a day-level cluster bootstrap over 40,000 resamples, cross-checked against a quasi-binomial interval with a dispersion correction of 1.65. Both are reported in the figures table.</li>
     <li>Shopify data is a set of five exports pulled Sep 22, 2026 covering Jul 20 to Sep 20, 2026. The Skio pull covers the same window. Line-edit drift is now counted from AnalyticsSubscriptionLineStateChangeTable as a variant or quantity change, excluding price changes, which the earlier pull defined differently and which moves drift_pre from 4.4 to 3.1 percent.</li>
-    <li>The new-customer denominator over Aug 6 to Sep 2 is 11,823 orders, matching your earlier reporting exactly. Two wider counts over Aug 6 to Sep 9 do not: this pull gives 28,977 orders and 14,623 tagged sign-ups against the 30,740 and 14,635 reported earlier. The September export separates the subscription app into its own sales channel, so the totals are not drawn on the same base. Every new-customer figure in this report reproduces the earlier pull day for day.</li>
+    <li>The new-customer denominator over Aug 6 to Sep 2 is 11,603 orders against the 11,823 in your earlier reporting, a difference of exactly the 220 seeding orders now excluded. Across the whole range that channel accounts for 886 orders. Two wider counts over Aug 6 to Sep 9 do not: this pull gives 28,555 orders and 14,623 tagged sign-ups against the 30,740 and 14,635 reported earlier. The September export separates the subscription app into its own sales channel, so the totals are not drawn on the same base. Every new-customer figure in this report reproduces the earlier pull day for day.</li>
   </ul>
   </details>
 
@@ -835,7 +837,7 @@ summary{cursor:pointer}
 
 <script>
 (function () {
-  var P = {"defs":{"headline":{"name":"New customers, excl. TikTok","den":"new-customer orders on every channel but TikTok","rate":[55.372,60.34,60.274,58.791,58.17,60.635,64.42,58.182,62.342,60.883,62.5,63.957,57.218,58.055,55.381,60.59,54.737,56.667,52.929,47.266,50.687,47.07,55.682,61.013,57.857,58.268,62.176,58.252,59.481,57.908,56.235,59.268,58.435,64.571,64.021,58.753,58.713,59.673,59.314,59.615,57.538,66.047,58.056,61.058,58.667,51.414,58.636,60.849,64.23,69.174,54.369,47.967,48.753,51.987,53.628,53.582,48.229,57.273,50.882,48.214,49.789,59.259,56.818],"num":[201,213,176,214,178,191,239,192,197,193,235,236,218,191,247,226,208,187,253,242,295,241,343,241,243,222,240,240,229,227,230,243,239,226,242,245,219,219,242,248,229,284,227,254,264,200,258,258,246,469,224,177,176,157,170,187,177,189,202,189,118,144,150],"dn":[363,353,292,364,306,315,371,330,316,317,376,369,381,329,446,373,380,330,478,512,582,512,616,395,420,381,386,412,385,392,409,410,409,350,378,417,373,367,408,416,398,430,391,416,450,389,440,424,383,678,412,369,361,302,317,349,367,330,397,392,237,243,264],"wnum":[1412,1462,1658,1770,1636,1686,1707,1560,1169],"wden":[2364,2418,3101,3122,2733,2809,2893,2788,2230],"wrate":[59.729,60.463,53.467,56.694,59.861,60.021,59.004,55.954,52.422],"win":{"before":{"r":59.55376059322034,"d":15104},"sale":{"r":61.840968020743304,"d":2314},"after":{"r":52.07373271889401,"d":4340}}},"tag":{"name":"New customers, order-tag measure","den":"new-customer orders, counted from the subscription first-order tag","rate":[54.545,60.34,59.932,58.791,57.19,60.635,63.612,57.273,61.709,60.883,61.702,61.789,56.693,57.143,54.484,59.786,54.211,55.758,52.51,47.07,50.344,47.07,55.032,61.013,57.143,58.005,61.917,58.01,58.961,57.653,56.235,59.024,58.435,64.0,63.757,58.273,58.445,59.401,59.314,59.375,57.035,65.814,57.801,60.577,58.222,51.157,58.409,60.849,64.23,68.142,46.602,47.967,48.476,51.987,52.997,53.295,48.229,57.273,50.378,48.214,49.789,59.259,56.818],"num":[198,213,175,214,175,191,236,189,195,193,232,228,216,188,243,223,206,184,251,241,293,241,339,241,240,221,239,239,227,226,230,242,239,224,241,243,218,218,242,247,227,283,226,252,262,199,257,258,246,462,192,177,175,157,168,186,177,189,200,189,118,144,150],"dn":[363,353,292,364,306,315,371,330,316,317,376,369,381,329,446,373,380,330,478,512,582,512,616,395,420,381,386,412,385,392,409,410,409,350,378,417,373,367,408,416,398,430,391,416,450,389,440,424,383,678,412,369,361,302,317,349,367,330,397,392,237,243,264],"wnum":[1402,1441,1641,1760,1629,1678,1700,1517,1167],"wden":[2364,2418,3101,3122,2733,2809,2893,2788,2230],"wrate":[59.306,59.595,52.918,56.374,59.605,59.737,58.763,54.412,52.332],"win":{"before":{"r":59.096927966101696,"d":15104},"sale":{"r":61.45203111495246,"d":2314},"after":{"r":51.19815668202765,"d":4340}}},"store":{"name":"New customers, online store only","den":"new-customer orders placed on the online store","rate":[60.976,65.625,66.023,63.303,60.932,62.162,65.915,60.526,68.31,64.948,67.246,65.625,71.906,59.502,63.185,62.89,62.539,60.194,53.996,47.327,51.323,49.16,56.684,64.402,61.125,61.08,62.903,58.647,62.921,62.254,61.602,64.096,62.198,65.294,64.641,63.061,61.032,61.19,61.183,60.652,58.995,66.093,62.011,62.626,66.839,54.648,62.944,61.52,64.305,70.579,61.756,55.305,54.259,53.147,53.922,55.06,52.96,61.13,56.936,60.667,56.281,62.667,59.127],"num":[200,210,171,207,170,184,234,184,194,189,232,231,215,191,242,222,202,186,250,239,291,234,335,237,239,215,234,234,224,221,223,241,232,222,234,239,213,216,238,242,223,269,222,248,258,194,248,251,236,463,218,172,172,152,165,185,170,184,197,182,112,141,149],"dn":[328,320,259,327,279,296,355,304,284,291,345,352,299,321,383,353,323,309,463,505,567,476,591,368,391,352,372,399,356,355,362,376,373,340,362,379,349,353,389,399,378,407,358,396,386,355,394,408,367,656,353,311,317,286,306,336,321,301,346,300,199,225,252],"wnum":[1376,1436,1632,1728,1597,1640,1657,1527,1135],"wden":[2164,2196,2903,2949,2524,2654,2664,2565,1944],"wrate":[63.586,65.392,56.218,58.596,63.273,61.794,62.2,59.532,58.385],"win":{"before":{"r":63.095921883974725,"d":13928},"sale":{"r":63.85321100917431,"d":2180},"after":{"r":57.07241110822736,"d":3853}}},"ret":{"name":"Returning customers","den":"returning-customer orders, excluding TikTok","rate":[43.526,45.545,43.45,45.399,47.735,55.303,59.259,49.602,46.254,50.5,54.459,54.885,55.738,52.478,46.95,47.26,42.122,48.936,47.418,41.243,43.301,43.728,46.649,56.173,50.34,53.443,51.136,48.013,52.691,52.564,52.265,42.633,47.468,49.27,53.71,46.061,44.483,43.333,47.076,44.838,48.148,47.896,43.658,54.085,42.975,42.025,50.963,55.365,50.318,63.405,50.453,39.3,36.656,43.75,45.413,39.179,37.374,44.291,36.201,35.168,33.333,44.828,38.362],"num":[158,138,136,148,137,146,240,187,142,202,171,191,170,180,177,138,131,161,202,146,181,244,348,182,148,163,135,145,186,164,150,136,150,135,152,152,129,130,161,152,143,148,148,192,156,137,291,258,237,674,167,101,114,112,99,105,111,128,101,115,88,117,89],"dn":[363,303,313,326,287,264,405,377,307,400,314,348,305,343,377,292,311,329,426,354,418,558,746,324,294,305,264,302,353,312,287,319,316,274,283,330,290,300,342,339,297,309,339,355,363,326,571,466,471,1063,331,257,311,256,218,268,297,289,279,327,264,261,232],"wnum":[1103,1243,1136,1365,1073,1015,1419,1372,749],"wden":[2261,2394,2507,2793,2144,2207,2891,2704,1949],"wrate":[48.784,51.921,45.313,48.872,50.047,45.99,49.083,50.74,38.43],"win":{"before":{"r":49.06305886011974,"d":12861},"sale":{"r":55.125992405937176,"d":2897},"after":{"r":40.306406685236766,"d":3590}}}},"days":["2026-07-20","2026-07-21","2026-07-22","2026-07-23","2026-07-24","2026-07-25","2026-07-26","2026-07-27","2026-07-28","2026-07-29","2026-07-30","2026-07-31","2026-08-01","2026-08-02","2026-08-03","2026-08-04","2026-08-05","2026-08-06","2026-08-07","2026-08-08","2026-08-09","2026-08-10","2026-08-11","2026-08-12","2026-08-13","2026-08-14","2026-08-15","2026-08-16","2026-08-17","2026-08-18","2026-08-19","2026-08-20","2026-08-21","2026-08-22","2026-08-23","2026-08-24","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-08-29","2026-08-30","2026-08-31","2026-09-01","2026-09-02","2026-09-03","2026-09-04","2026-09-05","2026-09-06","2026-09-07","2026-09-08","2026-09-09","2026-09-10","2026-09-11","2026-09-12","2026-09-13","2026-09-14","2026-09-15","2026-09-16","2026-09-17","2026-09-18","2026-09-19","2026-09-20"],"weeks":[{"label":"Jul 20","n":7,"full":true},{"label":"Jul 27","n":7,"full":true},{"label":"Aug 3","n":7,"full":true},{"label":"Aug 10","n":7,"full":true},{"label":"Aug 17","n":7,"full":true},{"label":"Aug 24","n":7,"full":true},{"label":"Aug 31","n":7,"full":true},{"label":"Sep 7","n":7,"full":true},{"label":"Sep 14","n":7,"full":true}],"launch_day":45,"sale_end":49,"ld":49,"launch_week":6,"sale_week":7,"tiers":{"before":[46.75,11.3,7.97,4.48,3.09,26.41],"sale":[29.31,6.16,1.3,9.81,25.86,27.56],"after":[36.9,5.91,0.81,10.22,22.2,23.96]},"tier_names":["1 bottle / 30 days","1 bottle / 60 days","1 bottle / 90 days","2 bottles / 60 days","3 bottles / 90 days","Everything else"],"bottles":{"before_30":{"n":8422,"p":[71.9,17.9,10.2]},"before_60":{"n":2365,"p":[61.9,24.5,13.6]},"before_90":{"n":2160,"p":[47.8,24.8,27.4]},"after_30":{"n":1855,"p":[73.4,19.4,7.2]},"after_60":{"n":655,"p":[33.3,57.5,9.2]},"after_90":{"n":1085,"p":[2.8,1.6,95.6]}},"series":[{"lab":"Take rate","sub":"new customers","col":"var(--core-black)","unit":"%","v":[59.729,60.463,53.467,56.694,59.861,60.021,59.004,55.954,52.422],"base":58.3725,"on":true,"w":3.0},{"lab":"New subscriptions","sub":"started per day","col":"var(--deep)","unit":"n","v":[201.7,208.9,236.9,252.9,233.7,240.9,243.9,222.9,167.0],"base":229.1667,"on":true,"w":2.2},{"lab":"Order value","sub":"new-customer AOV","col":"var(--orange)","unit":"$","v":[87.49,87.2,85.28,87.88,87.07,90.42,100.82,111.23,101.65],"base":87.5567,"on":true,"w":2.2},{"lab":"Conversion","sub":"store-wide","col":"var(--retention)","unit":"%","v":[1.282,1.016,0.79,0.918,0.778,1.261,1.415,1.701,1.68],"base":1.0075,"on":false,"w":2.0},{"lab":"Sessions","sub":"store-wide, per day","col":"var(--ink-3)","unit":"n","v":[47770,60049,57890,45860,43624,32721,36658,29706,35484],"base":47985.6667,"on":false,"w":2.0}],"grid":["Jul 20","Jul 27","Aug 3","Aug 10","Aug 17","Aug 24","Aug 31","Sep 7","Sep 14"],"prew":{"start":"Jul 20","end":"Aug 24","n":6},"gantt":{"who":[{"k":"you","lab":"You","col":"var(--orange)"},{"k":"us","lab":"Us","col":"var(--blue)"},{"k":"your_team","lab":"Your team","col":"var(--retention)"},{"k":"joint","lab":"Joint","col":"var(--deep)"}],"gutter":370,"ticks":[{"x":0.0,"lab":"Sep"},{"x":0.08163265306122448,"lab":"Oct"},{"x":0.7142857142857143,"lab":"Nov"}],"rows":[{"t":"Your yes on restoring the single bottle every 90 days","who":"you","lab":"Sep 30","x0":0.061224489795918366,"x1":0.061224489795918366,"point":true},{"t":"We re-read take rate on two more clean weeks","who":"us","lab":"Oct 1","x0":0.08163265306122448,"x1":0.08163265306122448,"point":true},{"t":"Plan back in the buy box, 30-day test runs","who":"your_team","lab":"Oct 2 to Nov 1","x0":0.10204081632653061,"x1":0.7142857142857143,"point":false},{"t":"Nothing else changes in the buy box, no promotion","who":"you","lab":"Oct 2 to Nov 1","x0":0.10204081632653061,"x1":0.7142857142857143,"point":false},{"t":"Test result and the decision on the missing plan","who":"joint","lab":"Nov 1","x0":0.7142857142857143,"x1":0.7142857142857143,"point":true},{"t":"60-day retention read on the September cohort","who":"us","lab":"Nov 11","x0":0.9183673469387755,"x1":0.9183673469387755,"point":true}]},"forecast":{"n":12,"unit":"subscriptions not started","labels":["Month 1","Month 2","Month 3","Month 4","Month 5","Month 6","Month 7","Month 8","Month 9","Month 10","Month 11","Month 12"],"mid":[760,1519,2279,3038,3798,4557,5317,6076,6836,7596,8355,9115],"lo":[508,1015,1523,2031,2539,3046,3554,4062,4570,5077,5585,6093],"hi":[1015,2031,3046,4062,5077,6093,7108,8124,9139,10154,11170,12185],"rate":760,"rate_lo":508,"rate_hi":1015,"retention_label":"Nov 11"},"revmix":{"rows":[{"lab":"Before","sub":18562.89,"one":14453.72,"share":56.2229},{"lab":"Since the sale","sub":18664.89,"one":15711.74,"share":54.2953}],"names":["Subscription","One-time"]}};
+  var P = {"defs":{"headline":{"name":"New customers, excl. TikTok","den":"new-customer orders on every channel but TikTok","rate":[55.372,60.34,60.274,58.791,58.17,60.635,64.42,58.182,62.342,60.883,62.5,63.957,57.218,58.055,55.381,60.59,54.737,56.667,52.929,47.266,50.687,47.07,55.682,61.013,57.857,58.268,62.176,58.252,59.481,57.908,56.235,59.268,58.435,64.571,64.021,58.753,58.713,59.673,59.314,59.615,57.538,66.047,58.056,61.058,58.667,51.414,58.636,60.849,64.23,69.174,54.369,47.967,48.753,51.987,53.628,53.582,48.229,57.273,50.882,48.214,49.789,59.259,56.818],"num":[201,213,176,214,178,191,239,192,197,193,235,236,218,191,247,226,208,187,253,242,295,241,343,241,243,222,240,240,229,227,230,243,239,226,242,245,219,219,242,248,229,284,227,254,264,200,258,258,246,469,224,177,176,157,170,187,177,189,202,189,118,144,150],"dn":[363,353,292,364,306,315,371,330,316,317,376,369,381,329,446,373,380,330,478,512,582,512,616,395,420,381,386,412,385,392,409,410,409,350,378,417,373,367,408,416,398,430,391,416,450,389,440,424,383,678,412,369,361,302,317,349,367,330,397,392,237,243,264],"wnum":[1412,1462,1658,1770,1636,1686,1707,1560,1169],"wden":[2364,2418,3101,3122,2733,2809,2893,2788,2230],"wrate":[59.729,60.463,53.467,56.694,59.861,60.021,59.004,55.954,52.422],"win":{"before":{"r":61.491659830462126,"d":14628},"sale":{"r":62.84584980237154,"d":2277},"after":{"r":54.22264875239923,"d":4168}}},"tag":{"name":"New customers, order-tag measure","den":"new-customer orders, counted from the subscription first-order tag","rate":[54.545,60.34,59.932,58.791,57.19,60.635,63.612,57.273,61.709,60.883,61.702,61.789,56.693,57.143,54.484,59.786,54.211,55.758,52.51,47.07,50.344,47.07,55.032,61.013,57.143,58.005,61.917,58.01,58.961,57.653,56.235,59.024,58.435,64.0,63.757,58.273,58.445,59.401,59.314,59.375,57.035,65.814,57.801,60.577,58.222,51.157,58.409,60.849,64.23,68.142,46.602,47.967,48.476,51.987,52.997,53.295,48.229,57.273,50.378,48.214,49.789,59.259,56.818],"num":[198,213,175,214,175,191,236,189,195,193,232,228,216,188,243,223,206,184,251,241,293,241,339,241,240,221,239,239,227,226,230,242,239,224,241,243,218,218,242,247,227,283,226,252,262,199,257,258,246,462,192,177,175,157,168,186,177,189,200,189,118,144,150],"dn":[363,353,292,364,306,315,371,330,316,317,376,369,381,329,446,373,380,330,478,512,582,512,616,395,420,381,386,412,385,392,409,410,409,350,378,417,373,367,408,416,398,430,391,416,450,389,440,424,383,678,412,369,361,302,317,349,367,330,397,392,237,243,264],"wnum":[1402,1441,1641,1760,1629,1678,1700,1517,1167],"wden":[2364,2418,3101,3122,2733,2809,2893,2788,2230],"wrate":[59.306,59.595,52.918,56.374,59.605,59.737,58.763,54.412,52.332],"win":{"before":{"r":61.01996171725458,"d":14628},"sale":{"r":62.45059288537549,"d":2277},"after":{"r":53.310940499040306,"d":4168}}},"store":{"name":"New customers, online store only","den":"new-customer orders placed on the online store","rate":[60.976,65.625,66.023,63.303,60.932,62.162,65.915,60.526,68.31,64.948,67.246,65.625,71.906,59.502,63.185,62.89,62.539,60.194,53.996,47.327,51.323,49.16,56.684,64.402,61.125,61.08,62.903,58.647,62.921,62.254,61.602,64.096,62.198,65.294,64.641,63.061,61.032,61.19,61.183,60.652,58.995,66.093,62.011,62.626,66.839,54.648,62.944,61.52,64.305,70.579,61.756,55.305,54.259,53.147,53.922,55.06,52.96,61.13,56.936,60.667,56.281,62.667,59.127],"num":[200,210,171,207,170,184,234,184,194,189,232,231,215,191,242,222,202,186,250,239,291,234,335,237,239,215,234,234,224,221,223,241,232,222,234,239,213,216,238,242,223,269,222,248,258,194,248,251,236,463,218,172,172,152,165,185,170,184,197,182,112,141,149],"dn":[328,320,259,327,279,296,355,304,284,291,345,352,299,321,383,353,323,309,463,505,567,476,591,368,391,352,372,399,356,355,362,376,373,340,362,379,349,353,389,399,378,407,358,396,386,355,394,408,367,656,353,311,317,286,306,336,321,301,346,300,199,225,252],"wnum":[1376,1436,1632,1728,1597,1640,1657,1527,1135],"wden":[2164,2196,2903,2949,2524,2654,2664,2565,1944],"wrate":[63.586,65.392,56.218,58.596,63.273,61.794,62.2,59.532,58.385],"win":{"before":{"r":63.095921883974725,"d":13928},"sale":{"r":63.85321100917431,"d":2180},"after":{"r":57.07241110822736,"d":3853}}},"ret":{"name":"Returning customers","den":"returning-customer orders, excluding TikTok","rate":[85.523,87.677,87.742,86.137,88.584,90.476,88.388,86.591,87.109,86.086,88.975,89.61,90.074,88.18,85.785,88.984,85.646,85.629,83.505,82.55,81.161,80.617,78.334,90.028,89.718,90.502,90.279,87.988,88.933,89.421,89.33,87.66,88.599,88.455,89.595,87.447,87.958,86.356,86.225,86.518,87.346,87.985,87.589,89.325,84.138,85.789,82.346,83.609,83.007,82.294,87.734,87.327,85.266,88.949,89.543,85.739,87.475,87.232,85.907,84.132,86.807,87.65,88.412],"num":[1211,1174,1267,1106,1164,1121,1256,1227,1115,1225,1154,1354,1225,1216,1207,1244,1074,1001,1134,984,1021,1306,1439,1282,1274,1353,1198,1150,1342,1251,1147,1300,1290,1065,1128,1240,1176,1076,1133,1200,1063,1179,1348,1364,1098,1141,1306,1061,1143,1808,1173,1075,1140,1159,1019,980,1299,1100,1085,1124,1158,1022,1091],"dn":[1416,1339,1444,1284,1314,1239,1421,1417,1280,1423,1297,1511,1360,1379,1407,1398,1254,1169,1358,1192,1258,1620,1837,1424,1420,1495,1327,1307,1509,1399,1284,1483,1456,1204,1259,1418,1337,1246,1314,1387,1217,1340,1539,1527,1305,1330,1586,1269,1377,2197,1337,1231,1337,1303,1138,1143,1485,1261,1263,1336,1334,1166,1234],"wnum":[8299,8516,7665,9002,8523,8067,8461,8354,7879],"wden":[9457,9667,9036,10430,9594,9259,9933,9686,9079],"wrate":[87.755,88.094,84.827,86.309,88.837,87.126,85.181,86.248,86.783],"win":{"before":{"r":49.370158829512555,"d":12781},"sale":{"r":55.412907702984036,"d":2882},"after":{"r":40.956694027738465,"d":3533}}}},"days":["2026-07-20","2026-07-21","2026-07-22","2026-07-23","2026-07-24","2026-07-25","2026-07-26","2026-07-27","2026-07-28","2026-07-29","2026-07-30","2026-07-31","2026-08-01","2026-08-02","2026-08-03","2026-08-04","2026-08-05","2026-08-06","2026-08-07","2026-08-08","2026-08-09","2026-08-10","2026-08-11","2026-08-12","2026-08-13","2026-08-14","2026-08-15","2026-08-16","2026-08-17","2026-08-18","2026-08-19","2026-08-20","2026-08-21","2026-08-22","2026-08-23","2026-08-24","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-08-29","2026-08-30","2026-08-31","2026-09-01","2026-09-02","2026-09-03","2026-09-04","2026-09-05","2026-09-06","2026-09-07","2026-09-08","2026-09-09","2026-09-10","2026-09-11","2026-09-12","2026-09-13","2026-09-14","2026-09-15","2026-09-16","2026-09-17","2026-09-18","2026-09-19","2026-09-20"],"weeks":[{"label":"Jul 20","n":7,"full":true},{"label":"Jul 27","n":7,"full":true},{"label":"Aug 3","n":7,"full":true},{"label":"Aug 10","n":7,"full":true},{"label":"Aug 17","n":7,"full":true},{"label":"Aug 24","n":7,"full":true},{"label":"Aug 31","n":7,"full":true},{"label":"Sep 7","n":7,"full":true},{"label":"Sep 14","n":7,"full":true}],"launch_day":45,"sale_end":49,"ld":49,"launch_week":6,"sale_week":7,"tiers":{"before":[46.75,11.3,7.97,4.48,3.09,26.41],"sale":[29.31,6.16,1.3,9.81,25.86,27.56],"after":[36.9,5.91,0.81,10.22,22.2,23.96]},"tier_names":["1 bottle / 30 days","1 bottle / 60 days","1 bottle / 90 days","2 bottles / 60 days","3 bottles / 90 days","Everything else"],"bottles":{"before_30":{"n":8422,"p":[71.9,17.9,10.2]},"before_60":{"n":2365,"p":[61.9,24.5,13.6]},"before_90":{"n":2160,"p":[47.8,24.8,27.4]},"after_30":{"n":1855,"p":[73.4,19.4,7.2]},"after_60":{"n":655,"p":[33.3,57.5,9.2]},"after_90":{"n":1085,"p":[2.8,1.6,95.6]}},"series":[{"lab":"Take rate","sub":"new customers","col":"var(--core-black)","unit":"%","v":[59.729,60.463,53.467,56.694,59.861,60.021,59.004,55.954,52.422],"base":58.3725,"on":true,"w":3.0},{"lab":"New subscriptions","sub":"started per day","col":"var(--deep)","unit":"n","v":[201.7,208.9,236.9,252.9,233.7,240.9,243.9,222.9,167.0],"base":229.1667,"on":true,"w":2.2},{"lab":"Order value","sub":"new-customer AOV","col":"var(--orange)","unit":"$","v":[87.49,87.2,85.28,87.88,87.07,90.42,100.82,111.23,101.65],"base":87.5567,"on":true,"w":2.2},{"lab":"Conversion","sub":"store-wide","col":"var(--retention)","unit":"%","v":[1.282,1.016,0.79,0.918,0.778,1.261,1.415,1.701,1.681],"base":1.0075,"on":false,"w":2.0},{"lab":"Sessions","sub":"store-wide, per day","col":"var(--ink-3)","unit":"n","v":[47770,60049,57890,45860,43624,32721,36658,29706,35467],"base":47985.6667,"on":false,"w":2.0}],"grid":["Jul 20","Jul 27","Aug 3","Aug 10","Aug 17","Aug 24","Aug 31","Sep 7","Sep 14"],"prew":{"start":"Jul 20","end":"Aug 24","n":6},"gantt":{"who":[{"k":"you","lab":"You","col":"var(--orange)"},{"k":"us","lab":"Us","col":"var(--blue)"},{"k":"your_team","lab":"Your team","col":"var(--retention)"},{"k":"joint","lab":"Joint","col":"var(--deep)"}],"gutter":370,"ticks":[{"x":0.0,"lab":"Sep"},{"x":0.08163265306122448,"lab":"Oct"},{"x":0.7142857142857143,"lab":"Nov"}],"rows":[{"t":"Your yes on restoring the single bottle every 90 days","who":"you","lab":"Sep 30","x0":0.061224489795918366,"x1":0.061224489795918366,"point":true},{"t":"We re-read take rate on two more clean weeks","who":"us","lab":"Oct 1","x0":0.08163265306122448,"x1":0.08163265306122448,"point":true},{"t":"Plan back in the buy box, 30-day test runs","who":"your_team","lab":"Oct 2 to Nov 1","x0":0.10204081632653061,"x1":0.7142857142857143,"point":false},{"t":"Nothing else changes in the buy box, no promotion","who":"you","lab":"Oct 2 to Nov 1","x0":0.10204081632653061,"x1":0.7142857142857143,"point":false},{"t":"Test result and the decision on the missing plan","who":"joint","lab":"Nov 1","x0":0.7142857142857143,"x1":0.7142857142857143,"point":true},{"t":"60-day retention read on the September cohort","who":"us","lab":"Nov 11","x0":0.9183673469387755,"x1":0.9183673469387755,"point":true}]},"forecast":{"n":12,"unit":"subscriptions not started","labels":["Month 1","Month 2","Month 3","Month 4","Month 5","Month 6","Month 7","Month 8","Month 9","Month 10","Month 11","Month 12"],"mid":[709,1418,2127,2836,3544,4253,4962,5671,6380,7089,7798,8507],"lo":[488,975,1463,1950,2438,2926,3413,3901,4388,4876,5364,5851],"hi":[975,1950,2926,3901,4876,5851,6826,7802,8777,9752,10727,11702],"rate":709,"rate_lo":488,"rate_hi":975,"retention_label":"Nov 11"},"revmix":{"rows":[{"lab":"Before","sub":18562.89,"one":14453.72,"share":56.2229},{"lab":"Since the sale","sub":18664.89,"one":15711.74,"share":54.2953}],"names":["Subscription","One-time"]}};
   var NS = 'http://www.w3.org/2000/svg';
   function el(n, a) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); return e; }
   function txt(x, y, s, o) {
@@ -884,7 +886,37 @@ summary{cursor:pointer}
     [[pre, 'var(--ink-3)', 'BEFORE ' + pre.toFixed(1) + '%'], [post, 'var(--core-black)', 'AFTER THE SALE ' + post.toFixed(1) + '%']]
       .forEach(function (g) {
         s.appendChild(el('line', { x1: L, x2: R, y1: yOf(g[0]), y2: yOf(g[0]), stroke: g[1], 'stroke-width': 2, 'stroke-dasharray': '4 5' }));
-        s.appendChild(txt(L + 4, yOf(g[0]) + (g[0] === pre ? 18 : -9), g[2],
+        // A fixed offset only works while the reference line sits clear of the
+        // data. When the baseline moved up two points on 2026-09-23 the BEFORE label
+        // landed on the first weekly marker; moving it to the other side then put it
+        // on that marker's value label. So the occupied band covers both the marker
+        // and, in weekly mode, the value printed above it, and the label takes the
+        // first offset that is clear rather than one of two fixed sides.
+        // yy is a baseline, so the label's ink runs from yy-11 to yy+3. A marker is
+        // yOf(v)+-5, and in weekly mode its value sits 13 above that. Writing those
+        // as signed bands rather than a symmetric distance matters: a symmetric test
+        // of 15 called a 15.3 gap clear when the true clearance needed is 15.7.
+        // The two reference labels also have to clear each other. In daily mode the
+        // lines sit close enough that the first one, moving off the data, lands where
+        // the second one wants to be. The first placed wins and the second adapts.
+        if (g[0] === pre) s.__refy = [];
+        var _busy = function (yy) {
+          if (s.__refy.some(function (py) { return Math.abs(py - yy) < 15; })) return true;
+          return rate.some(function (v, i) {
+            if (xOf(i) < L - 4 || xOf(i) > L + 150) return false;
+            var d = yy - yOf(v);
+            if (d > -10 && d < 19) return true;
+            return week && d > -28 && d < 2;
+          });
+        };
+        var _cands = g[0] === pre ? [18, 32, 46, -9, -23, 60] : [-9, -23, 18, 32, -37, 46];
+        var _ly = yOf(g[0]) + _cands[0];
+        for (var _ci = 0; _ci < _cands.length; _ci++) {
+          var _try = yOf(g[0]) + _cands[_ci];
+          if (!_busy(_try) && _try > T + 10 && _try < B - 4) { _ly = _try; break; }
+        }
+        s.__refy.push(_ly);
+        s.appendChild(txt(L + 4, _ly, g[2],
           { anchor: 'start', size: 13, weight: 900, ls: '.07em', fill: g[1] }));
       });
     s.appendChild(el('polyline', { points: rate.map(function (v, i) { return xOf(i) + ',' + yOf(v); }).join(' '),
