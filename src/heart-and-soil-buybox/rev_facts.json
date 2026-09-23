@@ -19,7 +19,8 @@
       "one_orders": 6112,
       "mixed": 479,
       "mixed_pct": 5.3252,
-      "one_per_order": 94.5924
+      "one_per_order": 94.5924,
+      "one_time_total": 578642.35
     },
     "post": {
       "days": 13,
@@ -34,7 +35,8 @@
       "one_orders": 3316,
       "mixed": 1408,
       "mixed_pct": 62.3009,
-      "one_per_order": 61.5961
+      "one_per_order": 61.5961,
+      "one_time_total": 204431.4
     }
   },
   "delta": {

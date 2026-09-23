@@ -115,6 +115,13 @@ for _k, _ds in (("pre", PRE), ("post", POST)):
     W[_k]["mixed"] = int(round(_sub_o + _one_o - _d))
     W[_k]["mixed_pct"] = round(100.0 * (_sub_o + _one_o - _d) / _sub_o, 4)
     W[_k]["one_per_order"] = round(W[_k]["one_total"] / _one_o, 4)
+    # one_total folds in the small negative residue of refunds carrying no line type, so
+    # that the two groups sum to the ledger. A product-level export filtered to one_time
+    # will not contain that residue, so the comparable figure is published separately
+    # rather than leaving the next script to discover the gap the hard way.
+    W[_k]["one_time_total"] = round(sum(
+        num(r["Net sales"]) for r in rows if keep(r) and r["Day"] in _ds
+        and r["Subscription or one-time"].strip() == "one_time"), 2)
     assert 0 <= W[_k]["mixed"] <= min(_sub_o, _one_o), \
         "%s mixed-cart count is impossible: %d" % (_k, W[_k]["mixed"])
 

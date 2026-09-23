@@ -1,0 +1,24 @@
+{
+  "_provenance": {
+    "source": "Shopify line-basis sales export by product and channel, sales_daily.csv",
+    "pulled": "2026-09-22",
+    "note": "Shipping protection is a one-time line that began appearing on subscription orders when the new buy box went live. Reproduces the one-time net sales in rev_facts.json exactly on both windows."
+  },
+  "windows": {
+    "pre": {
+      "lines_day": 80.53,
+      "rev_day": 194.44,
+      "per_line": 2.4146,
+      "aov_part": 0.5317
+    },
+    "post": {
+      "lines_day": 206.54,
+      "rev_day": 532.26,
+      "per_line": 2.577,
+      "aov_part": 1.6601
+    }
+  },
+  "share_of_nonsub_growth": 26.8533,
+  "share_of_aov_rise": 6.6622,
+  "aov_cents": 112.84
+}

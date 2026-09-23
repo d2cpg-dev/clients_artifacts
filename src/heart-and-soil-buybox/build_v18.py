@@ -10,6 +10,9 @@ BQF = json.load(io.open("bq_facts.json", encoding="utf-8"))
 # revenue-weighted share, written by rev_facts.py, which will not produce this file
 # unless it first reproduces facts_v15.json's revenue per day and the take-rate identity
 RVF = json.load(io.open("rev_facts.json", encoding="utf-8"))
+# what the shipping-protection line does to the figures, written by ship_facts.py,
+# which will not write unless it reproduces rev_facts.json on both windows
+SHF = json.load(io.open("ship_facts.json", encoding="utf-8"))
 # selling-plan evidence: which plan group the box presents, and how quantity is chosen at each cycle
 PF = json.load(io.open("plan_facts.json", encoding="utf-8"))
 BODY = io.open("page_v18_body.html", encoding="utf-8").read()
@@ -399,6 +402,9 @@ TOK = dict(
   rw_subday_pct=pc(RVF["delta"]["sub_day_pct"]),
   rw_oneday_pct=pc(RVF["delta"]["one_day_pct"]),
   # mixed carts, and what they did to the value of a one-time-containing order
+  sp_growth=p1(SHF["share_of_nonsub_growth"]), sp_aov=p1(SHF["share_of_aov_rise"]),
+  sp_day_pre=n0(SHF["windows"]["pre"]["lines_day"]),
+  sp_day_post=n0(SHF["windows"]["post"]["lines_day"]),
   mix_pre=p1(RVF["windows"]["pre"]["mixed_pct"]),
   mix_post=p1(RVF["windows"]["post"]["mixed_pct"]),
   one_val_pre="%.2f" % RVF["windows"]["pre"]["one_per_order"],
