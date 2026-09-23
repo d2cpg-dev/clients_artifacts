@@ -2,7 +2,7 @@
   "_provenance": {
     "source": "largedata-380204.skio_heart_and_soil via dtcpg-platform billing",
     "pulled": "2026-09-22",
-    "note": "Window 4 extended to Sep 8 - Sep 20. Single-product set re-derived from product titles and pinned in single_products.csv; it yields 21 products, matching the prior count, and reproduces coverage to within 0.11 percent. Line-edit drift is now counted from AnalyticsSubscriptionLineStateChangeTable as a variant or quantity change, excluding price changes, which the earlier pull defined differently and which moves drift_pre from 4.4 to 3.1 percent.",
+    "note": "Window 4 extended to Sep 8 - Sep 20. Single-product set re-derived from product titles and pinned in single_products.csv; it yields 21 products, matching the prior count, and reproduces coverage to within 0.11 percent. Line-edit drift now counts only a variant or quantity change and excludes price changes, a tighter definition than the earlier pull used, which moves the pre-change figure from 4.4 to 3.1 percent.",
     "queries": 17,
     "approx_cost_usd": 0.002
   },
@@ -133,5 +133,6 @@
     "mix_at_old_prices": 82.82,
     "residual_price_pct": 1.2,
     "note": "Grass-Fed Colostrum, SKU 1001FFC, in the single-bottle option at 60 days. Products with at least 5 sign-ups in a window. The cell's weighted price rose 38.5 percent; holding products constant it rises 36.9 percent, so the real price drift is 1.2 percent and the rest is composition."
-  }
+  },
+  "drift_window_days": 9
 }

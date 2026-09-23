@@ -619,7 +619,7 @@ summary{cursor:pointer}
         app into its own sales channel rather than from sign-ups going unrecorded.</p></div>
     <div class="box ac a-neutral"><span class="chip">Checked</span><span class="lbl">Reading plans as they stand today is safe</span>
       <p>Only 3.1% of pre-change subscriptions have ever had a line edited, and
-        0.6% within their first 13 days. That is far too little to manufacture
+        0.6% within their first 9 days. That is far too little to manufacture
         the basket shift below.</p></div>
     <div class="box ac a-orange"><span class="chip">Still open</span><span class="lbl">No verdict on permanence yet</span>
       <p>We cannot call permanence on 13 days, and we have no year-ago data for this
@@ -715,8 +715,9 @@ summary{cursor:pointer}
   <p>That is the finding the money view adds. Subscription revenue per day moved
     +0.5%, which is standing still. Everything else new customers bought moved
     +8.7%. Total new-customer revenue is up +4.1% a day, and all of that increase
-    comes from the non-subscription side, from customers who would previously have subscribed and
-    now buy once instead, at a larger basket.</p>
+    sits on the non-subscription side rather than the subscription one. Part of it is one-time
+    product bought by customers who would previously have subscribed, and part is the shipping
+    protection line described in the method notes.</p>
   <p>So the two ways of counting point the same way. The order count says fewer people are choosing
     a subscription. The money count says the subscription business itself is no bigger than it was.
     The forward-looking figure above agrees with both: committed spend per subscription per month
@@ -824,7 +825,7 @@ summary{cursor:pointer}
     <li>Every subscription dollar figure is a list price. The Skio export carries priceWithoutDiscount and no charged price on the subscription line, the order line or the change log.</li>
     <li>Sessions and conversion are store-wide rather than new-customer only, so they set context and do not decompose the take rate.</li>
     <li>Confidence interval is a day-level cluster bootstrap over 40,000 resamples, cross-checked against a quasi-binomial interval with a dispersion correction of 1.65. Both are reported in the figures table.</li>
-    <li>Shopify data is a set of five exports pulled Sep 22, 2026 covering Jul 20 to Sep 20, 2026. The Skio pull covers the same window. Line-edit drift is now counted from AnalyticsSubscriptionLineStateChangeTable as a variant or quantity change, excluding price changes, which the earlier pull defined differently and which moves drift_pre from 4.4 to 3.1 percent.</li>
+    <li>Shopify data is a set of five exports pulled Sep 22, 2026 covering Jul 20 to Sep 20, 2026. The Skio pull covers the same window. Line-edit drift now counts only a variant or quantity change and excludes price changes, a tighter definition than the earlier pull used, which moves the pre-change figure from 4.4 to 3.1 percent.</li>
     <li>The new-customer denominator over Aug 6 to Sep 2 is 11,603 orders against the 11,823 in your earlier reporting, a difference of exactly the 220 seeding orders now excluded. Across the whole range that channel accounts for 886 orders. Two wider counts over Aug 6 to Sep 9 do not: this pull gives 28,555 orders and 14,623 tagged sign-ups against the 30,740 and 14,635 reported earlier. The September export separates the subscription app into its own sales channel, so the totals are not drawn on the same base. Every new-customer figure in this report reproduces the earlier pull day for day.</li>
   </ul>
   </details>

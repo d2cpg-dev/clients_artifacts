@@ -453,6 +453,9 @@ TOK = dict(
   lost_lo=n0(m["lo_month"]), lost_hi=n0(m["hi_month"]), mo_bill=n0(m["monthly_billings"]),
   # quality and method
   same_day=p1(q["same_day_post"]), drift_pre=p1(q["drift_pre"]), drift_pre9=p1(q["drift_pre_9d"]),
+  # the drift figure is measured over a fixed window, not over the post window, which
+  # the copy used as a stand-in until the two stopped being the same length
+  drift_win=n0(BQF["drift_window_days"]),
   drift_post=p1(q["drift_post"]),
   cov_pre=p1(q["coverage_pre"]), cov_post=p1(q["coverage_post"]), cov_spread=p1(q["coverage_spread"]),
   migration=n0(q["migration_promo"]), plan_base=n0(q["plan_base_pre"]),
