@@ -402,9 +402,24 @@ TOK = dict(
   rw_subday_pct=pc(RVF["delta"]["sub_day_pct"]),
   rw_oneday_pct=pc(RVF["delta"]["one_day_pct"]),
   # mixed carts, and what they did to the value of a one-time-containing order
-  sp_growth=p1(SHF["share_of_nonsub_growth"]), sp_aov=p1(SHF["share_of_aov_rise"]),
-  sp_day_pre=n0(SHF["windows"]["pre"]["lines_day"]),
-  sp_day_post=n0(SHF["windows"]["post"]["lines_day"]),
+  # shipping protection: what it does, and the split with it taken out of both sides
+  sp_one_pre=n0(SHF["windows"]["pre"]["one_lines_day"]),
+  sp_one_post=n0(SHF["windows"]["post"]["one_lines_day"]),
+  sp_sub_pre=n0(SHF["windows"]["pre"]["sub_lines_day"]),
+  sp_sub_post=n0(SHF["windows"]["post"]["sub_lines_day"]),
+  sp_all_pre=n0(SHF["windows"]["pre"]["all_lines_day"]),
+  sp_all_post=n0(SHF["windows"]["post"]["all_lines_day"]),
+  sp_total_pct=pc(SHF["total_lines_pct"]), sp_aov=p1(SHF["share_of_aov_rise"]),
+  pr_pre=p2(SHF["product_only"]["pre"]["share"]), pr_post=p2(SHF["product_only"]["post"]["share"]),
+  pr_drop=p2(SHF["product_only"]["pre"]["share"] - SHF["product_only"]["post"]["share"]),
+  pr_subday_pct=pc(100.0 * (SHF["product_only"]["post"]["sub_day"]
+                            / SHF["product_only"]["pre"]["sub_day"] - 1)),
+  pr_oneday_pct=pc(100.0 * (SHF["product_only"]["post"]["one_day"]
+                            / SHF["product_only"]["pre"]["one_day"] - 1)),
+  pr_sub_ord_pre=n0(SHF["product_only"]["pre"]["sub_day"] / F["commerce"]["subs_day_pre"]),
+  pr_sub_ord_post=n0(SHF["product_only"]["post"]["sub_day"] / F["commerce"]["subs_day_post"]),
+  pr_sub_ord_pct=pc(100.0 * ((SHF["product_only"]["post"]["sub_day"] / F["commerce"]["subs_day_post"])
+                             / (SHF["product_only"]["pre"]["sub_day"] / F["commerce"]["subs_day_pre"]) - 1)),
   mix_pre=p1(RVF["windows"]["pre"]["mixed_pct"]),
   mix_post=p1(RVF["windows"]["post"]["mixed_pct"]),
   one_val_pre="%.2f" % RVF["windows"]["pre"]["one_per_order"],
@@ -643,10 +658,10 @@ assert set(_HEADS) == set(P["defs"]), \
 # chart 7 reads its two bars straight off the revenue ledger
 P["revmix"] = {
     "rows": [
-        {"lab": "Before", "sub": RVF["windows"]["pre"]["sub_day"],
-         "one": RVF["windows"]["pre"]["one_day"], "share": RVF["windows"]["pre"]["share"]},
-        {"lab": "Since the sale", "sub": RVF["windows"]["post"]["sub_day"],
-         "one": RVF["windows"]["post"]["one_day"], "share": RVF["windows"]["post"]["share"]},
+        {"lab": "Before", "sub": SHF["product_only"]["pre"]["sub_day"],
+         "one": SHF["product_only"]["pre"]["one_day"], "share": SHF["product_only"]["pre"]["share"]},
+        {"lab": "Since the sale", "sub": SHF["product_only"]["post"]["sub_day"],
+         "one": SHF["product_only"]["post"]["one_day"], "share": SHF["product_only"]["post"]["share"]},
     ],
     "names": ["Subscription", "One-time"],
 }

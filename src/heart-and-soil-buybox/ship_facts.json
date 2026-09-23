@@ -1,24 +1,44 @@
 {
   "_provenance": {
-    "source": "Shopify line-basis sales export by product and channel, sales_daily.csv",
+    "source": "Shopify line-basis sales exports by product and channel, one per line type",
     "pulled": "2026-09-22",
-    "note": "Shipping protection is a one-time line that began appearing on subscription orders when the new buy box went live. Reproduces the one-time net sales in rev_facts.json exactly on both windows."
+    "switch_day": "2026-09-03",
+    "note": "Shipping protection moves from a subscription line to a one-time line on the day the new buy box goes live. Total volume barely changes. Both exports reproduce rev_facts.json on both windows."
   },
   "windows": {
     "pre": {
-      "lines_day": 80.53,
-      "rev_day": 194.44,
-      "per_line": 2.4146,
-      "aov_part": 0.5317
+      "one_lines_day": 80.53,
+      "sub_lines_day": 115.17,
+      "all_lines_day": 195.7,
+      "one_rev_day": 194.44,
+      "sub_rev_day": 260.78,
+      "all_rev_day": 455.21,
+      "per_line": 2.3261
     },
     "post": {
-      "lines_day": 206.54,
-      "rev_day": 532.26,
-      "per_line": 2.577,
-      "aov_part": 1.6601
+      "one_lines_day": 206.54,
+      "sub_lines_day": 12.92,
+      "all_lines_day": 219.46,
+      "one_rev_day": 532.26,
+      "sub_rev_day": 29.82,
+      "all_rev_day": 562.08,
+      "per_line": 2.5612
     }
   },
-  "share_of_nonsub_growth": 26.8533,
-  "share_of_aov_rise": 6.6622,
-  "aov_cents": 112.84
+  "product_only": {
+    "pre": {
+      "sub_day": 18302.11,
+      "one_day": 14259.28,
+      "share": 56.208
+    },
+    "post": {
+      "sub_day": 18635.07,
+      "one_day": 15179.48,
+      "share": 55.1096
+    }
+  },
+  "total_lines_pct": 12.141,
+  "aov_part_pre": 1.2448,
+  "aov_part_post": 1.7531,
+  "share_of_aov_rise": 3.001
 }

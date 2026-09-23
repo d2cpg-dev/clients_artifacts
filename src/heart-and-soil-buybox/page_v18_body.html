@@ -195,30 +195,34 @@
   <p>The take rate above counts decisions. A cart holding a subscription and a one-off counts once,
     because the customer either chose a subscription on that visit or did not. A fair question is
     what the same period looks like weighted by money rather than by orders, so we ran it.</p>
-  <p>Measured that way, subscription revenue is {{rw_pre}}% of what new customers spent before the
-    change and {{rw_post}}% since, a fall of {{rw_drop}} points against the {{drop_r}} points the
+  <p>Measured that way, subscription revenue is {{pr_pre}}% of what new customers spent on product
+    before the change and {{pr_post}}% since, a fall of {{pr_drop}} points against the {{drop_r}} points the
     order count shows. The gap between those two numbers is not a disagreement. It is the whole
     story in one line: fewer customers subscribe, and the ones who still do commit more money each
-    time, because subscription spend per subscribing order went from ${{rw_sub_ord_pre}} to
-    ${{rw_sub_ord_post}}, {{rw_sub_ord_pct}}. The larger basket cancels most of the smaller
+    time, because subscription spend per subscribing order went from ${{pr_sub_ord_pre}} to
+    ${{pr_sub_ord_post}}, {{pr_sub_ord_pct}}. The larger basket cancels most of the smaller
     headcount.</p>
+  <p>Shipping protection is left out of both sides and both windows here. It is insurance rather
+    than product, and the way it is recorded changed on the day the buy box changed: it used to be
+    written onto the subscription and is now written as a separate one-off, {{sp_sub_pre}} a day
+    becoming {{sp_sub_post}} on one side and {{sp_one_pre}} becoming {{sp_one_post}} on the other.
+    In total it barely moved, {{sp_total_pct}}. Counting it would compare two different things.</p>
   <figure>
     <p class="ch-tag">New-customer money &middot; per day</p>
-    <p class="ch-t">Subscription revenue is flat at {{rw_subday_pct}}; the growth is all on the
-      other side</p>
-    <p class="ch-s">Net sales per day from new customers, split by line type. One-time covers
-      everything that is not a subscription line. Both bars sit on one scale, so the wider bar is
-      the larger business, and the figure on the right of each is the subscription share.</p>
+    <p class="ch-t">Subscription revenue barely moved at {{pr_subday_pct}}; most of the growth is
+      on the other side</p>
+    <p class="ch-s">Product net sales per day from new customers, split by line type and with
+      shipping protection excluded from both. Both bars sit on one scale, so the wider bar is the
+      larger business, and the figure on the right of each is the subscription share.</p>
     <div class="ch-scroll"><svg id="c7" viewBox="0 0 880 200" role="img"></svg></div>
-    <figcaption>Subscription dollars stand still while everything else grows, which is what moves
-      the subscription share of revenue down even though total revenue is up.</figcaption>
+    <figcaption>Subscription dollars hold roughly steady while everything else grows, which is what
+      moves the subscription share of revenue down even though total revenue is up.</figcaption>
   </figure>
   <p>That is the finding the money view adds. Subscription revenue per day moved
-    {{rw_subday_pct}}, which is standing still. Everything else new customers bought moved
-    {{rw_oneday_pct}}. Total new-customer revenue is up {{rev_pct}} a day, and all of that increase
-    sits on the non-subscription side rather than the subscription one. Part of it is one-time
-    product bought by customers who would previously have subscribed, and part is the shipping
-    protection line described in the method notes.</p>
+    {{pr_subday_pct}}, close to standing still. Everything else new customers bought moved
+    {{pr_oneday_pct}}. So most of the growth in what new customers spend sits on the
+    non-subscription side rather than the subscription one, from customers who would previously
+    have subscribed and now buy once instead, at a larger basket.</p>
   <p>So the two ways of counting point the same way. The order count says fewer people are choosing
     a subscription. The money count says the subscription business itself is no bigger than it was.
     The forward-looking figure above agrees with both: committed spend per subscription per month
@@ -279,7 +283,7 @@
     <li>Migration records are excluded from the plan analysis. The pre-change base is {{plan_base}} subscriptions rather than the {{plan_base_bloated}} that would appear if they were left in.</li>
     <li>Plan mix covers the {{n_products}} single products where the tiered buy box lives. That is {{cov_pre}}% of subscriptions created before the change and {{cov_post}}% since, a spread of {{cov_spread}} points, so it cannot bias a comparison.</li>
     <li>Subscription plans are read as they stand today rather than as first chosen. Only {{drift_pre}}% of pre-change subscriptions have ever had a line edited, against {{drift_post}}% since the change.</li>
-    <li>Since the change a subscribing order usually also carries a one-time line: {{mix_pre}}% of subscribing orders before, {{mix_post}}% since. Those lines are shipping protection rather than product, which is why the value of a one-time-containing order fell from ${{one_val_pre}} to ${{one_val_post}} while the number of such orders rose. They go from {{sp_day_pre}} a day to {{sp_day_post}}, stepping up on the day the new buy box went live, and they account for {{sp_growth}}% of the growth in non-subscription revenue and {{sp_aov}}% of the rise in order value. Take rate counts orders, not lines, so this does not move it, and the split of revenue above counts the shipping line where it falls, outside the subscription.</li>
+    <li>Since the change a subscribing order usually also carries a one-time line: {{mix_pre}}% of subscribing orders before, {{mix_post}}% since. Those lines are shipping protection, which is why the value of a one-time-containing order fell from ${{one_val_pre}} to ${{one_val_post}} while the number of such orders rose. It is not newly popular: it used to be written onto the subscription and is now written as a separate one-off, so the same purchase now lands in both groups instead of one. Across both, it went from {{sp_all_pre}} lines a day to {{sp_all_post}}, {{sp_total_pct}}, and it is {{sp_aov}}% of the rise in order value. Take rate counts orders rather than lines, so none of this moves it, and the revenue split above excludes shipping protection from both sides so the two windows are compared on product alone.</li>
     <li>Every subscription dollar figure is a list price. The Skio export carries priceWithoutDiscount and no charged price on the subscription line, the order line or the change log.</li>
     <li>Sessions and conversion are store-wide rather than new-customer only, so they set context and do not decompose the take rate.</li>
     <li>Confidence interval is a day-level cluster bootstrap over {{boot_n}} resamples, cross-checked against a quasi-binomial interval with a dispersion correction of {{phi}}. Both are reported in the figures table.</li>
