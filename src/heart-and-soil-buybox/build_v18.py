@@ -235,6 +235,13 @@ SCRIPT = patch(SCRIPT,
 # row to row depending on which row happened to be widest. The three names now sit
 # once, in a key to the right of the drawing, and the bars carry only their values.
 SCRIPT = patch(SCRIPT,
+    "      + ' orders. During the launch and Labor Day sale, Sep 3 to 7, it ran ' + m.win.sale.r.toFixed(1)\n"
+    "      + '% across ' + m.win.sale.d.toLocaleString() + ' orders. Once the sale ended, Sep 8 to 16, it ran '",
+    "      + ' orders. During the launch and Labor Day sale, ' + P.sale_label + ', it ran ' + m.win.sale.r.toFixed(1)\n"
+    "      + '% across ' + m.win.sale.d.toLocaleString() + ' orders. Once the sale ended, ' + P.post_label + ', it ran '",
+    "c1 caption takes both window ranges from the ledger, not typed dates")
+
+SCRIPT = patch(SCRIPT,
     "    s.appendChild(txt(L, y + 18, 'EACH ROW FILLS TO 100% OF THAT PLAN’S NEW SUBSCRIPTIONS', "
     "{ anchor: 'start', size: 10.5, weight: 900, ls: '.08em' }));",
     """    var _ky = T + 7;
@@ -584,6 +591,13 @@ P["forecast"] = dict(
     retention_label=md(RETENTION))
 
 # --------------------------------------------------------------- new charts
+# Chart 1's caption had both window ranges typed into the chart engine's JavaScript.
+# "Sep 3 to 7" happened to stay true; "Sep 8 to 16" went stale the moment the window
+# was extended to the 20th and shipped wrong, because the grounding guard reads the
+# copy and never the engine. Both now come from the ledger through the payload.
+P["sale_label"] = rng(R["change_day"], R["sale_end"])
+P["post_label"] = rng("2026-09-08", R["end"])
+
 # chart 7 reads its two bars straight off the revenue ledger
 P["revmix"] = {
     "rows": [
@@ -994,6 +1008,21 @@ assert not _broken, "in-page links with no target: %s" % _broken
 assert len(_hrefs) >= 5, "the section nav lost links, only %d in-page targets" % len(_hrefs)
 print("anchor guard passed: %d in-page links, every one resolves, no smooth scroll"
       % len(_hrefs))
+
+# ---------------------------------------------------------------- engine guard
+# The grounding guard reads the report copy and never the chart engine, so a date
+# typed into a JavaScript string was invisible to it. Chart 1's caption carried
+# "Sep 8 to 16" for two days after the window was extended to the 20th. Any month
+# name inside a string literal in the engine is now a build failure; window ranges
+# belong in the payload, and month names the charts draw come from the month array.
+_SCRIPT_ONLY = out[out.index("<script>"):] if "<script>" in out else ""
+_typed_dates = re.findall(r"'[^']*\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
+                          r"[a-z]*\s+\d[^']*'", _SCRIPT_ONLY)
+# the payload is one long JSON string on its own; its labels are ledger-derived
+_typed_dates = [d for d in _typed_dates if '","' not in d and '":' not in d]
+assert not _typed_dates, ("a date is typed into the chart engine instead of coming "
+                          "from the ledger: %s" % _typed_dates[:4])
+print("engine guard passed: no dates typed into the chart engine's strings")
 
 # --------------------------------------------------------------- casing guard
 # Headlines are sentence case across the whole report. The section headings and

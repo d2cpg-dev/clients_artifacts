@@ -33,7 +33,9 @@ da, db = payload(A), payload(B)
 # data rather than a re-cut of v15's, and it comes from rev_facts.py, which refuses to
 # write its ledger unless that ledger reproduces facts_v15.json's revenue per day and
 # the take-rate identity closes. Every other key must still match v15 exactly.
-ADDED = {"revmix"}
+# "sale_label" and "post_label" were added 2026-09-24 to carry chart 1's window ranges,
+# which had been typed into the chart engine and went stale when the window moved.
+ADDED = {"revmix", "sale_label", "post_label"}
 check("the payload has the same keys, apart from the declared additions",
       sorted(set(da) | ADDED) == sorted(set(db) | ADDED) and ADDED <= set(db),
       str((set(da) ^ set(db)) - ADDED))
