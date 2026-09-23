@@ -96,6 +96,28 @@ for k in ("pre", "post"):
     assert abs(ident - W[k]["share"]) < 0.01, \
         "%s identity does not close: %.4f vs %.4f" % (k, ident, W[k]["share"])
 
+# How often a subscribing order also carries a one-time line. The line-basis export
+# counts an order once per line type, so summing both groups and subtracting the true
+# order count gives the carts holding both. Chased 2026-09-24: the jump is Corso
+# shipping protection starting to attach to subscription orders at the buy box change,
+# confirmed two ways, and it is why value per one-time-containing order fell while the
+# count of such orders rose. Take rate counts orders, so none of this moves it.
+for _k, _ds in (("pre", PRE), ("post", POST)):
+    _sub_o = sum(num(r["Orders"]) for r in rows
+                 if keep(r) and r["Day"] in _ds
+                 and r["Subscription or one-time"].strip() == "subscription")
+    _one_o = sum(num(r["Orders"]) for r in rows
+                 if keep(r) and r["Day"] in _ds
+                 and r["Subscription or one-time"].strip() != "subscription")
+    _d = F["takerate"]["headline"][_k]["d"]
+    W[_k]["sub_orders"] = int(round(_sub_o))
+    W[_k]["one_orders"] = int(round(_one_o))
+    W[_k]["mixed"] = int(round(_sub_o + _one_o - _d))
+    W[_k]["mixed_pct"] = round(100.0 * (_sub_o + _one_o - _d) / _sub_o, 4)
+    W[_k]["one_per_order"] = round(W[_k]["one_total"] / _one_o, 4)
+    assert 0 <= W[_k]["mixed"] <= min(_sub_o, _one_o), \
+        "%s mixed-cart count is impossible: %d" % (_k, W[_k]["mixed"])
+
 OUT = {
     "_provenance": {
         "source": "Shopify line-basis sales export with net_sales, f_linerevenue.csv",

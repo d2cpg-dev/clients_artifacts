@@ -398,6 +398,11 @@ TOK = dict(
   rw_subday_post=n0(RVF["windows"]["post"]["sub_day"]),
   rw_subday_pct=pc(RVF["delta"]["sub_day_pct"]),
   rw_oneday_pct=pc(RVF["delta"]["one_day_pct"]),
+  # mixed carts, and what they did to the value of a one-time-containing order
+  mix_pre=p1(RVF["windows"]["pre"]["mixed_pct"]),
+  mix_post=p1(RVF["windows"]["post"]["mixed_pct"]),
+  one_val_pre="%.2f" % RVF["windows"]["pre"]["one_per_order"],
+  one_val_post="%.2f" % RVF["windows"]["post"]["one_per_order"],
   # the seeding channel that came out on 2026-09-23, and the client figure it
   # reconciles against now that the denominator no longer matches it outright
   ck_denom_exp=n0(F["checksum"]["denom_expected"]),

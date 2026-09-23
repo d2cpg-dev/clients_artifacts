@@ -14,7 +14,12 @@
       "one_day": 14453.72,
       "tot_day": 33016.6,
       "share": 56.2229,
-      "sub_per_order": 82.5476
+      "sub_per_order": 82.5476,
+      "sub_orders": 8995,
+      "one_orders": 6112,
+      "mixed": 479,
+      "mixed_pct": 5.3252,
+      "one_per_order": 94.5924
     },
     "post": {
       "days": 13,
@@ -24,7 +29,12 @@
       "one_day": 15711.74,
       "tot_day": 34376.62,
       "share": 54.2953,
-      "sub_per_order": 107.3644
+      "sub_per_order": 107.3644,
+      "sub_orders": 2260,
+      "one_orders": 3316,
+      "mixed": 1408,
+      "mixed_pct": 62.3009,
+      "one_per_order": 61.5961
     }
   },
   "delta": {
