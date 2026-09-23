@@ -50,6 +50,16 @@ if "gantt" in moved:
           json.dumps(ga, sort_keys=True) == json.dumps(gb, sort_keys=True),
           "gutter %s -> %s" % (da["gantt"]["gutter"], db["gantt"]["gutter"]))
     moved = [k for k in moved if k != "gantt"]
+# "head" is the headline subject added to each measure on 2026-09-24 so chart 1's
+# takeaway can track the selected button. It is a label, not data: strip it and every
+# number in defs must still be identical to v15's.
+if "defs" in moved:
+    _strip = lambda d: {k: {kk: vv for kk, vv in v.items() if kk != "head"} for k, v in d.items()}
+    check("the measures are unchanged apart from their headline subjects",
+          json.dumps(_strip(da["defs"]), sort_keys=True) == json.dumps(_strip(db["defs"]), sort_keys=True),
+          "added: %s" % sorted(set().union(*(set(v) for v in db["defs"].values()))
+                               - set().union(*(set(v) for v in da["defs"].values()))))
+    moved = [k for k in moved if k != "defs"]
 if moved == ["series"]:
     check("only series colour changed; every series value is identical",
           {s["lab"]: s["v"] for s in da["series"]} == {s["lab"]: s["v"] for s in db["series"]})

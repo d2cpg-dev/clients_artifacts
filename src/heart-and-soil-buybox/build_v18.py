@@ -73,8 +73,9 @@ SCRIPT = patch(SCRIPT,
     "+ x.lab + '<span class=\"q\">' + x.sub + '</span>';",
     "+ '<span class=\"nm\">' + x.lab + '</span><span class=\"q\">' + x.sub + '</span>';",
     "c4 chip label wrapped so the series colour stops painting the text")
-SCRIPT = patch(SCRIPT, "'Take rate, ' + m.name.toLowerCase();",
-    "'Take rate, ' + m.name.charAt(0).toLowerCase() + m.name.slice(1);", "c1 title casing")
+# The c1 title casing patch lived here. It only existed to stop m.name being lowercased
+# into the title, and the title no longer uses m.name at all: it is composed from the
+# measure's own headline subject further down. Removed rather than left to rot.
 # the c1 subtitle element was removed as a duplicate of its own title; the engine still set it
 SCRIPT = patch(SCRIPT,
     "    document.getElementById('c1s').textContent = 'Share of ' + m.den + '.';",
@@ -121,13 +122,23 @@ SCRIPT = patch(SCRIPT,
     "c4 drops the tag that could not clear the data")
 # the payload is injected further down, once the schedule and forecast series exist
 
-# 1. The headline is the takeaway the reader is given before the chart. The
-# engine used to overwrite it with the name of the measure, which now goes to
-# the subtitle where the grain already lives.
+# 1. The headline is the takeaway the reader is given before the chart. The engine
+# used to overwrite it with the bare name of the measure, which now goes to the
+# subtitle where the grain already lives. Holding it fixed was worse: the four buttons
+# change the data underneath, so returning customers showed a chart falling 8.4 points
+# under a headline saying 7.3. It is now the selected measure's own takeaway. The
+# subject comes from the payload, the figure and the verb from that measure's windows,
+# and the closing clause only appears when the latest full week is still below the
+# pre-change average, which is the thing it asserts.
 SCRIPT = patch(SCRIPT,
-    "    document.getElementById('c1t').textContent =",
-    "    var _c1t = null; if (_c1t) _c1t.textContent =",
-    "c1 keeps its takeaway headline")
+    "    document.getElementById('c1t').textContent = 'Take rate, ' + m.name.toLowerCase();",
+    """    var _d1 = pre - post, _tail = '';
+    for (var _wi = m.wrate.length - 1; _wi >= 0; _wi--) {
+      if (P.weeks[_wi].full) { if (m.wrate[_wi] < pre) _tail = ' and has not come back'; break; }
+    }
+    document.getElementById('c1t').textContent = m.head + (_d1 >= 0 ? ' fell ' : ' rose ')
+      + Math.abs(_d1).toFixed(1) + ' points' + _tail;""",
+    "c1 headline tracks the selected measure")
 SCRIPT = patch(SCRIPT,
     "    if (c1s) c1s.textContent = 'Share of ' + m.den + '.';",
     """    if (c1s) c1s.textContent = m.name + '. Share of ' + m.den
@@ -597,6 +608,23 @@ P["forecast"] = dict(
 # copy and never the engine. Both now come from the ledger through the payload.
 P["sale_label"] = rng(R["change_day"], R["sale_end"])
 P["post_label"] = rng("2026-09-08", R["end"])
+
+# Chart 1's headline used to be fixed while its four buttons changed the data under it,
+# so picking returning customers left a headline claiming 7.3 points over a chart
+# showing 8.4. Each measure now carries the subject of its own takeaway; the figure and
+# the verb are computed from that measure's own windows, so the sentence cannot state a
+# number the drawing does not show.
+_HEADS = {
+    "headline": "Take rate",
+    "tag": "The order-tag measure",
+    "store": "Take rate on the online store",
+    "ret": "Take rate for returning customers",
+}
+for _k, _h in _HEADS.items():
+    assert _k in P["defs"], "no measure called %s to headline" % _k
+    P["defs"][_k]["head"] = _h
+assert set(_HEADS) == set(P["defs"]), \
+    "every measure needs a headline subject, missing %s" % (set(P["defs"]) - set(_HEADS))
 
 # chart 7 reads its two bars straight off the revenue ledger
 P["revmix"] = {
