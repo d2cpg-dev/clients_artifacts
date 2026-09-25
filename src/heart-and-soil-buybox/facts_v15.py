@@ -5,7 +5,7 @@ computes every figure the prose cites, and writes facts_v15.json.
 Nothing in the report template may contain a typed number."""
 import csv, json, collections, datetime, io, os, math, random
 
-DL = r"C:\Users\PietroS\Downloads"
+DL = os.environ.get("DTCPG_EXPORTS_DIR", os.path.join(os.path.expanduser("~"), "Downloads"))
 def load(n):
     with io.open(os.path.join(DL, n), encoding="utf-8-sig", newline="") as f:
         return list(csv.DictReader(f))
@@ -31,7 +31,7 @@ C = [r for r in C if r["Sales channel"] not in _RENEW_CH]
 print("dropped renewal channels: a_orders %d -> %d rows, c_linebasis %d -> %d"
       % (_before[0], len(A), _before[1], len(C)))
 
-# The Lobby is product seeding for creators, confirmed by Tim at Heart & Soil on
+# The Lobby is product seeding for creators, confirmed by our client contact at Heart & Soil on
 # 2026-09-23: roughly 400 orders a month, mostly tagged new because each one is a
 # new creator, and the channel is being retired within about a month. Shopify books
 # $0 gross and $0 net on every one of them and exactly one item per order, and not a

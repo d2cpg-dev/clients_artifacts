@@ -180,7 +180,7 @@ chk("test threshold exceeds the detectable effect", t["threshold"] > t["mde"],
 chk("test threshold is at most the observed drop", t["threshold"] <= H["drop"])
 
 # --- source data sanity --------------------------------------------------
-DL = r"C:\Users\PietroS\Downloads"
+DL = os.environ.get("DTCPG_EXPORTS_DIR", os.path.join(os.path.expanduser("~"), "Downloads"))
 def load(n):
     with io.open(os.path.join(DL, n), encoding="utf-8-sig", newline="") as f:
         return list(csv.DictReader(f))
