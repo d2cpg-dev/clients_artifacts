@@ -3,7 +3,7 @@
 is taken from facts_v15.json so the charts and the prose cannot disagree."""
 import csv, json, collections, datetime, io, os
 
-DL = r"C:\Users\PietroS\Downloads"
+DL = os.environ.get("DTCPG_EXPORTS_DIR", os.path.join(os.path.expanduser("~"), "Downloads"))
 def load(n):
     with io.open(os.path.join(DL, n), encoding="utf-8-sig", newline="") as f:
         return list(csv.DictReader(f))

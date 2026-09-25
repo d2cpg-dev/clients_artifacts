@@ -23,7 +23,7 @@ something else and the build stops.
 """
 import csv, io, json, os, collections
 
-DL = r"C:\Users\PietroS\Downloads"
+DL = os.environ.get("DTCPG_EXPORTS_DIR", os.path.join(os.path.expanduser("~"), "Downloads"))
 HERE = os.path.dirname(os.path.abspath(__file__))
 F = json.load(io.open(os.path.join(HERE, "facts_v15.json"), encoding="utf-8"))
 

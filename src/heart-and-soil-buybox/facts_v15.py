@@ -5,7 +5,7 @@ computes every figure the prose cites, and writes facts_v15.json.
 Nothing in the report template may contain a typed number."""
 import csv, json, collections, datetime, io, os, math, random
 
-DL = r"C:\Users\PietroS\Downloads"
+DL = os.environ.get("DTCPG_EXPORTS_DIR", os.path.join(os.path.expanduser("~"), "Downloads"))
 def load(n):
     with io.open(os.path.join(DL, n), encoding="utf-8-sig", newline="") as f:
         return list(csv.DictReader(f))
