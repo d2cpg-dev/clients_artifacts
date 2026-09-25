@@ -7,7 +7,7 @@ hand-edited. Edit the source and rebuild; do not edit the HTML.
 
 ```
 python build_v18.py     # writes page_v18.html, the artifact-shaped fragment
-python qa_v15.py        # 117 checks on the ledger, non-zero exit on any failure
+python qa_v15.py        # 112 checks on the ledger and the raw exports, non-zero exit on any failure
 python wrap_pages.py    # wraps the fragment into ../../heart-and-soil-buybox-review.html
 ```
 
@@ -27,15 +27,25 @@ python wrap_pages.py    # wraps the fragment into ../../heart-and-soil-buybox-re
 | `page_v15_body.html` | the report copy. Tokens only, no typed numbers |
 | `build_v15.py` | the builder: stylesheet, chart-engine patches, token table, guards |
 | `page_v10_template.html` | inherited stylesheet and chart engine, patched at build time |
+| `build_v18.py`, `page_v18_body.html`, `page_v18.css` | the published build: builder, copy and stylesheet. See below |
+| `build_v17.py`, `page_v17_body.html`, `page_v17.css` | the previous published build |
+| `build_v16.py`, `page_v16_body.html`, `page_v16.css` | a v16 pass, superseded by v17 and kept for reference |
+| `qa_v16_diff.py`, `qa_v17_diff.py`, `qa_v18_diff.py` | prove each design pass moved no number against `page_v15.html` |
 | `facts_v15.json` | the number ledger. Every figure in the prose resolves from here |
 | `plan_facts.json` | selling-plan evidence: plan groups and quantity chosen per cycle |
+| `rev_facts.json` | the revenue-weighted subscription share, read by `build_v18.py` |
+| `ship_facts.json` | the same split with the shipping-protection line removed, read by `build_v18.py` |
 | `payload_v15.json` | the chart data, embedded into the page |
 | `bq_facts.json` | Skio scalars with provenance, pulled 2026-09-22 |
 | `bq_plan.csv` | Skio plan mix by window, cadence and quantity |
 | `selling_plans.csv` | Skio sign-ups by selling plan, the evidence that nothing was removed |
-| `qa_v15.py` | 117 checks that re-derive relationships rather than trusting them |
+| `qa_v15.py` | 112 `chk()` checks that re-derive relationships rather than trusting them, plus seven `warn()` checks that report without failing |
 | `facts_v15.py` | rebuilds `facts_v15.json` from the raw exports. See the note below |
 | `prep_v15.py` | rebuilds `payload_v15.json` from the raw exports. See the note below |
+| `rev_facts.py` | rebuilds `rev_facts.json` from one more raw export, and writes nothing unless it reproduces `facts_v15.json`'s revenue per day |
+| `ship_facts.py` | rebuilds `ship_facts.json` from two more raw exports, and writes nothing unless it reproduces `rev_facts.json` on both windows |
+| `_write_plan.py` | writes `bq_plan.csv` from the transcribed 2026-09-22 Skio plan-mix results |
+| `_write_facts.py` | writes `bq_facts.json` from the same Skio pull. Reads `bq_plan.csv`, so run `_write_plan.py` first |
 | `single_products.csv` | the 21 single-product Shopify GIDs the tiered buy box lives on, pinned so the set cannot drift |
 | `wrap_pages.py` | adds the document shell and crawler directives for GitHub Pages |
 
@@ -50,16 +60,25 @@ the same base. That is stated in the method notes on the page rather than hidden
 
 ## The raw exports are deliberately not committed
 
-`facts_v15.py` and `prep_v15.py` read five Shopify CSV exports from a local `Downloads` folder.
-Those files are **not** in this repository and should not be added to it.
+`facts_v15.py` and `prep_v15.py` read five Shopify CSV exports from a local exports folder, and
+`qa_v15.py` re-reads three of them for its source-data checks. `rev_facts.py` reads one more and
+`ship_facts.py` two more. Those files are **not** in this repository and should not be added to it.
+
+The folder is whatever the `DTCPG_EXPORTS_DIR` environment variable names, and your own
+`Downloads` folder (`~/Downloads`) when it is unset, so no machine path is written into the scripts:
+
+```
+DTCPG_EXPORTS_DIR=/path/to/exports python facts_v15.py
+```
 
 This repo is public. It is unlisted and every page carries `noindex, nofollow, noarchive`, but that
 is obscurity, not access control. The committed JSON and CSV files hold only the aggregates the
 published page already displays. The raw exports hold more than the page shows, including
 product-level daily revenue across the whole catalogue, so they stay out.
 
-To re-derive the ledgers from source, put the five exports in a local `Downloads` folder and run
-`facts_v15.py` then `prep_v15.py` before `build_v15.py`.
+To re-derive the ledgers from source, put the exports in that folder and run `facts_v15.py`, then
+`prep_v15.py`, then `rev_facts.py` and `ship_facts.py` in that order (each gates on the ledger
+before it), before building.
 
 ## The build that is published
 
@@ -103,7 +122,9 @@ python wrap_pages.py     # wraps it into ../../heart-and-soil-buybox-review.html
 ```
 
 `build_v15.py` is kept because it is the reference v18 is checked against, and v17 is the
-previous published build. A v16 pass was rejected on its layout and is not in the repository.
+previous published build. A v16 pass was rejected on its layout and superseded by v17. Its
+builder, body, stylesheet and diff script (`build_v16.py`, `page_v16_body.html`, `page_v16.css`,
+`qa_v16_diff.py`) are still tracked for reference; its output is not published.
 
 ## Reading order for the analysis itself
 
