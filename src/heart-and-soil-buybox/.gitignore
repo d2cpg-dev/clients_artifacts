@@ -7,6 +7,10 @@ b_signups.csv
 c_linebasis.csv
 d_products.csv
 e_sessions.csv
+# and the three read by rev_facts.py and ship_facts.py
+f_linerevenue.csv
+sales_daily.csv
+Q-tests - *.csv
 
 # v16 build output: regenerate with build_v16.py
 page_v16.html
@@ -16,3 +20,8 @@ page_v17.html
 
 # v18 build output: regenerate with build_v18.py
 page_v18.html
+
+# editor backups and Python bytecode are local leftovers, never sources
+*.bak
+__pycache__/
+*.pyc
