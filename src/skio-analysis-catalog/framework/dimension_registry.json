@@ -1,0 +1,301 @@
+{
+ "version": "1.0",
+ "dimensions": [
+  {
+   "id": "dim.day",
+   "name": "Day",
+   "domain": "MTH",
+   "values_hint": "calendar day in store timezone",
+   "skio": [
+    "overview.daily_breakdown.date"
+   ]
+  },
+  {
+   "id": "dim.week",
+   "name": "Week",
+   "domain": "MTH",
+   "values_hint": "full weeks only, partial week excluded",
+   "skio": []
+  },
+  {
+   "id": "dim.month",
+   "name": "Month",
+   "domain": "MTH",
+   "values_hint": "calendar month",
+   "skio": [
+    "cancel_flow.cancellation_breakdown.Date"
+   ]
+  },
+  {
+   "id": "dim.quarter",
+   "name": "Quarter",
+   "domain": "MTH",
+   "values_hint": "Q1, Q2, quarter-to-date",
+   "skio": []
+  },
+  {
+   "id": "dim.matched_window",
+   "name": "Matched window",
+   "domain": "MTH",
+   "values_hint": "first N days of a comparison period",
+   "skio": []
+  },
+  {
+   "id": "dim.trailing_window",
+   "name": "Trailing window",
+   "domain": "MTH",
+   "values_hint": "last 30 or 60 days vs the prior equal window",
+   "skio": []
+  },
+  {
+   "id": "dim.event_window",
+   "name": "Event window vs baseline",
+   "domain": "EVT",
+   "values_hint": "BFCM days vs the preceding baseline days",
+   "skio": []
+  },
+  {
+   "id": "dim.launch_day",
+   "name": "Launch day",
+   "domain": "EVT",
+   "values_hint": "Day 1, Day 2 of a launch",
+   "skio": []
+  },
+  {
+   "id": "dim.cancel_reason",
+   "name": "Cancel reason",
+   "domain": "CXL",
+   "values_hint": "survey answer, parent and final reason",
+   "skio": [
+    "cancel_flow.cancel_reason_breakdown.Reason",
+    "cancel_flow.saved_reason_breakdown.Parent Reason",
+    "cancel_flow.saved_reason_breakdown.Final Reason"
+   ]
+  },
+  {
+   "id": "dim.treatment",
+   "name": "Save treatment",
+   "domain": "CXL",
+   "values_hint": "skip, discount, discount+skip, edit frequency, swap, delay, contact support",
+   "skio": [
+    "cancel_flow.saved_reason_breakdown.Treatment"
+   ]
+  },
+  {
+   "id": "dim.session_outcome",
+   "name": "Session outcome",
+   "domain": "CXL",
+   "values_hint": "saved, cancelled, compliance cancelled, no outcome",
+   "skio": [
+    "cancel_flow.all_cancel_flow_sessions.sessionStatus"
+   ]
+  },
+  {
+   "id": "dim.cancel_source",
+   "name": "Cancellation source",
+   "domain": "GRW",
+   "values_hint": "cancel flow, merchant, passive, bulk operation, other",
+   "skio": [
+    "cancel_flow.cancellation_breakdown.Cancel Flow",
+    "cancel_flow.cancellation_breakdown.Cancelled by Merchant",
+    "cancel_flow.cancellation_breakdown.Passively Cancelled"
+   ]
+  },
+  {
+   "id": "dim.billing_cycle",
+   "name": "Billing cycle at cancel",
+   "domain": "RET",
+   "values_hint": "cycle 1, 2, 3 ... at the time of the session",
+   "skio": []
+  },
+  {
+   "id": "dim.tenure_segment",
+   "name": "Tenure segment",
+   "domain": "RET",
+   "values_hint": "early 1-3, mid 4-6, established 7-12 cycles",
+   "skio": []
+  },
+  {
+   "id": "dim.cancel_count_bucket",
+   "name": "Cancel attempts per subscriber",
+   "domain": "CXL",
+   "values_hint": "1, 2, 3+",
+   "skio": []
+  },
+  {
+   "id": "dim.product",
+   "name": "Product",
+   "domain": "PRD",
+   "values_hint": "product title",
+   "skio": [
+    "products.products_breakdown.Product",
+    "forecast.product_forecast.Product"
+   ]
+  },
+  {
+   "id": "dim.variant",
+   "name": "Variant or plan length",
+   "domain": "PRD",
+   "values_hint": "Monthly, 3 Months, 6 Months, 1 Bottle",
+   "skio": [
+    "forecast.product_forecast.Variant"
+   ]
+  },
+  {
+   "id": "dim.category",
+   "name": "Product category",
+   "domain": "PRD",
+   "values_hint": "derived from product titles or tags",
+   "skio": []
+  },
+  {
+   "id": "dim.pack_size",
+   "name": "Pack size",
+   "domain": "PRD",
+   "values_hint": "quantity 1, 2, 3",
+   "skio": []
+  },
+  {
+   "id": "dim.product_role",
+   "name": "Product role",
+   "domain": "PRD",
+   "values_hint": "new launch, core, collaboration",
+   "skio": []
+  },
+  {
+   "id": "dim.interval",
+   "name": "Delivery interval",
+   "domain": "CAD",
+   "values_hint": "days: 15, 28, 30, 42, 45, 56, 60, 84",
+   "skio": [
+    "products.products_shipping_intervals.Billing Interval",
+    "products.products_shipping_intervals.Billing Interval Count"
+   ]
+  },
+  {
+   "id": "dim.interval_transition",
+   "name": "Opt-in to current interval",
+   "domain": "CAD",
+   "values_hint": "e.g. 56d to 84d",
+   "skio": []
+  },
+  {
+   "id": "dim.offer_code",
+   "name": "Offer or discount code",
+   "domain": "OFR",
+   "values_hint": "code, tiered offer, save discount",
+   "skio": []
+  },
+  {
+   "id": "dim.skip_frequency",
+   "name": "Skip frequency",
+   "domain": "ENG",
+   "values_hint": "never, 1, 2-3, 4+",
+   "skio": []
+  },
+  {
+   "id": "dim.days_after_event",
+   "name": "Days after event",
+   "domain": "RET",
+   "values_hint": "7, 14, 30, 60, 180, 180+",
+   "skio": []
+  },
+  {
+   "id": "dim.signup_cohort",
+   "name": "Signup cohort",
+   "domain": "RET",
+   "values_hint": "matched-length signup window or cohort month",
+   "skio": [
+    "cohort.cohort_retention.Cohort Month",
+    "cohort.cohort_retention.Cohort Size"
+   ]
+  },
+  {
+   "id": "dim.retention_checkpoint",
+   "name": "Retention checkpoint",
+   "domain": "RET",
+   "values_hint": "day 0, 7, 14, 30",
+   "skio": []
+  },
+  {
+   "id": "dim.revenue_type",
+   "name": "Revenue type",
+   "domain": "REV",
+   "values_hint": "first-time, recurring, one-time",
+   "skio": [
+    "overview.revenue_breakdown.name"
+   ]
+  },
+  {
+   "id": "dim.dunning_outcome",
+   "name": "Dunning outcome",
+   "domain": "DUN",
+   "values_hint": "recovered, lost, open",
+   "skio": [
+    "dunning.all_dunning_windows.exitedStatus"
+   ]
+  },
+  {
+   "id": "dim.dunning_entry_cohort",
+   "name": "Dunning entry cohort",
+   "domain": "DUN",
+   "values_hint": "quarter the dunning window opened",
+   "skio": [
+    "dunning.all_dunning_windows.enteredAt"
+   ]
+  },
+  {
+   "id": "dim.lift_class",
+   "name": "Lift class",
+   "domain": "EVT",
+   "values_hint": "winner, sleeper, underperformer, solid",
+   "skio": []
+  },
+  {
+   "id": "dim.skio_segment",
+   "name": "Skio segment filter",
+   "domain": "MTH",
+   "values_hint": "saved Skio segment applied to an export",
+   "skio": [
+    "cohort.cohort_kpis.Segment Filter"
+   ]
+  },
+  {
+   "id": "dim.day_of_week",
+   "name": "Day of week",
+   "domain": "MTH",
+   "values_hint": "Mon to Sun",
+   "skio": []
+  },
+  {
+   "id": "dim.sales_channel",
+   "name": "Sales channel or catalogue",
+   "domain": "PRD",
+   "values_hint": "storefront, TikTok Shop listing",
+   "skio": []
+  },
+  {
+   "id": "dim.product_pair",
+   "name": "Product pair",
+   "domain": "PRD",
+   "values_hint": "two products held by the same subscriber",
+   "skio": []
+  },
+  {
+   "id": "dim.flow_step",
+   "name": "Cancel-flow step",
+   "domain": "CXL",
+   "values_hint": "splash screen, reason, treatment step 1, 2, 3",
+   "skio": [
+    "cancel_flow.all_cancel_flow_sessions.parsedPath"
+   ]
+  },
+  {
+   "id": "dim.effort",
+   "name": "Implementation effort",
+   "domain": "MTH",
+   "values_hint": "low, medium, high",
+   "skio": []
+  }
+ ]
+}

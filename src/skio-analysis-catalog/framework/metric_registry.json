@@ -1,0 +1,1780 @@
+{
+ "version": "1.0",
+ "fields": {
+  "id": "stable canonical id, domain prefix then snake name",
+  "name": "display name",
+  "domain": "taxonomy domain",
+  "sub": "taxonomy subdomain",
+  "definition": "plain-language definition",
+  "formula": "computation",
+  "unit": "count | pct | pp | usd | ratio | days | cycles | multiple",
+  "grain": "taxonomy grain",
+  "polarity": "up_good | down_good | neutral",
+  "skio": "matching Skio UI export fields as section.view.field",
+  "aliases": "labels the reports use for this metric"
+ },
+ "metrics": [
+  {
+   "id": "grw.active_subscribers",
+   "name": "Active subscribers",
+   "domain": "GRW",
+   "sub": "stock",
+   "definition": "Distinct customers holding at least one active subscription at a point in time.",
+   "formula": "COUNT DISTINCT customer WHERE subscription.status = ACTIVE",
+   "unit": "count",
+   "grain": "subscriber",
+   "polarity": "up_good",
+   "skio": [
+    "overview.active_count.Active subscribers",
+    "overview.daily_breakdown.activeSubscribers"
+   ],
+   "aliases": [
+    "Active subscribers",
+    "Active Subscribers",
+    "Active Subs",
+    "Core recurring base"
+   ]
+  },
+  {
+   "id": "grw.active_subscriptions",
+   "name": "Active subscriptions",
+   "domain": "GRW",
+   "sub": "stock",
+   "definition": "Subscriptions in ACTIVE status at a point in time. Differs from subscribers when customers hold several.",
+   "formula": "COUNT subscription WHERE status = ACTIVE",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [
+    "overview.active_count.Active subscriptions",
+    "overview.daily_breakdown.activeSubscriptions",
+    "products.products_breakdown.Subscriptions"
+   ],
+   "aliases": [
+    "Active Subscriptions",
+    "Active Subs (product)",
+    "Active today"
+   ]
+  },
+  {
+   "id": "grw.active_share_all_time",
+   "name": "Active share of all-time base",
+   "domain": "GRW",
+   "sub": "stock",
+   "definition": "Active subscribers as a share of everyone who has ever subscribed.",
+   "formula": "active_subscribers / all_time_subscribers",
+   "unit": "pct",
+   "grain": "subscriber",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "share of all-time subscribers"
+   ]
+  },
+  {
+   "id": "grw.all_time_subscriptions",
+   "name": "All-time subscriptions",
+   "domain": "GRW",
+   "sub": "stock",
+   "definition": "Every subscription ever created on the store, any status.",
+   "formula": "COUNT subscription",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": [
+    "All-time subscriptions",
+    "All-Time Subs",
+    "Ever subscribed"
+   ]
+  },
+  {
+   "id": "grw.new_subscriptions",
+   "name": "New subscriptions",
+   "domain": "GRW",
+   "sub": "flow",
+   "definition": "Subscriptions created in the window.",
+   "formula": "COUNT subscription WHERE created_at IN window",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [
+    "overview.growth_metrics.newSubscriptions",
+    "overview.daily_breakdown.newSubscriptions",
+    "cohort.cohort_kpis.Subscriptions Created"
+   ],
+   "aliases": [
+    "New Subscriptions",
+    "New subs",
+    "New activations",
+    "Activations",
+    "New Subs (trailing window)"
+   ]
+  },
+  {
+   "id": "grw.new_subscribers",
+   "name": "New subscribers",
+   "domain": "GRW",
+   "sub": "flow",
+   "definition": "Customers whose first subscription started in the window.",
+   "formula": "COUNT DISTINCT customer WHERE first_subscription_at IN window",
+   "unit": "count",
+   "grain": "subscriber",
+   "polarity": "up_good",
+   "skio": [
+    "overview.daily_breakdown.newSubscribers",
+    "cohort.cohort_kpis.Subscribers Created"
+   ],
+   "aliases": []
+  },
+  {
+   "id": "grw.new_subscriptions_per_day",
+   "name": "New subscriptions per day",
+   "domain": "GRW",
+   "sub": "flow",
+   "definition": "Run-rate of new subscriptions, used to compare windows of different length.",
+   "formula": "new_subscriptions / days_in_window",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "New subs per day",
+    "New Subs During Window (per day)"
+   ]
+  },
+  {
+   "id": "grw.cancellations",
+   "name": "Cancellations (reported)",
+   "domain": "GRW",
+   "sub": "flow",
+   "definition": "Subscriptions that moved to CANCELLED in the window, from any source.",
+   "formula": "COUNT state_change WHERE to_status = CANCELLED AND at IN window",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "down_good",
+   "skio": [
+    "overview.growth_metrics.cancelled",
+    "overview.daily_breakdown.cancelledTransitions",
+    "cancel_flow.cancellation_breakdown.Total",
+    "cohort.cohort_kpis.Cancellations"
+   ],
+   "aliases": [
+    "Cancellations",
+    "Cancellations (reported)",
+    "Cancellations (trailing window)"
+   ]
+  },
+  {
+   "id": "grw.cancellations_bulk",
+   "name": "Bulk-operation cancellations",
+   "domain": "GRW",
+   "sub": "adjust",
+   "definition": "Cancellations made by a merchant bulk operation rather than by customers. Identified per subscription from the audit event 'Bulk operation finished cancelling subscription'.",
+   "formula": "COUNT cancellations WHERE audit_event = bulk_operation_cancel",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "neutral",
+   "skio": [
+    "cancel_flow.cancellation_breakdown.Cancelled by Merchant",
+    "segments.segments_audit_log.Action"
+   ],
+   "aliases": [
+    "of which bulk operations",
+    "Cancellations (bulk ops)"
+   ]
+  },
+  {
+   "id": "grw.cancellations_organic",
+   "name": "Organic cancellations",
+   "domain": "GRW",
+   "sub": "adjust",
+   "definition": "Reported cancellations minus bulk-operation cancellations.",
+   "formula": "cancellations - cancellations_bulk",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "down_good",
+   "skio": [],
+   "aliases": [
+    "organic cancellations",
+    "Cancellations (organic)",
+    "Organic cancels"
+   ]
+  },
+  {
+   "id": "grw.net_change",
+   "name": "Net subscription change (reported)",
+   "domain": "GRW",
+   "sub": "flow",
+   "definition": "New subscriptions minus reported cancellations. Skio's native netChange also counts pause, dunning, resume and recovery transitions, so the two are not identical.",
+   "formula": "new_subscriptions - cancellations",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [
+    "overview.growth_metrics.netChange"
+   ],
+   "aliases": [
+    "Net, as reported",
+    "net gain"
+   ]
+  },
+  {
+   "id": "grw.net_change_organic",
+   "name": "Net subscription change (organic)",
+   "domain": "GRW",
+   "sub": "adjust",
+   "definition": "New subscriptions minus organic cancellations.",
+   "formula": "new_subscriptions - cancellations_organic",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "Net, organic only",
+    "Net change (organic)",
+    "Organic net"
+   ]
+  },
+  {
+   "id": "grw.reactivations",
+   "name": "Reactivations",
+   "domain": "GRW",
+   "sub": "flow",
+   "definition": "Cancelled subscriptions returned to ACTIVE in the window.",
+   "formula": "COUNT state_change WHERE from = CANCELLED AND to = ACTIVE",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [
+    "overview.growth_metrics.reactivated",
+    "overview.daily_breakdown.reactivatedTransitions"
+   ],
+   "aliases": [
+    "Reactivation Volume",
+    "Reactivations (trailing window)"
+   ]
+  },
+  {
+   "id": "rev.total_store_revenue",
+   "name": "Total store revenue",
+   "domain": "REV",
+   "sub": "total",
+   "definition": "All order revenue in the window, subscription and one-time.",
+   "formula": "SUM order.total WHERE order not cancelled or deleted",
+   "unit": "usd",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [
+    "overview.daily_breakdown.allRevenue",
+    "overview.subscription_distribution.All subscription revenue"
+   ],
+   "aliases": [
+    "Total Store Revenue",
+    "Order revenue",
+    "Quarter revenue"
+   ]
+  },
+  {
+   "id": "rev.subscription_revenue",
+   "name": "Subscription revenue",
+   "domain": "REV",
+   "sub": "total",
+   "definition": "Revenue from orders that carry a subscription, first-time plus recurring.",
+   "formula": "first_time_sub_revenue + recurring_sub_revenue",
+   "unit": "usd",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [
+    "overview.daily_breakdown.subscriptionRevenue",
+    "products.products_breakdown.Total Revenue"
+   ],
+   "aliases": [
+    "Subscription Revenue",
+    "Total Sub Revenue",
+    "Sub Revenue",
+    "Sub Revenue (trailing window)"
+   ]
+  },
+  {
+   "id": "rev.first_time_sub_revenue",
+   "name": "First-time subscription revenue",
+   "domain": "REV",
+   "sub": "mix",
+   "definition": "Revenue from the checkout order that starts a subscription.",
+   "formula": "SUM order.total WHERE order is the subscription's first order",
+   "unit": "usd",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [
+    "overview.daily_breakdown.newSubscriptionRevenue",
+    "overview.revenue_breakdown.revenue[First subscription revenue]",
+    "products.products_breakdown.First Time Revenue"
+   ],
+   "aliases": [
+    "First-time Subscription Revenue",
+    "First-Time",
+    "first-time revenue"
+   ]
+  },
+  {
+   "id": "rev.recurring_sub_revenue",
+   "name": "Recurring subscription revenue",
+   "domain": "REV",
+   "sub": "mix",
+   "definition": "Revenue from renewal orders created by subscription billing attempts. Excludes the first checkout order.",
+   "formula": "SUM order.total WHERE order created by successful billing attempt (errorCode IS NULL)",
+   "unit": "usd",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [
+    "overview.daily_breakdown.recurringSubscriptionRevenue",
+    "products.products_breakdown.Recurring Revenue"
+   ],
+   "aliases": [
+    "Recurring Subscription Revenue",
+    "Recurring",
+    "QtD recurring"
+   ]
+  },
+  {
+   "id": "rev.one_time_revenue",
+   "name": "One-time revenue",
+   "domain": "REV",
+   "sub": "mix",
+   "definition": "Revenue from orders with no subscription attached. In billing-attempt based splits the first subscription checkout order lands here too.",
+   "formula": "total_store_revenue - subscription_revenue",
+   "unit": "usd",
+   "grain": "order",
+   "polarity": "neutral",
+   "skio": [
+    "overview.daily_breakdown.nonSubscriptionRevenue",
+    "overview.daily_breakdown.oneTimeAddOnRevenue"
+   ],
+   "aliases": [
+    "One-time",
+    "One-Time Revenue",
+    "one-time/OTP"
+   ]
+  },
+  {
+   "id": "rev.subscription_revenue_share",
+   "name": "Subscription share of revenue",
+   "domain": "REV",
+   "sub": "mix",
+   "definition": "Subscription revenue, first-time plus recurring, as a share of total order revenue.",
+   "formula": "subscription_revenue / total_store_revenue",
+   "unit": "pct",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [
+    "overview.subscription_distribution.All orders with a subscription (%)"
+   ],
+   "aliases": [
+    "% of total revenue",
+    "Sub vs. One-Time"
+   ]
+  },
+  {
+   "id": "rev.recurring_revenue_share",
+   "name": "Recurring share of revenue",
+   "domain": "REV",
+   "sub": "mix",
+   "definition": "Recurring (renewal) revenue only, as a share of total order revenue. Not comparable with subscription share because first-time orders sit in the denominator only.",
+   "formula": "recurring_sub_revenue / total_store_revenue",
+   "unit": "pct",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "Recurring share, QtD",
+    "Subscription share of order revenue"
+   ]
+  },
+  {
+   "id": "rev.first_time_revenue_share",
+   "name": "First-time share of revenue",
+   "domain": "REV",
+   "sub": "mix",
+   "definition": "First-time subscription revenue as a share of total revenue.",
+   "formula": "first_time_sub_revenue / total_store_revenue",
+   "unit": "pct",
+   "grain": "order",
+   "polarity": "neutral",
+   "skio": [
+    "overview.revenue_breakdown.percentage"
+   ],
+   "aliases": []
+  },
+  {
+   "id": "rev.orders_total",
+   "name": "Orders",
+   "domain": "REV",
+   "sub": "total",
+   "definition": "Order count in the window.",
+   "formula": "COUNT order",
+   "unit": "count",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [
+    "overview.daily_breakdown.allOrders"
+   ],
+   "aliases": [
+    "order volume",
+    "Site-wide orders"
+   ]
+  },
+  {
+   "id": "rev.orders_first_time_sub",
+   "name": "First-time subscription orders",
+   "domain": "REV",
+   "sub": "mix",
+   "definition": "Checkout orders that start a subscription.",
+   "formula": "COUNT first subscription orders",
+   "unit": "count",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [
+    "overview.daily_breakdown.newSubscriptionOrders",
+    "products.products_breakdown.First Time Orders"
+   ],
+   "aliases": []
+  },
+  {
+   "id": "rev.orders_recurring",
+   "name": "Recurring orders",
+   "domain": "REV",
+   "sub": "mix",
+   "definition": "Renewal orders from successful billing attempts.",
+   "formula": "COUNT orders from billing attempts",
+   "unit": "count",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [
+    "overview.daily_breakdown.recurringSubscriptionOrders",
+    "products.products_breakdown.Recurring Orders"
+   ],
+   "aliases": [
+    "recurring order count"
+   ]
+  },
+  {
+   "id": "rev.aov_blended",
+   "name": "Average order value (blended)",
+   "domain": "REV",
+   "sub": "unit",
+   "definition": "Revenue per order across all order types.",
+   "formula": "total_store_revenue / orders_total",
+   "unit": "usd",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [
+    "overview.daily_breakdown.aov",
+    "cohort.cohort_kpis.Average Order Value"
+   ],
+   "aliases": [
+    "blended AOV",
+    "AOV"
+   ]
+  },
+  {
+   "id": "rev.aov_recurring",
+   "name": "Average order value (recurring)",
+   "domain": "REV",
+   "sub": "unit",
+   "definition": "Revenue per recurring order.",
+   "formula": "recurring_sub_revenue / orders_recurring",
+   "unit": "usd",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [
+    "products.products_breakdown.Recurring AOV"
+   ],
+   "aliases": [
+    "Recurring AOV, QtD"
+   ]
+  },
+  {
+   "id": "rev.revenue_per_day",
+   "name": "Revenue per day",
+   "domain": "REV",
+   "sub": "unit",
+   "definition": "Daily revenue for one revenue type, used for event baselines.",
+   "formula": "revenue / days",
+   "unit": "usd",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [
+    "overview.daily_breakdown.allRevenue"
+   ],
+   "aliases": []
+  },
+  {
+   "id": "rev.growth_pct",
+   "name": "Revenue growth",
+   "domain": "REV",
+   "sub": "total",
+   "definition": "Period-over-period change in a revenue measure.",
+   "formula": "(current - prior) / prior",
+   "unit": "pct",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": []
+  },
+  {
+   "id": "cxl.sessions",
+   "name": "Cancel-flow sessions",
+   "domain": "CXL",
+   "sub": "volume",
+   "definition": "Times a subscriber entered the cancel flow in the window.",
+   "formula": "COUNT cancel_flow_session",
+   "unit": "count",
+   "grain": "session",
+   "polarity": "neutral",
+   "skio": [
+    "cancel_flow.all_cancel_flow_sessions.subscriptionId",
+    "cancel_flow.cancel_reason_breakdown.Session Count"
+   ],
+   "aliases": [
+    "attempts",
+    "Sessions",
+    "Cancel Volume",
+    "cancel sessions"
+   ]
+  },
+  {
+   "id": "cxl.saves",
+   "name": "Saved sessions",
+   "domain": "CXL",
+   "sub": "volume",
+   "definition": "Sessions that ended with the subscription kept, by any treatment.",
+   "formula": "COUNT session WHERE status LIKE 'SAVED%'",
+   "unit": "count",
+   "grain": "session",
+   "polarity": "up_good",
+   "skio": [
+    "cancel_flow.cancellation_save_trends.Saved Sessions",
+    "cancel_flow.cancel_reason_breakdown.Saved Sessions"
+   ],
+   "aliases": [
+    "saves",
+    "rescued",
+    "Saves"
+   ]
+  },
+  {
+   "id": "cxl.cancelled_sessions",
+   "name": "Cancelled sessions",
+   "domain": "CXL",
+   "sub": "volume",
+   "definition": "Sessions that ended in cancellation, including compliance-forced cancellations.",
+   "formula": "COUNT session WHERE status LIKE 'CANCELLED%'",
+   "unit": "count",
+   "grain": "session",
+   "polarity": "down_good",
+   "skio": [
+    "cancel_flow.cancellation_save_trends.Cancelled Sessions"
+   ],
+   "aliases": [
+    "lost",
+    "completed cancellation"
+   ]
+  },
+  {
+   "id": "cxl.save_rate_all_sessions",
+   "name": "Save rate (all sessions)",
+   "domain": "CXL",
+   "sub": "rate",
+   "definition": "Saves divided by every session, including sessions with no recorded outcome.",
+   "formula": "saves / sessions",
+   "unit": "pct",
+   "grain": "session",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "Overall save rate",
+    "Save Rate (%)"
+   ]
+  },
+  {
+   "id": "cxl.save_rate_resolved",
+   "name": "Save rate (resolved sessions)",
+   "domain": "CXL",
+   "sub": "rate",
+   "definition": "Saves divided by sessions that ended in a save or a cancellation. Sessions abandoned without a decision are left out. Matches Skio's cancel_reason_breakdown Save Rate.",
+   "formula": "saves / (saves + cancelled_sessions)",
+   "unit": "pct",
+   "grain": "session",
+   "polarity": "up_good",
+   "skio": [
+    "cancel_flow.cancel_reason_breakdown.Save Rate"
+   ],
+   "aliases": [
+    "Cancel Flow Save Rate",
+    "Save rate, QtD",
+    "month save rate",
+    "save rate today"
+   ]
+  },
+  {
+   "id": "cxl.no_outcome_share",
+   "name": "Sessions with no outcome",
+   "domain": "CXL",
+   "sub": "volume",
+   "definition": "Share of sessions ending without a recorded save or cancellation.",
+   "formula": "1 - (saves + cancelled_sessions) / sessions",
+   "unit": "pct",
+   "grain": "session",
+   "polarity": "down_good",
+   "skio": [],
+   "aliases": [
+    "Sessions with no outcome"
+   ]
+  },
+  {
+   "id": "cxl.compliance_cancellations",
+   "name": "Compliance-forced cancellations",
+   "domain": "CXL",
+   "sub": "volume",
+   "definition": "Sessions cancelled immediately to satisfy California click-to-cancel rules, so no offer can be shown.",
+   "formula": "COUNT session WHERE status = CANCELLED_BY_CALIFORNIA_COMPLIANCE",
+   "unit": "count",
+   "grain": "session",
+   "polarity": "neutral",
+   "skio": [
+    "cancel_flow.all_cancel_flow_sessions.sessionStatus"
+   ],
+   "aliases": [
+    "COMPLIANCE (Blocked)",
+    "california compliance"
+   ]
+  },
+  {
+   "id": "cxl.offer_coverage",
+   "name": "Offer coverage",
+   "domain": "CXL",
+   "sub": "treatment",
+   "definition": "Share of sessions that were shown at least one save offer.",
+   "formula": "sessions_with_offer / sessions",
+   "unit": "pct",
+   "grain": "session",
+   "polarity": "up_good",
+   "skio": [
+    "cancel_flow.all_cancel_flow_sessions.parsedPath"
+   ],
+   "aliases": [
+    "Intervention coverage"
+   ]
+  },
+  {
+   "id": "cxl.session_share",
+   "name": "Share of sessions",
+   "domain": "CXL",
+   "sub": "volume",
+   "definition": "Share of all sessions that fall in one slice, such as a reason or billing cycle.",
+   "formula": "sessions_in_slice / sessions",
+   "unit": "pct",
+   "grain": "session",
+   "polarity": "neutral",
+   "skio": [
+    "cancel_flow.cancel_reason_breakdown.% of Total",
+    "cancel_flow.saved_reason_breakdown.% of Total"
+   ],
+   "aliases": [
+    "% of Total",
+    "% Churn in first cycle"
+   ]
+  },
+  {
+   "id": "cxl.mrr_at_risk",
+   "name": "MRR at risk",
+   "domain": "CXL",
+   "sub": "value",
+   "definition": "Monthly recurring revenue of the subscriptions that entered the cancel flow, valued at the moment of the session.",
+   "formula": "SUM session.subscriptionMRR",
+   "unit": "usd",
+   "grain": "session",
+   "polarity": "neutral",
+   "skio": [
+    "cancel_flow.all_cancel_flow_sessions.subscriptionMRR"
+   ],
+   "aliases": [
+    "MRR at Risk",
+    "monthly value at stake"
+   ]
+  },
+  {
+   "id": "cxl.mrr_saved",
+   "name": "MRR saved",
+   "domain": "CXL",
+   "sub": "value",
+   "definition": "Monthly recurring revenue of saved sessions.",
+   "formula": "SUM subscriptionMRR WHERE saved",
+   "unit": "usd",
+   "grain": "session",
+   "polarity": "up_good",
+   "skio": [
+    "cancel_flow.all_cancel_flow_sessions.subscriptionMRR"
+   ],
+   "aliases": [
+    "MRR Retained",
+    "rescued per month"
+   ]
+  },
+  {
+   "id": "cxl.mrr_lost",
+   "name": "MRR lost",
+   "domain": "CXL",
+   "sub": "value",
+   "definition": "Monthly recurring revenue of cancelled sessions.",
+   "formula": "SUM subscriptionMRR WHERE cancelled",
+   "unit": "usd",
+   "grain": "session",
+   "polarity": "down_good",
+   "skio": [
+    "cancel_flow.all_cancel_flow_sessions.subscriptionMRR"
+   ],
+   "aliases": [
+    "MRR Lost",
+    "lost per month"
+   ]
+  },
+  {
+   "id": "cxl.mrr_save_efficiency",
+   "name": "MRR save efficiency",
+   "domain": "CXL",
+   "sub": "value",
+   "definition": "Share of at-risk MRR that was saved. A value-weighted save rate.",
+   "formula": "mrr_saved / mrr_at_risk",
+   "unit": "pct",
+   "grain": "session",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "Efficiency"
+   ]
+  },
+  {
+   "id": "cxl.revenue_after_save",
+   "name": "Revenue realised after save",
+   "domain": "CXL",
+   "sub": "value",
+   "definition": "Order revenue actually billed after a saved session, as opposed to the MRR run-rate at risk.",
+   "formula": "SUM order revenue after save date for saved sessions",
+   "unit": "usd",
+   "grain": "session",
+   "polarity": "up_good",
+   "skio": [
+    "cancel_flow.saved_reason_breakdown.Revenue After",
+    "cancel_flow.saved_reason_breakdown.Orders After"
+   ],
+   "aliases": [
+    "realized after saves",
+    "revAfterSaved"
+   ]
+  },
+  {
+   "id": "cxl.unique_session_subscribers",
+   "name": "Unique subscribers in cancel flow",
+   "domain": "CXL",
+   "sub": "repeat",
+   "definition": "Distinct subscribers with at least one session.",
+   "formula": "COUNT DISTINCT subscriber IN sessions",
+   "unit": "count",
+   "grain": "subscriber",
+   "polarity": "neutral",
+   "skio": [
+    "cancel_flow.all_cancel_flow_sessions.storefrontUserEmail"
+   ],
+   "aliases": [
+    "Unique Subscribers",
+    "Multi-Cancel"
+   ]
+  },
+  {
+   "id": "cxl.repeat_cancel_rate",
+   "name": "Repeat cancel-attempt rate",
+   "domain": "CXL",
+   "sub": "repeat",
+   "definition": "Share of cancel-flow subscribers who opened two or more sessions.",
+   "formula": "subscribers with sessions >= 2 / unique_session_subscribers",
+   "unit": "pct",
+   "grain": "subscriber",
+   "polarity": "down_good",
+   "skio": [],
+   "aliases": [
+    "Re-Cancel Rate"
+   ]
+  },
+  {
+   "id": "cxl.incremental_saves",
+   "name": "Incremental saves vs baseline rate",
+   "domain": "CXL",
+   "sub": "rate",
+   "definition": "Saves above what the prior period's save rate would have produced on the current resolved volume.",
+   "formula": "saves - resolved_sessions x baseline_save_rate",
+   "unit": "count",
+   "grain": "session",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "additional subscriptions retained",
+    "saves above prior-period rate"
+   ]
+  },
+  {
+   "id": "cxl.churn_rate",
+   "name": "Churn rate (Skio native)",
+   "domain": "CXL",
+   "sub": "rate",
+   "definition": "Skio's own churn rate on the cancel-flow overview. None of the catalogued reports use it.",
+   "formula": "Skio internal",
+   "unit": "pct",
+   "grain": "subscription",
+   "polarity": "down_good",
+   "skio": [
+    "cancel_flow.cancel_flow_overview.Churn Rate",
+    "cancel_flow.cancel_flow_overview.Active Churn Rate",
+    "overview.cancellation_rates.Cancellation rate"
+   ],
+   "aliases": []
+  },
+  {
+   "id": "ret.day_n_retention",
+   "name": "Day-N retention",
+   "domain": "RET",
+   "sub": "curve",
+   "definition": "Share of a signup cohort still subscribed N days after each member's own start date.",
+   "formula": "members active at start+N / cohort_size",
+   "unit": "pct",
+   "grain": "subscriber",
+   "polarity": "up_good",
+   "skio": [
+    "cohort.cohort_retention.0th Month / 0 orders"
+   ],
+   "aliases": [
+    "% still subscribed",
+    "Day-N retention",
+    "Day-thirty retention"
+   ]
+  },
+  {
+   "id": "ret.still_active_share",
+   "name": "Share still active",
+   "domain": "RET",
+   "sub": "survival",
+   "definition": "Share of an ever-subscribed group that is active today. Sensitive to group age.",
+   "formula": "active_today / ever_subscribed",
+   "unit": "pct",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "Still active",
+    "% Still Active",
+    "Still active/paused today"
+   ]
+  },
+  {
+   "id": "ret.cancelled_share",
+   "name": "Share cancelled",
+   "domain": "RET",
+   "sub": "survival",
+   "definition": "Share of an ever-subscribed group that has cancelled. The complement of share still active, plus paused.",
+   "formula": "cancelled / ever_subscribed",
+   "unit": "pct",
+   "grain": "subscription",
+   "polarity": "down_good",
+   "skio": [],
+   "aliases": [
+    "% Cancelled",
+    "Cancel Rate \u2014 Skippers"
+   ]
+  },
+  {
+   "id": "ret.cancelled_share_mature",
+   "name": "Share cancelled (mature cohort)",
+   "domain": "RET",
+   "sub": "survival",
+   "definition": "Share cancelled among subscriptions at least 90 days old, removing the youth effect.",
+   "formula": "cancelled / subs WHERE age >= 90d",
+   "unit": "pct",
+   "grain": "subscription",
+   "polarity": "down_good",
+   "skio": [],
+   "aliases": [
+    "% Cancelled (mature cohort)"
+   ]
+  },
+  {
+   "id": "ret.avg_cycles",
+   "name": "Average cycles completed",
+   "domain": "RET",
+   "sub": "depth",
+   "definition": "Mean number of billing cycles a subscription has completed. Close to Skio's Average Order Count (AOC).",
+   "formula": "AVG completed_cycles",
+   "unit": "cycles",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [
+    "cohort.cohort_kpis.Average Order Count",
+    "cohort.cohort_lifetime_metrics.Lifetime AOC",
+    "cohort.cohort_aoc.0th Month / 0 orders"
+   ],
+   "aliases": [
+    "Avg cycles",
+    "Avg Cycles",
+    "Avg cycles completed"
+   ]
+  },
+  {
+   "id": "ret.avg_lifetime_revenue",
+   "name": "Average lifetime revenue",
+   "domain": "RET",
+   "sub": "value",
+   "definition": "Mean revenue per subscription or subscriber to date. A realised, not predicted, LTV.",
+   "formula": "SUM revenue / COUNT subscriptions",
+   "unit": "usd",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [
+    "cohort.cohort_kpis.Lifetime Value",
+    "cohort.cohort_lifetime_metrics.Lifetime LTV"
+   ],
+   "aliases": [
+    "Avg Lifetime Revenue",
+    "Avg lifetime rev",
+    "lifetime revenue per subscriber"
+   ]
+  },
+  {
+   "id": "ret.ltv_windowed",
+   "name": "Windowed LTV (3/6/12 month)",
+   "domain": "RET",
+   "sub": "value",
+   "definition": "Revenue per subscriber within a fixed number of months of start. Skio native, unused by the reports.",
+   "formula": "SUM revenue within N months / cohort_size",
+   "unit": "usd",
+   "grain": "subscriber",
+   "polarity": "up_good",
+   "skio": [
+    "cohort.cohort_lifetime_metrics.3-Month LTV",
+    "cohort.cohort_lifetime_metrics.6-Month LTV",
+    "cohort.cohort_lifetime_metrics.12-Month LTV",
+    "cohort.cohort_ltv.0th Month / 0 orders"
+   ],
+   "aliases": []
+  },
+  {
+   "id": "ret.post_event_cancel_cum",
+   "name": "Cumulative cancellation after event",
+   "domain": "RET",
+   "sub": "timing",
+   "definition": "Share of a group that has cancelled within N days of a trigger event such as a first skip.",
+   "formula": "cancelled within N days of event / group_size",
+   "unit": "pct",
+   "grain": "subscription",
+   "polarity": "down_good",
+   "skio": [],
+   "aliases": [
+    "Cancelled by this point",
+    "% of all skippers"
+   ]
+  },
+  {
+   "id": "ret.one_day_mortality",
+   "name": "One-day mortality",
+   "domain": "RET",
+   "sub": "timing",
+   "definition": "Share of subscriptions cancelled within a day of creation. Used as a data-hygiene check for imports and test orders.",
+   "formula": "cancelled within 1 day / created",
+   "unit": "pct",
+   "grain": "subscription",
+   "polarity": "down_good",
+   "skio": [],
+   "aliases": [
+    "One-day mortality"
+   ]
+  },
+  {
+   "id": "ret.cancellation_timing",
+   "name": "Cancellation timing mix",
+   "domain": "RET",
+   "sub": "timing",
+   "definition": "Cancellations grouped by how long after start they happen. Skio native, unused by the reports.",
+   "formula": "COUNT cancellations BY timing bucket",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "neutral",
+   "skio": [
+    "cohort.cohort_cancellation_breakdown.Cancellation Count"
+   ],
+   "aliases": []
+  },
+  {
+   "id": "dun.recovery_rate",
+   "name": "Dunning recovery rate",
+   "domain": "DUN",
+   "sub": "outcome",
+   "definition": "Share of resolved dunning cases that ended with the payment recovered.",
+   "formula": "recovered / (recovered + lost)",
+   "unit": "pct",
+   "grain": "dunning_window",
+   "polarity": "up_good",
+   "skio": [
+    "dunning.dunning_overview.Value[Recovery Rate (%)]"
+   ],
+   "aliases": [
+    "Dunning recovery",
+    "Dunning Recovery Rate"
+   ]
+  },
+  {
+   "id": "dun.recovered",
+   "name": "Recovered dunning cases",
+   "domain": "DUN",
+   "sub": "outcome",
+   "definition": "Dunning windows that exited back to ACTIVE.",
+   "formula": "COUNT dunning_window WHERE exitedStatus = ACTIVE",
+   "unit": "count",
+   "grain": "dunning_window",
+   "polarity": "up_good",
+   "skio": [
+    "dunning.dunning_details_breakdown.Recovered"
+   ],
+   "aliases": [
+    "Recovered"
+   ]
+  },
+  {
+   "id": "dun.lost",
+   "name": "Lost to dunning",
+   "domain": "DUN",
+   "sub": "outcome",
+   "definition": "Dunning windows that ended in cancellation.",
+   "formula": "COUNT dunning_window WHERE exitedStatus = CANCELLED",
+   "unit": "count",
+   "grain": "dunning_window",
+   "polarity": "down_good",
+   "skio": [
+    "dunning.dunning_details_breakdown.Passively Cancelled",
+    "dunning.dunning_details_breakdown.Actively Cancelled"
+   ],
+   "aliases": [
+    "Lost",
+    "Lost to dunning"
+   ]
+  },
+  {
+   "id": "dun.entered",
+   "name": "Entered dunning",
+   "domain": "DUN",
+   "sub": "outcome",
+   "definition": "Dunning windows opened in the window.",
+   "formula": "COUNT dunning_window WHERE enteredAt IN window",
+   "unit": "count",
+   "grain": "dunning_window",
+   "polarity": "down_good",
+   "skio": [
+    "dunning.dunning_window.Entered"
+   ],
+   "aliases": [
+    "entered"
+   ]
+  },
+  {
+   "id": "dun.open",
+   "name": "Open dunning cases",
+   "domain": "DUN",
+   "sub": "outcome",
+   "definition": "Dunning windows not yet resolved.",
+   "formula": "COUNT dunning_window WHERE exitedAt IS NULL",
+   "unit": "count",
+   "grain": "dunning_window",
+   "polarity": "neutral",
+   "skio": [
+    "dunning.dunning_details_breakdown.Still in Dunning",
+    "dunning.dunning_overview.Value[Current In Dunning]"
+   ],
+   "aliases": [
+    "still resolving",
+    "still open"
+   ]
+  },
+  {
+   "id": "dun.backup_payment_adoption",
+   "name": "Backup payment adoption",
+   "domain": "DUN",
+   "sub": "prevention",
+   "definition": "Share of the active base with a backup payment method on file.",
+   "formula": "active WITH backupPaymentMethodId / active",
+   "unit": "pct",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [
+    "segments.segments_audit_log.Action[Backup payment method was used for billing]"
+   ],
+   "aliases": [
+    "Backup Card Adoption"
+   ]
+  },
+  {
+   "id": "dun.recovered_revenue",
+   "name": "Recovered revenue",
+   "domain": "DUN",
+   "sub": "outcome",
+   "definition": "Revenue billed from recovered dunning windows. Skio native, unused by the reports.",
+   "formula": "SUM recoveredRevenue",
+   "unit": "usd",
+   "grain": "dunning_window",
+   "polarity": "up_good",
+   "skio": [
+    "dunning.all_dunning_windows.recoveredRevenue",
+    "dunning.dunning_details_breakdown.Recovered Revenue"
+   ],
+   "aliases": []
+  },
+  {
+   "id": "dun.retry_funnel",
+   "name": "Billing retry funnel",
+   "domain": "DUN",
+   "sub": "outcome",
+   "definition": "Outcomes at each billing retry number. Skio native, unused by the reports.",
+   "formula": "COUNT outcomes BY retry number",
+   "unit": "count",
+   "grain": "dunning_window",
+   "polarity": "neutral",
+   "skio": [
+    "dunning.retry_progress_funnel.Recovered",
+    "dunning.top_error_causes.Count"
+   ],
+   "aliases": []
+  },
+  {
+   "id": "prd.product_sub_revenue",
+   "name": "Product subscription revenue",
+   "domain": "PRD",
+   "sub": "product",
+   "definition": "Subscription revenue attributed to one product or variant.",
+   "formula": "SUM line revenue BY product",
+   "unit": "usd",
+   "grain": "subscription_line",
+   "polarity": "up_good",
+   "skio": [
+    "products.products_breakdown.Total Revenue",
+    "products.top_products.Value[Subscription Revenue]"
+   ],
+   "aliases": [
+    "Total Sub Revenue",
+    "Sub Revenue",
+    "Monthly Revenue",
+    "Total Sub Revenue (category)",
+    "Plan-length revenue"
+   ]
+  },
+  {
+   "id": "prd.product_revenue_share",
+   "name": "Product revenue share",
+   "domain": "PRD",
+   "sub": "product",
+   "definition": "One product's or variant's share of a revenue total.",
+   "formula": "product_sub_revenue / parent_total",
+   "unit": "pct",
+   "grain": "subscription_line",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": [
+    "% of all sub rev"
+   ]
+  },
+  {
+   "id": "prd.product_rank",
+   "name": "Product rank",
+   "domain": "PRD",
+   "sub": "product",
+   "definition": "Ordinal position of a product on a measure.",
+   "formula": "RANK BY measure",
+   "unit": "count",
+   "grain": "subscription_line",
+   "polarity": "neutral",
+   "skio": [
+    "products.top_products.Rank"
+   ],
+   "aliases": [
+    "product rank by revenue"
+   ]
+  },
+  {
+   "id": "prd.product_activations",
+   "name": "Product activations",
+   "domain": "PRD",
+   "sub": "product",
+   "definition": "Subscriptions activated on a product in the window, per Skio's products breakdown.",
+   "formula": "Skio products_breakdown.Activated",
+   "unit": "count",
+   "grain": "subscription_line",
+   "polarity": "up_good",
+   "skio": [
+    "products.products_breakdown.Activated",
+    "products.top_products.Value[Activated]"
+   ],
+   "aliases": [
+    "New Activations",
+    "Activated",
+    "Activations"
+   ]
+  },
+  {
+   "id": "prd.product_cancellations",
+   "name": "Product cancellations",
+   "domain": "PRD",
+   "sub": "product",
+   "definition": "Subscriptions cancelled on a product in the window.",
+   "formula": "Skio products_breakdown.Cancelled",
+   "unit": "count",
+   "grain": "subscription_line",
+   "polarity": "down_good",
+   "skio": [
+    "products.products_breakdown.Cancelled"
+   ],
+   "aliases": [
+    "Cancellations",
+    "Cancelled"
+   ]
+  },
+  {
+   "id": "prd.product_new_subscriptions",
+   "name": "New subscriptions by product",
+   "domain": "PRD",
+   "sub": "product",
+   "definition": "New subscriptions or subscription lines created on a product or category.",
+   "formula": "COUNT new lines BY product",
+   "unit": "count",
+   "grain": "subscription_line",
+   "polarity": "up_good",
+   "skio": [
+    "products.products_breakdown.Subscriptions"
+   ],
+   "aliases": [
+    "New subscriptions by product",
+    "New Subscription Lines by Category"
+   ]
+  },
+  {
+   "id": "prd.multi_pack_share",
+   "name": "Multi-pack share of new subscriptions",
+   "domain": "PRD",
+   "sub": "pack",
+   "definition": "Share of new subscriptions starting on quantity 2 or more.",
+   "formula": "new subs WITH qty >= 2 / new subs",
+   "unit": "pct",
+   "grain": "subscription_line",
+   "polarity": "up_good",
+   "skio": [
+    "cohort.cohort_lifetime_metrics.Average Quantity"
+   ],
+   "aliases": [
+    "Multi-Pack Share",
+    "Multi-pack share of new subs"
+   ]
+  },
+  {
+   "id": "cad.optin_interval_share",
+   "name": "Opt-in interval share",
+   "domain": "CAD",
+   "sub": "mix",
+   "definition": "Share of signups choosing each delivery interval at checkout.",
+   "formula": "subs ON interval / subs",
+   "unit": "pct",
+   "grain": "subscription",
+   "polarity": "neutral",
+   "skio": [
+    "products.products_shipping_intervals.Percentage of Total",
+    "products.products_shipping_intervals.Number of Subscriptions"
+   ],
+   "aliases": [
+    "% of category's signups",
+    "share on each interval (days)"
+   ]
+  },
+  {
+   "id": "cad.interval_stickiness",
+   "name": "Interval stickiness",
+   "domain": "CAD",
+   "sub": "stickiness",
+   "definition": "Share of subscriptions still on the interval they opted into.",
+   "formula": "subs WHERE current_interval = optin_interval / subs",
+   "unit": "pct",
+   "grain": "subscription",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": [
+    "Stay on opt-in cadence"
+   ]
+  },
+  {
+   "id": "cad.interval_changes",
+   "name": "Interval changes",
+   "domain": "CAD",
+   "sub": "stickiness",
+   "definition": "Subscriptions that have ever moved off their opt-in interval.",
+   "formula": "COUNT subs WHERE current_interval != optin_interval",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": [
+    "Ever changed interval"
+   ]
+  },
+  {
+   "id": "cad.cadences_offered",
+   "name": "Cadences offered",
+   "domain": "CAD",
+   "sub": "mix",
+   "definition": "Number of distinct delivery intervals on sale.",
+   "formula": "COUNT DISTINCT interval in selling plans",
+   "unit": "count",
+   "grain": "store",
+   "polarity": "neutral",
+   "skio": [
+    "products.products_shipping_intervals.Billing Interval Count"
+   ],
+   "aliases": [
+    "Cadences offered"
+   ]
+  },
+  {
+   "id": "ofr.offer_subscriptions",
+   "name": "Subscriptions by offer",
+   "domain": "OFR",
+   "sub": "cohort",
+   "definition": "Subscriptions that used a discount code or offer structure.",
+   "formula": "COUNT subs WITH offer",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "neutral",
+   "skio": [
+    "segments.segments_audit_log.Subscriptions"
+   ],
+   "aliases": [
+    "Subs"
+   ]
+  },
+  {
+   "id": "ofr.new_subs_offer_share",
+   "name": "New subscriptions by offer share",
+   "domain": "OFR",
+   "sub": "attribution",
+   "definition": "Share of recent new subscriptions attributable to each offer.",
+   "formula": "new subs WITH offer / new subs",
+   "unit": "pct",
+   "grain": "subscription",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": [
+    "Share"
+   ]
+  },
+  {
+   "id": "eng.ever_skipped_share",
+   "name": "Ever-skipped share",
+   "domain": "ENG",
+   "sub": "skip",
+   "definition": "Share of all subscriptions with at least one recorded skip.",
+   "formula": "subs WITH skip_event / all_time_subscriptions",
+   "unit": "pct",
+   "grain": "subscription",
+   "polarity": "neutral",
+   "skio": [
+    "forecast.subscription_actions_forecast.Action[Skipped]"
+   ],
+   "aliases": [
+    "Subs That Have Ever Skipped"
+   ]
+  },
+  {
+   "id": "eng.revenue_after_first_skip",
+   "name": "Revenue after first skip",
+   "domain": "ENG",
+   "sub": "skip",
+   "definition": "Revenue billed to skippers after their first skip.",
+   "formula": "SUM revenue after first skip date",
+   "unit": "usd",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "Revenue Earned After First Skip"
+   ]
+  },
+  {
+   "id": "eng.portal_engagement",
+   "name": "Portal engagement",
+   "domain": "ENG",
+   "sub": "portal",
+   "definition": "Share of active subscriptions whose subscriber has logged into the customer portal at least once.",
+   "formula": "active subs WITH login / active subs",
+   "unit": "pct",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "Portal Engagement"
+   ]
+  },
+  {
+   "id": "eng.portal_login_codes",
+   "name": "Portal login codes sent",
+   "domain": "ENG",
+   "sub": "portal",
+   "definition": "One-time login codes sent for the customer portal.",
+   "formula": "COUNT notification WHERE type = login_code",
+   "unit": "count",
+   "grain": "subscriber",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "Login Codes Sent",
+    "Portal Login Activity"
+   ]
+  },
+  {
+   "id": "evt.peak_day_orders",
+   "name": "Peak-day orders",
+   "domain": "EVT",
+   "sub": "peak",
+   "definition": "Highest single-day order count in an event window.",
+   "formula": "MAX daily orders",
+   "unit": "count",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [
+    "overview.daily_breakdown.allOrders"
+   ],
+   "aliases": [
+    "Peak Day Orders"
+   ]
+  },
+  {
+   "id": "evt.peak_day_revenue",
+   "name": "Peak-day revenue",
+   "domain": "EVT",
+   "sub": "peak",
+   "definition": "Highest single-day revenue for one revenue type in an event window.",
+   "formula": "MAX daily revenue",
+   "unit": "usd",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [
+    "overview.daily_breakdown.nonSubscriptionRevenue"
+   ],
+   "aliases": [
+    "Peak Day One-Time Revenue"
+   ]
+  },
+  {
+   "id": "evt.lift_index",
+   "name": "Event lift index",
+   "domain": "EVT",
+   "sub": "lift",
+   "definition": "Actual revenue in an event window divided by what the baseline daily rate predicts for the same number of days.",
+   "formula": "event_revenue / (baseline_daily_rate x event_days)",
+   "unit": "multiple",
+   "grain": "subscription_line",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "Lift",
+    "Sub Revenue Lift"
+   ]
+  },
+  {
+   "id": "fct.queued_revenue",
+   "name": "Queued revenue",
+   "domain": "FCT",
+   "sub": "queued",
+   "definition": "Revenue already scheduled from upcoming billing dates. Skio native, unused by the reports.",
+   "formula": "SUM scheduled order value",
+   "unit": "usd",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [
+    "forecast.revenue_forecast.Queued Revenue",
+    "forecast.forecast_summary.Queued Value",
+    "forecast.product_forecast.Queued Revenue"
+   ],
+   "aliases": []
+  },
+  {
+   "id": "fct.projected_revenue",
+   "name": "Projected revenue",
+   "domain": "FCT",
+   "sub": "projected",
+   "definition": "Skio's modelled revenue projection with its error score. Skio native, unused by the reports.",
+   "formula": "Skio model",
+   "unit": "usd",
+   "grain": "store",
+   "polarity": "up_good",
+   "skio": [
+    "forecast.revenue_forecast.Forecasted Revenue",
+    "forecast.revenue_forecast.MAPE Score",
+    "forecast.forecast_summary.Projected Value"
+   ],
+   "aliases": []
+  },
+  {
+   "id": "fct.forecast_activations_cancellations",
+   "name": "Forecast activations and cancellations",
+   "domain": "FCT",
+   "sub": "projected",
+   "definition": "Projected activations and cancellations with low and high estimates. Skio native, unused by the reports.",
+   "formula": "Skio model",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "neutral",
+   "skio": [
+    "forecast.activations_cancellations_forecast.Forecasted Activations",
+    "forecast.activations_cancellations_forecast.Forecasted Cancellations"
+   ],
+   "aliases": []
+  },
+  {
+   "id": "grw.avg_active_subscriptions",
+   "name": "Average active subscriptions",
+   "domain": "GRW",
+   "sub": "stock",
+   "definition": "Mean of the daily active subscription count across a period.",
+   "formula": "AVG daily active_subscriptions over period",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [
+    "overview.daily_breakdown.activeSubscriptions"
+   ],
+   "aliases": [
+    "Avg Active Subs",
+    "Quarter average"
+   ]
+  },
+  {
+   "id": "rev.paced_revenue",
+   "name": "Paced full-period revenue",
+   "domain": "REV",
+   "sub": "total",
+   "definition": "Quarter-to-date revenue scaled to the full period at the current run-rate. Directional, not a forecast.",
+   "formula": "qtd_revenue x days_in_period / days_elapsed",
+   "unit": "usd",
+   "grain": "order",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "paced vs prior quarter"
+   ]
+  },
+  {
+   "id": "rev.avg_price_per_cycle",
+   "name": "Average price by cycle",
+   "domain": "REV",
+   "sub": "unit",
+   "definition": "Mean order price at each billing cycle, used to rule out post-intro price steps as a churn driver.",
+   "formula": "AVG order price BY cycle number",
+   "unit": "usd",
+   "grain": "order",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": []
+  },
+  {
+   "id": "ret.single_cycle_hazard",
+   "name": "Single-cycle cancel hazard",
+   "domain": "RET",
+   "sub": "curve",
+   "definition": "Of everyone who reached cycle N, the share who cancelled before reaching cycle N+1.",
+   "formula": "cancelled during cycle N / reached cycle N",
+   "unit": "pct",
+   "grain": "subscription",
+   "polarity": "down_good",
+   "skio": [
+    "cohort.cohort_order_based_retention.0th Month / 0 orders"
+   ],
+   "aliases": [
+    "Single-Cycle Hazard",
+    "Peak Churn Window"
+   ]
+  },
+  {
+   "id": "ret.avg_days_to_cancel",
+   "name": "Average days to cancel",
+   "domain": "RET",
+   "sub": "timing",
+   "definition": "Mean days from signup to cancellation for subscriptions cancelled at a given cycle.",
+   "formula": "AVG(cancelled_at - created_at) BY cycle",
+   "unit": "days",
+   "grain": "subscription",
+   "polarity": "up_good",
+   "skio": [
+    "cohort.cohort_lifetime_metrics.Average Days Active"
+   ],
+   "aliases": [
+    "Avg Days to Cancel",
+    "Avg. days from signup to cancellation"
+   ]
+  },
+  {
+   "id": "cxl.reason_capture_rate",
+   "name": "Cancel reason capture rate",
+   "domain": "CXL",
+   "sub": "reason",
+   "definition": "Share of non-saved cancel-flow sessions with a recorded cancel reason.",
+   "formula": "non-saved sessions WITH reason / non-saved sessions",
+   "unit": "pct",
+   "grain": "session",
+   "polarity": "up_good",
+   "skio": [
+    "cancel_flow.cancel_reason_breakdown.Reason"
+   ],
+   "aliases": [
+    "Cancel Reason Capture",
+    "Cancel Reason Capture Rate"
+   ]
+  },
+  {
+   "id": "cxl.save_reversal_rate",
+   "name": "Save reversal rate",
+   "domain": "CXL",
+   "sub": "repeat",
+   "definition": "Share of saves that end in cancellation within N days of the save. The complement of save durability.",
+   "formula": "saves cancelled within N days / saves",
+   "unit": "pct",
+   "grain": "session",
+   "polarity": "down_good",
+   "skio": [
+    "cancel_flow.saved_reason_breakdown.Orders After"
+   ],
+   "aliases": [
+    "durability",
+    "saves that reverse within N days"
+   ]
+  },
+  {
+   "id": "cxl.treatment_share_of_saves",
+   "name": "Treatment share of saves",
+   "domain": "CXL",
+   "sub": "treatment",
+   "definition": "Share of all saves closed by one treatment.",
+   "formula": "saves BY treatment / saves",
+   "unit": "pct",
+   "grain": "session",
+   "polarity": "neutral",
+   "skio": [
+    "cancel_flow.saved_reason_breakdown.% of Total"
+   ],
+   "aliases": [
+    "best save engine",
+    "Splash-skip share of saves"
+   ]
+  },
+  {
+   "id": "cxl.save_rate_by_reason",
+   "name": "Save rate by reason",
+   "domain": "CXL",
+   "sub": "reason",
+   "definition": "Save rate within one cancel reason. Stored as its own metric when a report quotes it without session counts.",
+   "formula": "saves / sessions WHERE reason = r",
+   "unit": "pct",
+   "grain": "session",
+   "polarity": "up_good",
+   "skio": [
+    "cancel_flow.cancel_reason_breakdown.Save Rate"
+   ],
+   "aliases": [
+    "reason save rate"
+   ]
+  },
+  {
+   "id": "eng.skip_users",
+   "name": "Skip users",
+   "domain": "ENG",
+   "sub": "skip",
+   "definition": "Unique subscribers who used skip at least once.",
+   "formula": "COUNT DISTINCT subscriber WITH skip event",
+   "unit": "count",
+   "grain": "subscriber",
+   "polarity": "neutral",
+   "skio": [
+    "forecast.subscription_actions_forecast.Subscription Count"
+   ],
+   "aliases": [
+    "unique subscribers who used skip at least once"
+   ]
+  },
+  {
+   "id": "eng.skip_events",
+   "name": "Skip events",
+   "domain": "ENG",
+   "sub": "skip",
+   "definition": "Total skip actions including repeats.",
+   "formula": "COUNT skip events",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "neutral",
+   "skio": [
+    "forecast.subscription_actions_forecast.Total Actions"
+   ],
+   "aliases": [
+    "total skip events"
+   ]
+  },
+  {
+   "id": "eng.paused_subscriptions",
+   "name": "Paused subscriptions",
+   "domain": "ENG",
+   "sub": "edit",
+   "definition": "Subscriptions currently in PAUSED status.",
+   "formula": "COUNT subscription WHERE status = PAUSED",
+   "unit": "count",
+   "grain": "subscription",
+   "polarity": "neutral",
+   "skio": [
+    "overview.daily_breakdown.pausedSubscriptions"
+   ],
+   "aliases": [
+    "Currently paused subscriptions"
+   ]
+  },
+  {
+   "id": "prd.product_line_items",
+   "name": "Subscription line items by product",
+   "domain": "PRD",
+   "sub": "product",
+   "definition": "Count of billed subscription line items for a product, all time.",
+   "formula": "COUNT order line items WITH subscription line BY product",
+   "unit": "count",
+   "grain": "subscription_line",
+   "polarity": "up_good",
+   "skio": [
+    "products.products_breakdown.Quantity"
+   ],
+   "aliases": [
+    "Line Items"
+   ]
+  },
+  {
+   "id": "prd.co_subscribers",
+   "name": "Co-subscribers for a product pair",
+   "domain": "PRD",
+   "sub": "product",
+   "definition": "Active subscribers holding both products of a pair.",
+   "formula": "COUNT DISTINCT subscriber WITH product A AND product B active",
+   "unit": "count",
+   "grain": "subscriber",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": [
+    "Co-Subscribers"
+   ]
+  }
+ ]
+}

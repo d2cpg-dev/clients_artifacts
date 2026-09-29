@@ -1,0 +1,449 @@
+<title>Skio Analysis Catalog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: sticky section rail on the left, one working pane on the right; rail becomes a scrolling tab strip on phones. */
+:root{
+  --bg:#f4f5f7; --surface:#ffffff; --surface-2:#eef0f3; --ink:#161a21; --ink-2:#4c5563; --ink-3:#6f7885; --rule:#dde1e7;
+  --accent:#0d6b6b; --accent-soft:#e2f0ef; --focus:#1f63c7;
+  --s1:#2a78d6; --s1-soft:#cde2fb;
+  --seq1:#eef4fc; --seq2:#b7d3f6; --seq3:#6da7ec; --seq4:#2a78d6; --seq5:#184f95;
+  --good:#0ca30c; --warn:#b77900; --serious:#c9562b; --crit:#d03b3b;
+  --font-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --font-body:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121417; --surface:#1a1d21; --surface-2:#23272d; --ink:#eef1f4; --ink-2:#b4bcc7; --ink-3:#8b94a0; --rule:#2e333a;
+  --accent:#4fb7b1; --accent-soft:#17312f; --focus:#6aa6f5; --s1:#3987e5; --s1-soft:#1c3552;
+  --seq1:#1b2430; --seq2:#1c4270; --seq3:#256abf; --seq4:#3987e5; --seq5:#86b6ef;
+  --good:#3cc23c; --warn:#fab219; --serious:#ec835a; --crit:#e66767; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121417; --surface:#1a1d21; --surface-2:#23272d; --ink:#eef1f4; --ink-2:#b4bcc7; --ink-3:#8b94a0; --rule:#2e333a;
+  --accent:#4fb7b1; --accent-soft:#17312f; --focus:#6aa6f5; --s1:#3987e5; --s1-soft:#1c3552;
+  --seq1:#1b2430; --seq2:#1c4270; --seq3:#256abf; --seq4:#3987e5; --seq5:#86b6ef;
+  --good:#3cc23c; --warn:#fab219; --serious:#ec835a; --crit:#e66767; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:14px;line-height:1.55;margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+.rail{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;height:100vh;overflow:auto;padding:24px 16px;border-right:1px solid var(--rule);background:var(--surface)}
+.brand{font-family:var(--font-display);font-weight:700;font-size:20px;line-height:1.15;letter-spacing:-.01em;margin:0 0 4px}
+.brand-sub{font-size:12px;color:var(--ink-3);margin:0 0 20px}
+.rail nav{display:flex;flex-direction:column;gap:2px}
+.rail button{all:unset;cursor:pointer;display:flex;justify-content:space-between;gap:8px;padding:7px 10px;border-radius:6px;color:var(--ink-2);font-size:13.5px}
+.rail button:hover{background:var(--surface-2);color:var(--ink)}
+.rail button[aria-current="true"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.rail button .n{font-family:var(--font-mono);font-size:11px;color:var(--ink-3)}
+.rail-foot{margin-top:24px;font-size:11.5px;color:var(--ink-3);line-height:1.5}
+main{padding-block:28px 64px;padding-inline:clamp(16px,3vw,40px);min-width:0;max-width:1240px}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;letter-spacing:-.01em;margin:0}
+h1{font-size:30px;font-weight:700;line-height:1.1}
+h2{font-size:21px;font-weight:700;margin-bottom:6px}
+h3{font-size:16px;font-weight:700}
+.lede{color:var(--ink-2);max-width:68ch;margin:8px 0 0}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+section.view{display:flex;flex-direction:column;gap:28px}
+.block{display:flex;flex-direction:column;gap:12px}
+.block-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 16px}
+.muted{color:var(--ink-3)}
+.mono{font-family:var(--font-mono);font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.stat{background:var(--surface);padding:14px 16px}
+.stat b{display:block;font-family:var(--font-display);font-size:26px;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--ink-3)}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card.link{cursor:pointer}
+.card.link:hover{border-color:var(--accent)}
+.rid{font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:11px;padding:2px 7px;border-radius:4px;background:var(--surface-2);color:var(--ink-2);max-width:100%;overflow-wrap:anywhere}
+.chip.acc{background:var(--accent-soft);color:var(--accent)}
+.chip.btn{cursor:pointer;border:0}
+.sev{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.sev::before{content:"";width:9px;height:9px;border-radius:2px;background:currentColor}
+.sev.high{color:var(--crit)} .sev.medium{color:var(--serious)} .sev.low{color:var(--ink-3)}
+.sev.high::before{border-radius:50%}
+.tw{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);font-weight:600;text-align:left;padding:9px 10px;border-bottom:1px solid var(--rule);background:var(--surface-2);white-space:nowrap;position:sticky;top:0}
+td{padding:8px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.wrap{min-width:220px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+input[type=search],select{font:inherit;font-size:13px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:7px 10px;min-width:0}
+input[type=search]{width:min(320px,100%)}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{font:inherit;font-size:12.5px;cursor:pointer;background:var(--surface);color:var(--ink-2);border:1px solid var(--rule);border-radius:6px;padding:5px 10px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.heat td.cell{text-align:center;font-variant-numeric:tabular-nums;font-family:var(--font-mono);font-size:12px;min-width:44px}
+.heat .l0{background:transparent;color:var(--ink-3)} .heat .l1{background:var(--seq1)} .heat .l2{background:var(--seq2)} .heat .l3{background:var(--seq3);color:#fff} .heat .l4{background:var(--seq4);color:#fff} .heat .l5{background:var(--seq5);color:#fff}
+:root[data-theme="dark"] .heat .l5{color:#0b1b30}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .heat .l5{color:#0b1b30}}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--s1)}
+.legend-seq{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3)}
+.legend-seq i{display:inline-block;width:22px;height:12px;border-radius:2px}
+.kv{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 14px;font-size:13px}
+.kv dt{color:var(--ink-3)} .kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.mono,h2,h3{overflow-wrap:anywhere}
+.dossier-pick{display:flex;flex-wrap:wrap;gap:6px}
+.dossier-pick button{max-width:100%;font:inherit;cursor:pointer;background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:6px 10px;text-align:left;color:var(--ink)}
+.dossier-pick button b{font-family:var(--font-mono);font-weight:500;font-size:12px;color:var(--accent);margin-right:6px}
+.dossier-pick button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.ins{border-left:3px solid var(--rule);padding:6px 0 6px 12px}
+.ins.risk{border-color:var(--crit)} .ins.finding{border-color:var(--s1)} .ins.opportunity{border-color:var(--good)} .ins.watch{border-color:var(--warn)}
+.ins .t{font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;color:var(--ink-3)}
+.chartcard{display:flex;flex-direction:column;gap:10px}
+.panels{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.panel{border:1px solid var(--rule);border-radius:8px;padding:10px;background:var(--bg);min-width:0}
+.panel h4{margin:0 0 6px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.panel svg{display:block;width:100%;height:auto;overflow:visible}
+.hb{display:grid;grid-template-columns:minmax(80px,40%) minmax(0,1fr) max-content;gap:3px 8px;align-items:center;font-size:12px}
+.hb .lab{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink-2)}
+.hb .trk{height:12px;position:relative}
+.hb .bar{height:100%;background:var(--s1);border-radius:0 3px 3px 0;min-width:1px}
+.hb .v{font-variant-numeric:tabular-nums;font-family:var(--font-mono);font-size:11px;color:var(--ink-2)}
+details{border:1px solid var(--rule);border-radius:8px;background:var(--surface)}
+details>summary{cursor:pointer;padding:8px 12px;font-size:13px;color:var(--ink-2)}
+details[open]>summary{border-bottom:1px solid var(--rule)}
+details .tw{border:0;border-radius:0}
+#tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--surface);font-size:12px;padding:6px 8px;border-radius:6px;max-width:260px;z-index:20;line-height:1.35}
+.bars3{display:flex;height:12px;border-radius:3px;overflow:hidden;gap:2px;min-width:120px}
+.bars3 span{display:block;height:100%}
+.pre{font-family:var(--font-mono);font-size:12px;background:var(--surface-2);border-radius:8px;padding:12px;overflow-x:auto;white-space:pre;margin:0}
+ol.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:75ch}
+.note{font-size:12.5px;color:var(--ink-2);background:var(--surface-2);border-radius:8px;padding:10px 12px;max-width:80ch}
+@media (max-width:860px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .rail{position:sticky;top:env(safe-area-inset-top,0px);height:auto;z-index:10;padding:10px 16px;border-right:0;border-bottom:1px solid var(--rule)}
+  .brand{font-size:16px;margin:0 0 6px} .brand-sub,.rail-foot{display:none}
+  .rail nav{flex-direction:row;overflow-x:auto;gap:4px}
+  .rail button{white-space:nowrap} .rail button .n{display:none}
+  .two{grid-template-columns:minmax(0,1fr)}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+
+<div class="shell">
+  <aside class="rail">
+    <p class="brand">Skio Analysis Catalog</p>
+    <p class="brand-sub">Reverse-engineered map of every metric, method and chart in the Skio analyses received</p>
+    <nav id="nav" aria-label="Sections"></nav>
+    <p class="rail-foot" id="railfoot"></p>
+  </aside>
+  <main id="main"></main>
+</div>
+<div id="tip" hidden></div>
+
+<script>
+const B = /*__BUNDLE__*/null;
+const F = B.framework, R = B.reports, X = B.cross || {};
+const MET = Object.fromEntries(F.metrics.map(m => [m.id, m]));
+const DIM = Object.fromEntries(F.dimensions.map(d => [d.id, d]));
+const CON = Object.fromEntries(F.concepts.map(c => [c.id, c]));
+const PAT = Object.fromEntries(F.chart_patterns.map(p => [p.id, p]));
+const UIP = Object.fromEntries(F.ui_patterns.map(p => [p.id, p]));
+const DOM = Object.fromEntries(F.taxonomy.domains.map(d => [d.id, d]));
+const ARC = Object.fromEntries((F.taxonomy.report_archetypes || []).map(a => [a.id, a]));
+const RID = R.map(r => r.report_id);
+const REP = Object.fromEntries(R.map(r => [r.report_id, r]));
+const STORE = {}; (X.stores || []).forEach(s => s.reports.forEach(r => STORE[r] = s));
+
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const nf = (v, d) => Number(v).toLocaleString('en-US', {maximumFractionDigits: d ?? 2});
+function fmt(v, unit){
+  if (v === null || v === undefined || v === '') return '—';
+  if (typeof v !== 'number') return esc(v);
+  switch(unit){
+    case 'usd': return '$' + nf(v, Math.abs(v) >= 1000 ? 0 : 2);
+    case 'pct': return nf(v, 2) + '%';
+    case 'pp': return nf(v, 2) + ' pt';
+    case 'multiple': return nf(v, 2) + '×';
+    case 'days': return nf(v, 1) + ' d';
+    default: return nf(v, 2);
+  }
+}
+function fmtCompare(c){
+  if (!c) return '';
+  const parts = [];
+  if (c.value !== undefined) parts.push('vs ' + esc(c.value));
+  if (c.basis) parts.push(esc(c.basis));
+  if (c.delta !== undefined) parts.push((c.delta > 0 ? '+' : '') + esc(c.delta) + (c.delta_unit === 'pct' ? '%' : c.delta_unit === 'pp' ? ' pt' : c.delta_unit === 'multiple' ? '×' : ''));
+  return parts.join(' · ');
+}
+const sliceTxt = s => s ? Object.entries(s).map(([k, v]) => `<span class="chip">${esc((DIM[k]||{}).name || k)}: ${esc(v)}</span>`).join(' ') : '';
+const sev = s => `<span class="sev ${s}">${s === 'high' ? 'High' : s === 'medium' ? 'Medium' : 'Low'}</span>`;
+const rchip = id => `<button class="chip acc btn" data-go="${id}">${id}</button>`;
+
+/* ---------- tooltip ---------- */
+const tip = document.getElementById('tip');
+document.addEventListener('mouseover', e => { const t = e.target.closest('[data-tip]'); if (!t) { tip.hidden = true; return; } tip.innerHTML = t.getAttribute('data-tip'); tip.hidden = false; });
+document.addEventListener('mousemove', e => { if (tip.hidden) return; const w = tip.offsetWidth; tip.style.left = Math.min(e.clientX + 12, innerWidth - w - 8) + 'px'; tip.style.top = (e.clientY + 14) + 'px'; });
+
+/* ---------- mini charts: one series per panel, one axis ---------- */
+function miniChart(labels, values, unitHint, forceH){
+  const nums = values.map(v => typeof v === 'number' ? v : NaN);
+  const valid = nums.filter(v => !isNaN(v));
+  if (!valid.length) return '<p class="muted">No numeric values.</p>';
+  const avgLen = labels.reduce((a, l) => a + String(l).length, 0) / labels.length;
+  if ((forceH || avgLen > 11) && labels.length <= 18 && Math.min(...valid) >= 0){
+    const mx = Math.max(...valid) || 1;
+    return '<div class="hb">' + labels.map((l, i) => {
+      const v = nums[i]; const w = isNaN(v) ? 0 : 100 * v / mx;
+      return `<span class="lab" title="${esc(l)}">${esc(l)}</span><span class="trk"><span class="bar" style="width:${w}%" data-tip="${esc(l)}<br><b>${isNaN(v) ? '—' : fmt(v, unitHint)}</b>"></span></span><span class="v">${isNaN(v) ? '—' : fmt(v, unitHint)}</span>`;
+    }).join('') + '</div>';
+  }
+  const W = 320, H = 130, pl = 40, pr = 6, pt = 8, pb = 22;
+  let mn = Math.min(0, ...valid), mx = Math.max(0, ...valid); if (mx === mn) mx = mn + 1;
+  const y = v => pt + (H - pt - pb) * (1 - (v - mn) / (mx - mn));
+  const n = labels.length, step = (W - pl - pr) / n;
+  const nice = v => Math.abs(v) >= 1e6 ? (v/1e6).toFixed(1) + 'M' : Math.abs(v) >= 1e3 ? (v/1e3).toFixed(Math.abs(v) >= 1e4 ? 0 : 1) + 'K' : (Math.round(v*10)/10).toString();
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="chart">`;
+  [mn, (mn + mx) / 2, mx].forEach(t => { s += `<line x1="${pl}" x2="${W - pr}" y1="${y(t)}" y2="${y(t)}" stroke="var(--rule)" stroke-width="1"/><text x="${pl - 5}" y="${y(t) + 3.5}" text-anchor="end" font-size="9" fill="var(--ink-3)" font-family="var(--font-mono)">${nice(t)}</text>`; });
+  const useLine = n > 16;
+  if (useLine){
+    const pts = nums.map((v, i) => isNaN(v) ? null : [pl + step * (i + .5), y(v)]);
+    s += `<polyline fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round" points="${pts.filter(Boolean).map(p => p.join(',')).join(' ')}"/>`;
+    pts.forEach((p, i) => { if (p) s += `<circle cx="${p[0]}" cy="${p[1]}" r="6" fill="transparent" data-tip="${esc(labels[i])}<br><b>${fmt(nums[i], unitHint)}</b>"/>`; });
+    const last = pts.filter(Boolean).pop(); if (last) s += `<circle cx="${last[0]}" cy="${last[1]}" r="3.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/>`;
+  } else {
+    const bw = Math.max(2, step - 3);
+    nums.forEach((v, i) => { if (isNaN(v)) return; const x = pl + step * i + (step - bw) / 2; const y0 = y(0), y1 = y(v);
+      s += `<rect x="${x}" y="${Math.min(y0, y1)}" width="${bw}" height="${Math.max(1, Math.abs(y1 - y0))}" rx="2" fill="${v < 0 ? 'var(--crit)' : 'var(--s1)'}" data-tip="${esc(labels[i])}<br><b>${fmt(v, unitHint)}</b>"/>`; });
+  }
+  const tickIdx = n <= 8 ? labels.map((_, i) => i) : [0, Math.floor((n - 1) / 2), n - 1];
+  tickIdx.forEach(i => { const l = String(labels[i]); s += `<text x="${pl + step * (i + .5)}" y="${H - 6}" text-anchor="middle" font-size="9" fill="var(--ink-3)">${esc(l.length > 9 ? l.slice(0, 8) + '…' : l)}</text>`; });
+  return s + '</svg>';
+}
+function unitFor(label, chart){
+  const t = (label + ' ' + chart.y + ' ' + (chart.y2 || '')).toLowerCase();
+  if (/rate|%|share|hazard|retention|cancelled \(/.test(label.toLowerCase())) return 'pct';
+  if (/rev|mrr|\$|revenue/.test(label.toLowerCase())) return 'usd';
+  if (/days/.test(label.toLowerCase())) return 'days';
+  return /usd/.test(t) && !/count|sessions|subs/.test(label.toLowerCase()) ? 'usd' : 'count';
+}
+function chartCard(c, rid){
+  const ds = c.data.datasets, maxP = 4;
+  const wideH = c.pattern === 'viz.hbar_ranked' || (c.data.labels.reduce((a, l) => a + String(l).length, 0) / c.data.labels.length > 11 && c.data.labels.length <= 18);
+  const panels = ds.slice(0, maxP).map(d => `<div class="panel"${wideH ? ' style="grid-column:1/-1"' : ''}><h4>${esc(d.label)}</h4>${miniChart(c.data.labels, d.values, unitFor(d.label, c), c.pattern === 'viz.hbar_ranked')}</div>`).join('');
+  const more = ds.length > maxP ? `<p class="muted" style="margin:0">${ds.length - maxP} more series are in the data table.</p>` : '';
+  const tbl = `<details><summary>Data table · ${c.data.labels.length} rows × ${ds.length} series</summary><div class="tw"><table><thead><tr><th>${esc(c.x.split(' ')[0])}</th>${ds.map(d => `<th class="num">${esc(d.label)}</th>`).join('')}</tr></thead><tbody>${c.data.labels.map((l, i) => `<tr><td>${esc(l)}</td>${ds.map(d => `<td class="num">${typeof d.values[i] === 'number' ? nf(d.values[i]) : esc(d.values[i])}</td>`).join('')}</tr>`).join('')}</tbody></table></div></details>`;
+  return `<article class="card chartcard" id="${c.chart_id}">
+    <div class="block-head"><h3>${esc(c.title)}</h3><span class="chips"><span class="rid">${c.chart_id}</span><span class="chip">${esc((PAT[c.pattern]||{}).name || c.pattern)}</span><span class="chip">${esc(c.library)}</span></span></div>
+    <dl class="kv"><dt>Question</dt><dd>${esc(c.question)}</dd><dt>X</dt><dd class="mono">${esc(c.x)}</dd><dt>Y</dt><dd class="mono">${esc(c.y)}</dd>${c.y2 ? `<dt>Second axis</dt><dd class="mono">${esc(c.y2)}</dd>` : ''}${c.notes ? `<dt>Notes</dt><dd>${esc(c.notes)}</dd>` : ''}</dl>
+    <div class="panels">${panels}</div>${more}${tbl}</article>`;
+}
+
+/* ---------- views ---------- */
+const views = [
+  {id:'overview', name:'Overview'},
+  {id:'coverage', name:'Coverage map'},
+  {id:'reports', name:'Report dossiers', n: R.length},
+  {id:'metrics', name:'Metric dictionary', n: F.metrics.length},
+  {id:'compare', name:'Cross-report'},
+  {id:'methods', name:'Methods & concepts', n: F.concepts.length},
+  {id:'charts', name:'Chart gallery', n: B.stats.charts},
+  {id:'quality', name:'Data-quality ledger', n: B.qa.length},
+  {id:'gaps', name:'Skio native gaps'},
+  {id:'template', name:'Add a report'}
+];
+const nav = document.getElementById('nav'), main = document.getElementById('main');
+nav.innerHTML = views.map(v => `<button data-view="${v.id}">${v.name}${v.n ? `<span class="n">${v.n}</span>` : ''}</button>`).join('');
+document.getElementById('railfoot').textContent = `${R.length} sources · ${B.stats.metric_instances} metric readings · ${B.stats.qa_flags} QA flags`;
+let current = null, dossier = RID[0];
+function show(id, sub){
+  if (REP[id]) { dossier = id; id = 'reports'; }
+  if (!views.find(v => v.id === id)) id = 'overview';
+  current = id;
+  nav.querySelectorAll('button').forEach(b => b.setAttribute('aria-current', b.dataset.view === id ? 'true' : 'false'));
+  main.innerHTML = `<section class="view">${RENDER[id]()}</section>`;
+  bind(id);
+  lastHash = (id === 'reports' ? dossier : id); try { history.replaceState(null, '', '#' + lastHash); } catch(e) {}
+  window.scrollTo(0, 0);
+}
+nav.addEventListener('click', e => { const b = e.target.closest('button'); if (b) show(b.dataset.view); });
+main.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) show(g.dataset.go); });
+
+const domName = id => (DOM[id] || {}).name || id;
+const RENDER = {
+overview(){
+  const s = B.stats;
+  const stat = (v, l) => `<div class="stat"><b>${nf(v, 0)}</b><span>${l}</span></div>`;
+  const cards = R.map(r => {
+    const doms = {}; r.metrics.forEach(m => { const d = MET[m.metric_id].domain; doms[d] = (doms[d] || 0) + 1; });
+    const top = Object.entries(doms).sort((a, b) => b[1] - a[1]).slice(0, 4).map(([d]) => `<span class="chip">${d}</span>`).join('');
+    const hi = r.qa_flags.filter(f => f.severity === 'high').length;
+    return `<article class="card link" data-go="${r.report_id}"><div class="block-head"><span class="rid">${r.report_id}</span><span class="chip">${esc((ARC[r.archetype]||{}).name || r.archetype)}</span></div>
+      <h3>${esc(r.title_as_shown)}</h3><p class="muted" style="margin:0">${esc((STORE[r.report_id]||{}).name || r.client_label)} · ${esc(r.profile.period.label)}</p>
+      <div class="chips">${top}</div><p style="margin:0;font-size:12.5px">${r.metrics.length} metrics · ${r.charts.length} charts · ${r.tables.length} tables · ${r.qa_flags.length} flags${hi ? ` (${hi} high)` : ''}${r.partial ? ' · single sheet only' : ''}${r.supersedes ? ` · supersedes ${r.supersedes}` : ''}</p></article>`;
+  }).join('');
+  const themes = (X.themes || []).map(t => `<article class="card"><h3>${esc(t.title)}</h3><p style="margin:0">${esc(t.detail)}</p><div class="chips">${t.reports.map(rchip).join('')}</div></article>`).join('');
+  const stores = (X.stores || []).map(st => `<tr><td>${esc(st.name)}</td><td>${st.reports.map(rchip).join(' ')}</td><td class="muted">${esc(st.confidence)}</td></tr>`).join('');
+  return `<div class="block"><span class="eyebrow">Reverse-engineering catalogue · Skio subscription analyses</span><h1>Every metric, method and chart, on one shared base</h1>
+    <p class="lede">Nine analyses from four stores were taken apart and filed against one taxonomy of ${F.taxonomy.domains.length} domains and a canonical dictionary of ${s.canonical_metrics} metrics. Each number keeps its original label and value and links to its canonical definition. That makes reports comparable and shows what a combined product must cover.</p></div>
+    <div class="stats">${stat(s.reports,'sources catalogued')}${stat(s.metric_instances,'metric readings')}${stat(s.canonical_used,'canonical metrics in use')}${stat(s.charts,'charts redrawn')}${stat(s.tables,'tables captured')}${stat(s.concepts_used,'methods and concepts')}${stat(s.insights,'insights')}${stat(s.qa_flags,'QA flags')}</div>
+    <div class="block"><h2>Sources</h2><div class="grid">${cards}</div></div>
+    <div class="block"><h2>Which files share a store</h2><div class="tw"><table><thead><tr><th>Store</th><th>Reports</th><th>How we know</th></tr></thead><tbody>${stores}</tbody></table></div></div>
+    <div class="block"><h2>Themes that repeat across stores</h2><p class="lede">These are the patterns the combined visualisation should be built around.</p><div class="grid">${themes}</div></div>`;
+},
+coverage(){
+  const dm = B.matrices.domain;
+  const all = Object.values(dm).flatMap(o => Object.values(o)); const mx = Math.max(...all, 1);
+  const lvl = v => v === 0 ? 0 : Math.min(5, 1 + Math.floor(4 * v / mx));
+  const heat = `<div class="tw heat"><table><thead><tr><th>Domain</th>${RID.map(r => `<th class="num">${r}</th>`).join('')}<th class="num">Total</th></tr></thead><tbody>${F.taxonomy.domains.map(d => {
+    const row = RID.map(r => dm[d.id][r]); const tot = row.reduce((a, b) => a + b, 0);
+    return `<tr><td><span class="chip">${d.id}</span> ${esc(d.name)}${d.id === 'MTH' ? ' <span class="muted">(method applications)</span>' : ''}</td>${row.map((v, i) => `<td class="cell l${lvl(v)}" data-tip="${RID[i]} · ${esc(d.name)}<br><b>${v}</b> references">${v || '·'}</td>`).join('')}<td class="num">${tot}</td></tr>`; }).join('')}</tbody></table></div>`;
+  const legend = `<div class="legend-seq">Fewer <i style="background:var(--seq1)"></i><i style="background:var(--seq2)"></i><i style="background:var(--seq3)"></i><i style="background:var(--seq4)"></i><i style="background:var(--seq5)"></i> more references</div>`;
+  const conceptRows = F.concepts.filter(c => B.matrices.concept[c.id]).map(c => `<tr><td class="wrap">${esc(c.name)} <span class="mono muted">${c.id}</span></td><td>${esc(c.kind)}</td>${RID.map(r => `<td class="num">${(B.matrices.concept[c.id]||[]).includes(r) ? '<span class="dot" aria-label="used"></span>' : ''}</td>`).join('')}</tr>`).join('');
+  const patRows = [...F.chart_patterns].filter(p => B.matrices.pattern[p.id]).map(p => `<tr><td>${esc(p.name)}</td>${RID.map(r => `<td class="num">${(B.matrices.pattern[p.id]||{})[r] || ''}</td>`).join('')}</tr>`).join('');
+  return `<div class="block"><h1>Coverage map</h1><p class="lede">How much each source says about each domain. Counts add metric readings, table columns and chart axes that reference a canonical metric in the domain. The method row counts methods and caveats applied, since those are not metrics.</p></div>
+    <div class="block"><div class="block-head"><h2>Domain by report</h2>${legend}</div>${heat}</div>
+    <div class="block"><h2>Methods used by report</h2><div class="tw"><table><thead><tr><th>Concept</th><th>Kind</th>${RID.map(r => `<th class="num">${r}</th>`).join('')}</tr></thead><tbody>${conceptRows}</tbody></table></div></div>
+    <div class="block"><h2>Chart and table forms by report</h2><div class="tw"><table><thead><tr><th>Pattern</th>${RID.map(r => `<th class="num">${r}</th>`).join('')}</tr></thead><tbody>${patRows}</tbody></table></div></div>`;
+},
+reports(){
+  const r = REP[dossier];
+  const pick = `<div class="dossier-pick">${R.map(x => `<button data-pick="${x.report_id}" aria-pressed="${x.report_id === dossier}"><b>${x.report_id}</b>${esc(x.title_as_shown.length > 38 ? x.title_as_shown.slice(0, 36) + '…' : x.title_as_shown)}</button>`).join('')}</div>`;
+  const p = r.profile;
+  const prof = `<div class="two"><div class="card"><h3>Profile</h3><dl class="kv"><dt>Source file</dt><dd class="mono">${esc(r.source_file)}</dd><dt>Store</dt><dd>${esc(r.client_label)}</dd><dt>Archetype</dt><dd>${esc((ARC[r.archetype]||{}).name)} · ${esc((ARC[r.archetype]||{}).description)}</dd><dt>Period</dt><dd>${esc(p.period.label)}</dd><dt>Granularity</dt><dd>${p.granularity.map(g => `<span class="chip">${esc(g)}</span>`).join(' ')}</dd><dt>Compared against</dt><dd>${p.comparison_basis.map(esc).join('; ')}</dd><dt>Data source</dt><dd>${esc(p.data_source)}</dd><dt>Prepared by</dt><dd>${esc(p.prepared_by)} · ${esc(p.generated)}</dd><dt>Audience</dt><dd>${esc(p.audience)}</dd><dt>Purpose</dt><dd>${esc(p.purpose)}</dd>${r.supersedes ? `<dt>Supersedes</dt><dd>${rchip(r.supersedes)}</dd>` : ''}</dl></div>
+    <div class="card"><h3>Build</h3><dl class="kv"><dt>Libraries</dt><dd>${r.build.libraries.map(esc).join(', ')}</dd><dt>Fonts</dt><dd>${r.build.fonts.map(esc).join(', ') || '—'}</dd><dt>Theme</dt><dd>${esc(r.build.theme)}</dd><dt>Layout</dt><dd>${esc(r.build.layout)}</dd><dt>Interaction</dt><dd>${r.build.interactivity.map(esc).join('; ') || 'none'}</dd><dt>Size</dt><dd>${r.build.size_kb} KB</dd><dt>Report anatomy</dt><dd class="chips">${r.ui_patterns.map(u => `<span class="chip">${esc((UIP[u]||{}).name || u)}</span>`).join('')}</dd></dl></div></div>`;
+  const struct = `<div class="tw"><table><thead><tr><th>Section</th><th>Question it answers</th><th>Elements</th></tr></thead><tbody>${r.structure.map(s => `<tr><td>${esc(s.title)}</td><td class="wrap">${esc(s.question)}</td><td><div class="chips">${s.ui.map(u => `<span class="chip">${esc((UIP[u]||{}).name || u)}</span>`).join('')}</div></td></tr>`).join('')}</tbody></table></div>`;
+  const mt = `<div class="tw"><table><thead><tr><th>ID</th><th>Label as shown</th><th class="num">Value</th><th>Canonical metric</th><th>Window</th><th>Slice</th><th>Comparison</th><th>Note</th></tr></thead><tbody>${r.metrics.map(m => `<tr><td class="mono">${m.mid}</td><td>${esc(m.label)}${m.derived ? ' <span class="chip acc">derived</span>' : ''}</td><td class="num">${fmt(m.value, m.unit)}</td><td><button class="chip btn" data-metric="${m.metric_id}">${esc(MET[m.metric_id].name)}</button><div class="mono muted">${m.metric_id}</div></td><td>${esc(m.window)}</td><td>${sliceTxt(m.slice)}</td><td>${fmtCompare(m.compare)}</td><td class="wrap">${esc(m.note || '')}${m.qa ? ` <span class="chip">see ${m.qa}</span>` : ''}</td></tr>`).join('')}</tbody></table></div>`;
+  const tables = r.tables.map(t => `<details><summary><b class="mono">${t.table_id}</b> ${esc(t.title)} · ${t.rows.length} rows</summary><div class="tw"><table><thead><tr>${t.columns.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${t.rows.map(row => `<tr>${row.map(v => `<td class="${typeof v === 'number' ? 'num' : ''}">${v === null ? '—' : typeof v === 'number' ? nf(v) : esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div><p class="muted" style="margin:8px 12px">Dimensions: ${t.dims.map(d => esc((DIM[d]||{}).name || d)).join(', ') || '—'} · Metrics: ${t.metrics.map(m => esc(MET[m].name)).join(', ') || '—'}</p></details>`).join('');
+  const methods = `<div class="tw"><table><thead><tr><th>Concept</th><th>Kind</th><th>How this report applies it</th></tr></thead><tbody>${r.methods.map(x => `<tr><td>${esc(CON[x.concept_id].name)}<div class="mono muted">${x.concept_id}</div></td><td>${esc(CON[x.concept_id].kind)}</td><td class="wrap">${esc(x.how)}</td></tr>`).join('')}</tbody></table></div>`;
+  const ins = r.insights.map(i => `<div class="ins ${i.type}"><div class="t">${esc(i.type)} · ${esc(domName(i.domain))}</div><div>${esc(i.headline)}</div><div class="mono muted">${i.evidence.join(', ')}</div></div>`).join('');
+  const recs = r.recommendations.length ? `<div class="tw"><table><thead><tr><th>ID</th><th>Action</th><th>Lever</th><th>Target metric</th></tr></thead><tbody>${r.recommendations.map(a => `<tr><td class="mono">${a.id}</td><td class="wrap">${esc(a.action)}</td><td><span class="chip">${a.domain}</span></td><td class="mono">${a.target_metric}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">This source makes no recommendations.</p>';
+  const qa = qaTable(r.qa_flags.map(f => Object.assign({report: r.report_id}, f)), false);
+  return `<div class="block"><h1>Report dossiers</h1><p class="lede">One dossier per source, every section in the same order.</p>${pick}</div>
+    <div class="block"><div class="block-head"><h2><span class="rid">${r.report_id}</span> ${esc(r.title_as_shown)}</h2></div>${prof}</div>
+    <div class="block"><h2>Structure</h2>${struct}</div>
+    <div class="block"><h2>Metrics · ${r.metrics.length}</h2>${mt}</div>
+    <div class="block"><h2>Charts · ${r.charts.length}</h2>${r.charts.length ? r.charts.map(c => chartCard(c, r.report_id)).join('') : '<p class="muted">No charts in this source.</p>'}</div>
+    <div class="block"><h2>Tables · ${r.tables.length}</h2>${tables || '<p class="muted">No tables.</p>'}</div>
+    <div class="block"><h2>Methods · ${r.methods.length}</h2>${methods}</div>
+    <div class="two"><div class="block"><h2>Insights · ${r.insights.length}</h2>${ins}</div><div class="block"><h2>Recommendations · ${r.recommendations.length}</h2>${recs}</div></div>
+    <div class="block"><h2>QA flags · ${r.qa_flags.length}</h2>${qa}</div>`;
+},
+metrics(){
+  const opts = F.taxonomy.domains.map(d => `<option value="${d.id}">${d.id} · ${esc(d.name)}</option>`).join('');
+  return `<div class="block"><h1>Metric dictionary</h1><p class="lede">${F.metrics.length} canonical metrics. Each row lists every reading of that metric across the sources, with the label each report used. Metrics with no readings are Skio exports no report uses yet.</p></div>
+    <div class="controls"><input type="search" id="mq" placeholder="Search name, id or alias" aria-label="Search metrics"><select id="md" aria-label="Domain"><option value="">All domains</option>${opts}</select><select id="mu" aria-label="Usage"><option value="">Any usage</option><option value="used">Used by a report</option><option value="unused">Not used yet</option><option value="multi">Used by 2+ reports</option></select><span class="muted" id="mcount"></span></div>
+    <div id="mlist" class="block"></div>`;
+},
+compare(){
+  const dv = (X.definition_variance || []).map(d => `<div class="block"><h3>${esc(d.concept)}</h3><p class="muted" style="margin:0">${esc(d.why)}</p><div class="tw"><table><thead><tr><th>Report</th><th>Definition used</th><th>Value</th><th>Note</th></tr></thead><tbody>${d.rows.map(r => `<tr><td class="mono">${esc(r[0])}</td><td class="wrap">${esc(r[1])}</td><td>${esc(r[2])}</td><td class="wrap">${esc(r[3])}</td></tr>`).join('')}</tbody></table></div></div>`).join('');
+  const multi = F.metrics.filter(m => Object.keys(B.matrices.metric[m.id] || {}).length >= 2);
+  const valOf = (rid, mid) => REP[rid].metrics.filter(x => x.metric_id === mid && !x.slice).map(x => fmt(x.value, x.unit) + `<div class="muted" style="font-size:11px">${esc(x.window)}</div>`).join('');
+  const mm = `<div class="tw"><table><thead><tr><th>Metric</th>${RID.map(r => `<th>${r}</th>`).join('')}</tr></thead><tbody>${multi.map(m => `<tr><td>${esc(m.name)}<div class="mono muted">${m.id}</div></td>${RID.map(r => { const refs = (B.matrices.metric[m.id] || {})[r]; if (!refs) return '<td></td>'; const v = valOf(r, m.id); return `<td class="num">${v || `<span class="dot" data-tip="${refs.join(', ')}"></span>`}</td>`; }).join('')}</tr>`).join('')}</tbody></table></div>`;
+  return `<div class="block"><h1>Cross-report comparison</h1><p class="lede">Where the same idea is measured differently, and what that does to the numbers. Read these before putting two reports' figures side by side.</p></div>
+    <div class="block"><h2>Definition variance</h2>${dv}</div>
+    <div class="block"><h2>Cross-report checks</h2>${qaTable((X.qa_flags || []).map(f => Object.assign({report: f.reports.join(' + ')}, f)), true)}</div>
+    <div class="block"><h2>Metrics used by two or more sources</h2><p class="muted" style="margin:0">Unsliced headline values are shown; a dot means the report uses the metric only in a table, chart or slice.</p>${mm}</div>`;
+},
+methods(){
+  const kinds = F.concept_kinds || {};
+  return `<div class="block"><h1>Methods & concepts</h1><p class="lede">Analysis techniques, definition choices, bias controls and caveats found in the sources. Each is described once and linked to every report that applies it.</p></div>` +
+    Object.entries(kinds).map(([k, desc]) => { const cs = F.concepts.filter(c => c.kind === k); if (!cs.length) return '';
+      return `<div class="block"><div class="block-head"><h2>${esc(k[0].toUpperCase() + k.slice(1))}s</h2><span class="muted">${esc(desc)}</span></div><div class="grid">${cs.map(c => `<article class="card"><div class="block-head"><h3>${esc(c.name)}</h3><span class="chip">${c.domain}</span></div><span class="mono muted">${c.id}</span><p style="margin:0">${esc(c.description)}</p><p class="muted" style="margin:0"><b>Why it matters.</b> ${esc(c.why)}</p><div class="chips">${(B.matrices.concept[c.id] || []).map(rchip).join('') || '<span class="muted">Not used yet</span>'}</div></article>`).join('')}</div></div>`; }).join('');
+},
+charts(){
+  const pats = [...new Set(R.flatMap(r => r.charts.map(c => c.pattern)))];
+  const lib = F.chart_patterns.map(p => { const uses = Object.values(B.matrices.pattern[p.id] || {}).reduce((a, b) => a + b, 0);
+    return `<tr><td>${esc(p.name)}<div class="mono muted">${p.id}</div></td><td>${esc(p.family)}</td><td class="wrap">${esc(p.encodes)}</td><td class="wrap">${esc(p.best_for)}</td><td class="wrap">${esc(p.watch_out)}</td><td class="num">${uses || ''}</td></tr>`; }).join('');
+  return `<div class="block"><h1>Chart gallery</h1><p class="lede">Every chart in the sources, with its encoding and the data pulled out of the page. Each series is redrawn on its own axis so values can be read; the original may combine series on two axes. Hover a mark for its value, or open the data table.</p></div>
+    <div class="controls"><select id="cr" aria-label="Report"><option value="">All reports</option>${RID.map(r => `<option>${r}</option>`).join('')}</select><select id="cp" aria-label="Pattern"><option value="">All forms</option>${pats.map(p => `<option value="${p}">${esc(PAT[p].name)}</option>`).join('')}</select><span class="muted" id="ccount"></span></div>
+    <div id="clist" class="block"></div>
+    <div class="block"><h2>Pattern library</h2><div class="tw"><table><thead><tr><th>Pattern</th><th>Family</th><th>Encodes</th><th>Best for</th><th>Watch out</th><th class="num">Uses</th></tr></thead><tbody>${lib}</tbody></table></div></div>`;
+},
+quality(){
+  const types = Object.keys(F.taxonomy.qa_types);
+  const bySev = s => B.qa.filter(f => f.severity === s).length;
+  return `<div class="block"><h1>Data-quality ledger</h1><p class="lede">Problems found while taking the sources apart: numbers that disagree, figures that cannot be reproduced, biased methods and misleading charts. High means the finding changes a conclusion or makes a headline number unreliable.</p></div>
+    <div class="stats"><div class="stat"><b>${bySev('high')}</b><span>${sev('high')}</span></div><div class="stat"><b>${bySev('medium')}</b><span>${sev('medium')}</span></div><div class="stat"><b>${bySev('low')}</b><span>${sev('low')}</span></div></div>
+    <div class="controls"><div class="seg" id="qs"><button aria-pressed="true" data-s="">All</button><button aria-pressed="false" data-s="high">High</button><button aria-pressed="false" data-s="medium">Medium</button><button aria-pressed="false" data-s="low">Low</button></div><select id="qt" aria-label="Type"><option value="">All types</option>${types.map(t => `<option value="${t}">${esc(t.replace(/_/g, ' '))}</option>`).join('')}</select><select id="qr" aria-label="Report"><option value="">All reports</option>${RID.map(r => `<option>${r}</option>`).join('')}<option value="X">Cross-report</option></select></div>
+    <div id="qlist"></div>`;
+},
+gaps(){
+  const V = B.skio_native.views; const secs = {};
+  Object.entries(V).forEach(([k, v]) => { const s = k.split('.')[0]; (secs[s] = secs[s] || []).push([k.split('.')[1], v]); });
+  const bar = v => { const t = v.used + v.mapped + v.unmapped; return `<div class="bars3" data-tip="${v.used} used · ${v.mapped} mapped, unused · ${v.unmapped} not mapped"><span style="width:${100*v.used/t}%;background:var(--s1)"></span><span style="width:${100*v.mapped/t}%;background:var(--warn)"></span><span style="width:${100*v.unmapped/t}%;background:var(--rule)"></span></div>`; };
+  const rows = Object.entries(secs).map(([s, vs]) => vs.map(([v, c], i) => `<tr><td>${i === 0 ? `<b>${esc(s)}</b>` : ''}</td><td class="mono">${esc(v)}</td><td class="num">${c.used}</td><td class="num">${c.mapped}</td><td class="num">${c.unmapped}</td><td>${bar(c)}</td></tr>`).join('')).join('');
+  const unused = F.metrics.filter(m => !B.matrices.metric[m.id]);
+  const u = `<div class="grid">${unused.map(m => `<article class="card"><div class="block-head"><h3>${esc(m.name)}</h3><span class="chip">${m.domain}</span></div><p style="margin:0">${esc(m.definition)}</p><div class="chips">${m.skio.map(f => `<span class="chip">${esc(f)}</span>`).join('') || '<span class="muted">No native export; derived</span>'}</div></article>`).join('')}</div>`;
+  return `<div class="block"><h1>Skio native gaps</h1><p class="lede">The Skio analytics UI exports ${B.stats.skio_fields} fields across ${Object.keys(V).length} views. This compares them with what the sources actually use, to show what the combined product can add.</p></div>
+    <div class="block"><h2>Canonical metrics no source uses</h2>${u}</div>
+    <div class="block"><div class="block-head"><h2>Field use by Skio export view</h2><div class="legend-seq"><i style="background:var(--s1)"></i>linked to a used metric <i style="background:var(--warn)"></i>linked, unused <i style="background:var(--rule)"></i>not linked (ids, dates, filters, raw fields)</div></div><div class="tw"><table><thead><tr><th>Section</th><th>View</th><th class="num">Used</th><th class="num">Mapped</th><th class="num">Not linked</th><th>Mix</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+},
+template(){
+  return `<div class="block"><h1>Add a report</h1><p class="lede">The catalogue is a set of JSON files checked against the shared framework, so every new analysis lands on the same base and becomes comparable at once.</p></div>
+    <div class="block"><h2>Steps</h2><ol class="steps">
+      <li>Copy <span class="mono">templates/report_catalog.template.json</span> to the private catalog folder as the next free id, such as R10.json.</li>
+      <li>Fill the profile and build blocks, then list sections in page order with the question each answers.</li>
+      <li>Record every number as a metric reading: the label exactly as shown, the value, its window, any slice and comparison. Point it at a canonical metric id.</li>
+      <li>If no canonical metric fits, add one to <span class="mono">framework/metric_registry.json</span> with a definition, formula, grain, unit and Skio fields. Do the same for new dimensions, concepts or chart patterns.</li>
+      <li>Copy each chart's data arrays from the page source into the chart block. Copy tables row by row.</li>
+      <li>Recompute headline figures from the report's own inputs. Log every mismatch, bias or misleading chart as a QA flag with evidence ids.</li>
+      <li>Add store links, definition differences and shared themes to <span class="mono">crosscheck.json</span>.</li>
+      <li>Run the build. It refuses to write if any id, dimension, concept or pattern is unknown, or a chart series length does not match its labels.</li></ol></div>
+    <div class="block"><h2>Build command</h2><pre class="pre">python tools/build.py --catalog &lt;private catalog dir&gt; --out &lt;out dir&gt; --html</pre></div>
+    <div class="block"><h2>Output</h2><div class="tw"><table><thead><tr><th>File</th><th>Use</th></tr></thead><tbody>
+      <tr><td class="mono">bundle.json</td><td>Framework, reports, matrices and QA in one file. The source for the final visualisation.</td></tr>
+      <tr><td class="mono">csv/metric_instances.csv</td><td>Every metric reading, one row each, with canonical id and domain.</td></tr>
+      <tr><td class="mono">csv/charts.csv, csv/tables.csv</td><td>Chart encodings with data, and full tables.</td></tr>
+      <tr><td class="mono">csv/metric_coverage.csv</td><td>Canonical metric by report matrix.</td></tr>
+      <tr><td class="mono">csv/qa_flags.csv</td><td>The data-quality ledger.</td></tr>
+      <tr><td class="mono">csv/skio_native_coverage.csv</td><td>Every Skio export field and whether any source uses it.</td></tr></tbody></table></div></div>
+    <p class="note">The populated catalogue holds client figures and is kept out of the public repository. Only the framework, template and tools are committed.</p>`;
+}
+};
+
+function qaTable(list, showReport){
+  if (!list.length) return '<p class="muted">No flags.</p>';
+  return `<div class="tw"><table><thead><tr><th>ID</th>${showReport ? '<th>Reports</th>' : ''}<th>Severity</th><th>Type</th><th>Finding</th></tr></thead><tbody>${list.map(f => `<tr><td class="mono">${f.id}</td>${showReport ? `<td class="mono">${esc(f.report)}</td>` : ''}<td>${sev(f.severity)}</td><td>${esc(f.type.replace(/_/g, ' '))}</td><td class="wrap">${esc(f.detail)}${f.evidence && f.evidence.length ? `<div class="mono muted">${f.evidence.join(', ')}</div>` : ''}</td></tr>`).join('')}</tbody></table></div>`;
+}
+
+function metricRow(m){
+  const refs = B.matrices.metric[m.id] || {};
+  const inst = R.flatMap(r => r.metrics.filter(x => x.metric_id === m.id).map(x => ({r: r.report_id, x})));
+  const readings = inst.length ? `<div class="tw"><table><thead><tr><th>Report</th><th>Label as shown</th><th class="num">Value</th><th>Window</th><th>Slice</th></tr></thead><tbody>${inst.map(({r, x}) => `<tr><td>${rchip(r)}</td><td>${esc(x.label)}</td><td class="num">${fmt(x.value, x.unit)}</td><td>${esc(x.window)}</td><td>${sliceTxt(x.slice)}</td></tr>`).join('')}</tbody></table></div>` : '';
+  const other = Object.entries(refs).map(([r, ids]) => ids.filter(i => !/-M\d/.test(i)).length ? `${r}: ${ids.filter(i => !/-M\d/.test(i)).join(', ')}` : '').filter(Boolean);
+  return `<details id="m-${m.id}"><summary><b>${esc(m.name)}</b> <span class="mono muted">${m.id}</span> <span class="chip">${m.domain}</span> ${Object.keys(refs).map(r => `<span class="chip acc">${r}</span>`).join(' ')}</summary><div style="padding:12px;display:flex;flex-direction:column;gap:10px">
+    <dl class="kv"><dt>Definition</dt><dd>${esc(m.definition)}</dd><dt>Formula</dt><dd class="mono">${esc(m.formula)}</dd><dt>Unit · grain</dt><dd>${esc(m.unit)} · ${esc(m.grain)}</dd><dt>Better when</dt><dd>${m.polarity === 'up_good' ? 'higher' : m.polarity === 'down_good' ? 'lower' : 'neutral'}</dd><dt>Skio fields</dt><dd>${m.skio.map(f => `<span class="chip">${esc(f)}</span>`).join(' ') || '—'}</dd><dt>Labels seen</dt><dd>${m.aliases.map(esc).join('; ') || '—'}</dd>${other.length ? `<dt>Also in</dt><dd class="mono">${other.map(esc).join('<br>')}</dd>` : ''}</dl>${readings}</div></details>`;
+}
+
+function bind(id){
+  if (id === 'reports') main.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => show(b.dataset.pick));
+  if (id === 'reports') main.querySelectorAll('[data-metric]').forEach(b => b.onclick = () => { show('metrics'); const d = document.getElementById('m-' + b.dataset.metric); if (d) { d.open = true; d.scrollIntoView(); } });
+  if (id === 'metrics'){
+    const q = document.getElementById('mq'), d = document.getElementById('md'), u = document.getElementById('mu'), out = document.getElementById('mlist'), cnt = document.getElementById('mcount');
+    const run = () => { const s = q.value.toLowerCase().trim();
+      const list = F.metrics.filter(m => { const n = Object.keys(B.matrices.metric[m.id] || {}).length;
+        return (!d.value || m.domain === d.value) && (!u.value || (u.value === 'used' ? n > 0 : u.value === 'unused' ? n === 0 : n >= 2)) &&
+          (!s || (m.id + ' ' + m.name + ' ' + m.aliases.join(' ') + ' ' + m.definition).toLowerCase().includes(s)); });
+      cnt.textContent = list.length + ' shown';
+      out.innerHTML = F.taxonomy.domains.map(dd => { const ms = list.filter(m => m.domain === dd.id); return ms.length ? `<div class="block"><h3>${dd.id} · ${esc(dd.name)} <span class="muted" style="font-weight:400">${esc(dd.question)}</span></h3>${ms.map(metricRow).join('')}</div>` : ''; }).join('') || '<p class="muted">No metric matches. Clear the search or pick another domain.</p>'; };
+    [q, d, u].forEach(e => e.oninput = run); run();
+  }
+  if (id === 'charts'){
+    const r = document.getElementById('cr'), p = document.getElementById('cp'), out = document.getElementById('clist'), cnt = document.getElementById('ccount');
+    const run = () => { const cs = R.flatMap(x => x.charts.map(c => ({c, r: x.report_id}))).filter(o => (!r.value || o.r === r.value) && (!p.value || o.c.pattern === p.value));
+      cnt.textContent = cs.length + ' charts'; out.innerHTML = cs.map(o => chartCard(o.c, o.r)).join('') || '<p class="muted">No chart matches this filter.</p>'; };
+    [r, p].forEach(e => e.oninput = run); run();
+  }
+  if (id === 'quality'){
+    let s = ''; const t = document.getElementById('qt'), r = document.getElementById('qr'), out = document.getElementById('qlist');
+    const run = () => out.innerHTML = qaTable(B.qa.filter(f => (!s || f.severity === s) && (!t.value || f.type === t.value) && (!r.value || (r.value === 'X' ? f.id.startsWith('X-') : String(f.report).split('+').includes(r.value)))), true);
+    document.querySelectorAll('#qs button').forEach(b => b.onclick = () => { s = b.dataset.s; document.querySelectorAll('#qs button').forEach(x => x.setAttribute('aria-pressed', x === b)); run(); });
+    [t, r].forEach(e => e.oninput = run); run();
+  }
+}
+let lastHash = '';
+function fromHash(){ const h = (location.hash || '').slice(1); if (h === lastHash) return; lastHash = h; show(h || 'overview'); }
+addEventListener('hashchange', fromHash);
+fromHash();
+</script>
