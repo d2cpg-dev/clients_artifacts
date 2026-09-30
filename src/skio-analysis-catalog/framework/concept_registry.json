@@ -504,6 +504,78 @@
    "domain": "ENG",
    "description": "Count a recurring order after a skip only when it is tied to the same subscription line through OrderLineItem to SubscriptionLine.",
    "why": "Order-level joins attribute unrelated orders to the skip."
+  },
+  {
+   "id": "mth.filter_verification",
+   "name": "Filter verification",
+   "kind": "control",
+   "domain": "MTH",
+   "description": "Before trusting a filtered breakdown, run it with two different filter values and confirm the outputs differ and the parts sum to the unfiltered total.",
+   "why": "Some chart filters silently return unfiltered data with no error."
+  },
+  {
+   "id": "mth.trusted_chart_control",
+   "name": "Trusted-chart control",
+   "kind": "control",
+   "domain": "MTH",
+   "description": "When a chart returns zero rows, re-run a chart you trust over the identical window before concluding anything.",
+   "why": "Separates a broken query or wrong merchant from a real instrumentation gap or a later data start date."
+  },
+  {
+   "id": "mth.no_forced_reconciliation",
+   "name": "No forced reconciliation",
+   "kind": "control",
+   "domain": "MTH",
+   "description": "Show each source's number labelled by source and name the disagreement instead of picking one.",
+   "why": "Disagreements between tools, or between widgets in one dashboard, usually reveal a definition or instrumentation gap."
+  },
+  {
+   "id": "mth.cost_ordered_treatments",
+   "name": "Cost-ordered treatment ladder",
+   "kind": "method",
+   "domain": "CXL",
+   "description": "Order each reason's treatments from free and low-friction (skip, pause, frequency, education) to swap to paid discount.",
+   "why": "Most reasons are not price objections, so discount-first flows spend margin on saves a free option would catch."
+  },
+  {
+   "id": "mth.reason_treatment_mapping",
+   "name": "Reason-to-treatment mapping",
+   "kind": "method",
+   "domain": "CXL",
+   "description": "Map each cancel-reason pattern to what it usually means and which treatment should lead.",
+   "why": "Makes the recommended flow consistent across clients and explains each choice."
+  },
+  {
+   "id": "mth.save_mechanism_split",
+   "name": "Save-mechanism split",
+   "kind": "definition",
+   "domain": "CXL",
+   "description": "Split saves into offer-claimed and abandonment.",
+   "why": "Shows whether offers are doing any work or subscribers are just walking away."
+  },
+  {
+   "id": "mth.claim_rate_diagnosis",
+   "name": "Claim-rate diagnosis",
+   "kind": "method",
+   "domain": "CXL",
+   "description": "Read per-offer claim rates; a very low rate across offers argues for leaning on free soft-saves.",
+   "why": "Stops a recommendation from adding more of what is not converting."
+  },
+  {
+   "id": "mth.black_box_bucket",
+   "name": "Black-box reason bucket",
+   "kind": "caveat",
+   "domain": "CXL",
+   "description": "Flag the largest unclassified reason, such as 'Other', and fix classification before building treatments on it.",
+   "why": "It distorts every other share and is usually the top fix."
+  },
+  {
+   "id": "mth.replace_not_update",
+   "name": "Replace instead of update",
+   "kind": "caveat",
+   "domain": "MTH",
+   "description": "Where a connector cannot edit a file's contents, publish a new file and retire the old one.",
+   "why": "A new file has a new link, so bookmarks and shared links to the old one stop working."
   }
  ]
 }

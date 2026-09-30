@@ -181,7 +181,8 @@
   "ui": "A report anatomy element in chart_patterns.json under ui_patterns",
   "insight": "A claim the report makes, typed as finding, risk, opportunity or watch",
   "recommendation": "An action the report proposes, tagged with the lever domain it pulls",
-  "qa_flag": "A problem found while reverse-engineering the report"
+  "qa_flag": "A problem found while reverse-engineering the report",
+  "playbook": "A skill or analysis playbook that prescribes how to produce reports, filed on the same base as the reports it would produce"
  },
  "insight_types": {
   "finding": "A result stated as true",
@@ -243,6 +244,53 @@
    "id": "A8",
    "name": "Cancel-flow audit build doc",
    "description": "Action list with effort and build location, backed by flow data."
+  }
+ ],
+ "playbook_rubric": [
+  {
+   "id": "trigger",
+   "name": "Triggering description",
+   "question": "Does the description say what the skill does and name the contexts and phrasings that should trigger it?"
+  },
+  {
+   "id": "contract",
+   "name": "Output contract",
+   "question": "Is the deliverable specified precisely enough to check?"
+  },
+  {
+   "id": "why",
+   "name": "Explains the why",
+   "question": "Does each instruction carry its reason instead of bare rules?"
+  },
+  {
+   "id": "disclosure",
+   "name": "Progressive disclosure",
+   "question": "Is the body lean, with references loaded only when needed and clearly pointed to?"
+  },
+  {
+   "id": "resources",
+   "name": "Bundled resources",
+   "question": "Do scripts run as shipped, take their inputs cleanly and produce what the skill promises?"
+  },
+  {
+   "id": "consistency",
+   "name": "Internal consistency",
+   "question": "Do SKILL.md, references and scripts agree with each other?"
+  },
+  {
+   "id": "safety",
+   "name": "Safe actions",
+   "question": "Are destructive or outward actions confirmed and are dependencies available?"
+  },
+  {
+   "id": "testability",
+   "name": "Testability",
+   "question": "Does the skill ship test prompts, fixtures or checks?"
+  },
+  {
+   "id": "coverage",
+   "name": "Stated platform coverage",
+   "question": "Does the skill give concrete guidance for every platform it claims to support?"
   }
  ]
 }

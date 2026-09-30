@@ -76,6 +76,22 @@ def main():
             if f["type"] not in tax["qa_types"]: errs.append(f"{f['id']}: bad type")
             for e in f["evidence"]:
                 if e not in all_ids: errs.append(f"{f['id']}: unknown evidence {e}")
+    playbooks = [json.load(open(f)) for f in sorted(glob.glob(os.path.join(a.catalog, "P*.json")))]
+    RUB = {x["id"] for x in tax.get("playbook_rubric", [])}
+    for pb in playbooks:
+        pid = pb["playbook_id"]
+        for m in pb["metrics_required"]:
+            if m["metric_id"] not in M: errs.append(f"{pid}: unknown metric {m['metric_id']}")
+        for dk in pb["dimensions"]:
+            if dk not in D: errs.append(f"{pid}: unknown dimension {dk}")
+        for c in pb["concepts"] + [c for ph in pb["phases"] for st in ph["steps"] for c in st["concepts"]]:
+            if c not in C: errs.append(f"{pid}: unknown concept {c}")
+        for u in pb["deliverable"]["ui_patterns"]:
+            if u not in U: errs.append(f"{pid}: unknown ui {u}")
+        for r in pb["self_eval"]["rubric"]:
+            if r["id"] not in RUB: errs.append(f"{pid}: unknown rubric dimension {r['id']}")
+        for f in pb["self_eval"]["findings"]:
+            if f["severity"] not in tax["qa_severity"] or f["type"] not in tax["qa_types"]: errs.append(f"{f['id']}: bad severity or type")
     if errs:
         print("\n".join(errs)); sys.exit(f"{len(errs)} validation errors")
 
@@ -131,7 +147,11 @@ def main():
              "qa_high": sum(1 for f in qa if f["severity"] == "high"), "canonical_metrics": len(M), "canonical_used": len(used_metrics),
              "concepts": len(C), "concepts_used": len(concept_cov), "dimensions": len(D), "skio_fields": len(native),
              "skio_fields_used": sum(1 for n in native if n["status"] == "used")}
-    bundle = {"framework": {"taxonomy": tax, "metrics": mreg["metrics"], "dimensions": dreg["dimensions"], "concepts": creg["concepts"], "concept_kinds": creg["kinds"],
+    for pb in playbooks:
+        pb["report_coverage"] = {m["metric_id"]: sorted(metric_cov.get(m["metric_id"], {}).keys()) for m in pb["metrics_required"]}
+        pb["concept_coverage"] = {c: sorted(concept_cov.get(c, set())) for c in pb["concepts"]}
+    stats["playbooks"] = len(playbooks)
+    bundle = {"playbooks": playbooks, "framework": {"taxonomy": tax, "metrics": mreg["metrics"], "dimensions": dreg["dimensions"], "concepts": creg["concepts"], "concept_kinds": creg["kinds"],
                             "chart_patterns": pats["chart_patterns"], "ui_patterns": pats["ui_patterns"]},
               "reports": reports, "cross": cross, "stats": stats,
               "matrices": {"domain": domain_cov, "metric": {k: dict(v) for k, v in metric_cov.items()}, "concept": {k: sorted(v) for k, v in concept_cov.items()},

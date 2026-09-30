@@ -23,6 +23,7 @@ report catalogs hold client figures and are kept outside the repository. Do not 
 | `registry/skio_field_map.csv` | every field the Skio analytics UI exports, from `elt-pipeline/.skio-ui-maps` |
 | `registry/build_field_map.py` | regenerates the field map (enum samples are left out, they hold product names) |
 | `templates/report_catalog.template.json` | blank catalog for one report |
+| `templates/playbook_catalog.template.json` | blank catalog for one skill or playbook, with a self-evaluation block scored on the rubric in `taxonomy.json` |
 | `tools/build.py` | validates catalogs and writes `bundle.json`, `csv/*.csv` and the HTML page |
 | `tools/catalog_template.html` | the documentation page; the build injects the bundle |
 

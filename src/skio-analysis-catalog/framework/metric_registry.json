@@ -540,7 +540,8 @@
     "attempts",
     "Sessions",
     "Cancel Volume",
-    "cancel sessions"
+    "cancel sessions",
+    "Experiences delivered"
    ]
   },
   {
@@ -560,7 +561,8 @@
    "aliases": [
     "saves",
     "rescued",
-    "Saves"
+    "Saves",
+    "Subscriptions saved"
    ]
   },
   {
@@ -719,7 +721,8 @@
    ],
    "aliases": [
     "MRR Retained",
-    "rescued per month"
+    "rescued per month",
+    "MRR saved"
    ]
   },
   {
@@ -1774,6 +1777,107 @@
    "skio": [],
    "aliases": [
     "Co-Subscribers"
+   ]
+  },
+  {
+   "id": "cxl.offers_shown",
+   "name": "Offers shown",
+   "domain": "CXL",
+   "sub": "treatment",
+   "definition": "Times a save offer was displayed in the cancel flow.",
+   "formula": "COUNT offer impressions",
+   "unit": "count",
+   "grain": "session",
+   "polarity": "neutral",
+   "skio": [
+    "cancel_flow.all_cancel_flow_sessions.parsedPath"
+   ],
+   "aliases": [
+    "times shown",
+    "Offers Shown"
+   ]
+  },
+  {
+   "id": "cxl.offers_claimed",
+   "name": "Offers claimed",
+   "domain": "CXL",
+   "sub": "treatment",
+   "definition": "Times a displayed save offer was accepted.",
+   "formula": "COUNT offer acceptances",
+   "unit": "count",
+   "grain": "session",
+   "polarity": "up_good",
+   "skio": [
+    "cancel_flow.saved_reason_breakdown.Treatment"
+   ],
+   "aliases": [
+    "times claimed",
+    "Offers Claimed"
+   ]
+  },
+  {
+   "id": "cxl.offer_claim_rate",
+   "name": "Offer claim rate",
+   "domain": "CXL",
+   "sub": "treatment",
+   "definition": "Share of shown offers that were accepted. Single digits or lower suggest the flow leans on paid offers that do not convert.",
+   "formula": "offers_claimed / offers_shown",
+   "unit": "pct",
+   "grain": "session",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "claim rate",
+    "% saved (per offer)"
+   ]
+  },
+  {
+   "id": "cxl.abandoned_sessions",
+   "name": "Abandoned sessions",
+   "domain": "CXL",
+   "sub": "volume",
+   "definition": "Sessions where the subscriber left the flow without cancelling and without accepting an offer. Some platforms count these as saves.",
+   "formula": "COUNT session WHERE no cancel AND no offer accepted",
+   "unit": "count",
+   "grain": "session",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": [
+    "Abandoned"
+   ]
+  },
+  {
+   "id": "cxl.save_rate_native",
+   "name": "Save rate (platform-reported)",
+   "domain": "CXL",
+   "sub": "rate",
+   "definition": "The save rate a subscription platform's own dashboard shows. Its denominator is often undocumented, so treat it as a standalone figure until the definition is confirmed.",
+   "formula": "platform internal",
+   "unit": "pct",
+   "grain": "session",
+   "polarity": "up_good",
+   "skio": [
+    "cancel_flow.cancel_reason_breakdown.Save Rate"
+   ],
+   "aliases": [
+    "Save Rate (native)"
+   ]
+  },
+  {
+   "id": "cxl.saves_by_mechanism",
+   "name": "Saves by mechanism",
+   "domain": "CXL",
+   "sub": "treatment",
+   "definition": "Saves split into those closed by a claimed offer and those where the subscriber simply left the flow.",
+   "formula": "saves BY (offer claimed | abandonment)",
+   "unit": "count",
+   "grain": "session",
+   "polarity": "neutral",
+   "skio": [
+    "cancel_flow.all_cancel_flow_sessions.sessionStatus"
+   ],
+   "aliases": [
+    "offer-claimed vs abandonment saves"
    ]
   }
  ]

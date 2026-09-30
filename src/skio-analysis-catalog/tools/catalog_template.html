@@ -116,6 +116,9 @@ details .tw{border:0;border-radius:0}
 .bars3 span{display:block;height:100%}
 .pre{font-family:var(--font-mono);font-size:12px;background:var(--surface-2);border-radius:8px;padding:12px;overflow-x:auto;white-space:pre;margin:0}
 ol.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:75ch}
+.pf{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;white-space:nowrap}
+.pf.pass{color:var(--good)} .pf.fail{color:var(--crit)}
+.meter{display:inline-flex;gap:3px;vertical-align:middle}.meter i{width:14px;height:10px;border-radius:2px;background:var(--rule)}.meter i.on{background:var(--s1)}
 .note{font-size:12.5px;color:var(--ink-2);background:var(--surface-2);border-radius:8px;padding:10px 12px;max-width:80ch}
 @media (max-width:860px){
   .shell{grid-template-columns:minmax(0,1fr)}
@@ -247,6 +250,7 @@ const views = [
   {id:'metrics', name:'Metric dictionary', n: F.metrics.length},
   {id:'compare', name:'Cross-report'},
   {id:'methods', name:'Methods & concepts', n: F.concepts.length},
+  {id:'skills', name:'Skills & playbooks', n: (B.playbooks || []).length},
   {id:'charts', name:'Chart gallery', n: B.stats.charts},
   {id:'quality', name:'Data-quality ledger', n: B.qa.length},
   {id:'gaps', name:'Skio native gaps'},
@@ -288,6 +292,7 @@ overview(){
     <p class="lede">Nine analyses from four stores were taken apart and filed against one taxonomy of ${F.taxonomy.domains.length} domains and a canonical dictionary of ${s.canonical_metrics} metrics. Each number keeps its original label and value and links to its canonical definition. That makes reports comparable and shows what a combined product must cover.</p></div>
     <div class="stats">${stat(s.reports,'sources catalogued')}${stat(s.metric_instances,'metric readings')}${stat(s.canonical_used,'canonical metrics in use')}${stat(s.charts,'charts redrawn')}${stat(s.tables,'tables captured')}${stat(s.concepts_used,'methods and concepts')}${stat(s.insights,'insights')}${stat(s.qa_flags,'QA flags')}</div>
     <div class="block"><h2>Sources</h2><div class="grid">${cards}</div></div>
+    ${(B.playbooks || []).length ? `<div class="block"><h2>Skills catalogued</h2><div class="grid">${B.playbooks.map(p => `<article class="card link" data-go="skills"><div class="block-head"><span class="rid">${p.playbook_id}</span><span class="chip">${esc(p.kind)}</span></div><h3>${esc(p.name)}</h3><p class="muted" style="margin:0">${esc(p.purpose)}</p><p style="margin:0;font-size:12.5px">${p.metrics_required.length} metrics required · ${p.self_eval.findings.length} self-evaluation findings${p.self_eval.behaviour ? ` · ${p.self_eval.behaviour.configs[0].passed} of ${p.self_eval.behaviour.configs[0].total} test assertions with the skill, ${p.self_eval.behaviour.configs[1].passed} without` : ''}</p></article>`).join('')}</div></div>` : ''}
     <div class="block"><h2>Which files share a store</h2><div class="tw"><table><thead><tr><th>Store</th><th>Reports</th><th>How we know</th></tr></thead><tbody>${stores}</tbody></table></div></div>
     <div class="block"><h2>Themes that repeat across stores</h2><p class="lede">These are the patterns the combined visualisation should be built around.</p><div class="grid">${themes}</div></div>`;
 },
@@ -349,7 +354,49 @@ methods(){
   const kinds = F.concept_kinds || {};
   return `<div class="block"><h1>Methods & concepts</h1><p class="lede">Analysis techniques, definition choices, bias controls and caveats found in the sources. Each is described once and linked to every report that applies it.</p></div>` +
     Object.entries(kinds).map(([k, desc]) => { const cs = F.concepts.filter(c => c.kind === k); if (!cs.length) return '';
-      return `<div class="block"><div class="block-head"><h2>${esc(k[0].toUpperCase() + k.slice(1))}s</h2><span class="muted">${esc(desc)}</span></div><div class="grid">${cs.map(c => `<article class="card"><div class="block-head"><h3>${esc(c.name)}</h3><span class="chip">${c.domain}</span></div><span class="mono muted">${c.id}</span><p style="margin:0">${esc(c.description)}</p><p class="muted" style="margin:0"><b>Why it matters.</b> ${esc(c.why)}</p><div class="chips">${(B.matrices.concept[c.id] || []).map(rchip).join('') || '<span class="muted">Not used yet</span>'}</div></article>`).join('')}</div></div>`; }).join('');
+      return `<div class="block"><div class="block-head"><h2>${esc(k[0].toUpperCase() + k.slice(1))}s</h2><span class="muted">${esc(desc)}</span></div><div class="grid">${cs.map(c => `<article class="card"><div class="block-head"><h3>${esc(c.name)}</h3><span class="chip">${c.domain}</span></div><span class="mono muted">${c.id}</span><p style="margin:0">${esc(c.description)}</p><p class="muted" style="margin:0"><b>Why it matters.</b> ${esc(c.why)}</p><div class="chips">${[...(B.matrices.concept[c.id] || []).map(rchip), ...(B.playbooks || []).filter(p => p.concepts.includes(c.id)).map(p => `<button class="chip btn" data-go="skills">${p.playbook_id}</button>`)].join('') || '<span class="muted">Not used yet</span>'}</div></article>`).join('')}</div></div>`; }).join('');
+},
+skills(){
+  const P = B.playbooks || [];
+  if (!P.length) return '<div class="block"><h1>Skills & playbooks</h1><p class="lede">No playbooks catalogued yet.</p></div>';
+  const RUB = Object.fromEntries((F.taxonomy.playbook_rubric || []).map(r => [r.id, r]));
+  const pf = ok => ok ? '<span class="pf pass">✓ Pass</span>' : '<span class="pf fail">✕ Fail</span>';
+  const meter = n => `<span class="meter" aria-label="${n} of 5">${[1,2,3,4,5].map(i => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</span> <b>${n}</b>/5`;
+  return P.map(p => {
+    const se = p.self_eval, bh = se.behaviour;
+    const files = `<div class="tw"><table><thead><tr><th>File</th><th class="num">Lines</th><th class="num">Words</th><th>Role</th></tr></thead><tbody>${p.files.map(f => `<tr><td class="mono">${esc(f.path)}</td><td class="num">${f.lines}</td><td class="num">${f.words}</td><td class="wrap">${esc(f.role)}</td></tr>`).join('')}</tbody></table></div>`;
+    const phases = p.phases.map(ph => `<div class="card"><h3>${esc(ph.name)}</h3><ol class="steps">${ph.steps.map(st => `<li>${esc(st.action)} ${st.concepts.map(c => `<span class="chip">${esc((CON[c]||{}).name || c)}</span>`).join(' ')}</li>`).join('')}</ol></div>`).join('');
+    const srcs = p.data_sources.map(d => `<article class="card"><h3>${esc(d.id)}</h3><p style="margin:0">${esc(d.role)}</p><dl class="kv"><dt>Tools</dt><dd class="mono">${d.tools.map(esc).join(', ') || '—'}</dd>${d.charts.length ? `<dt>Charts</dt><dd>${d.charts.map(esc).join(', ')}</dd>` : ''}<dt>Gotchas</dt><dd>${d.gotchas.map(esc).join('; ')}</dd><dt>Limits</dt><dd>${esc(d.limits)}</dd></dl></article>`).join('');
+    const mreq = `<div class="tw"><table><thead><tr><th>Canonical metric</th><th>Named in the skill</th><th>Source</th><th>Reports that measure it</th></tr></thead><tbody>${p.metrics_required.map(m => `<tr><td>${esc(MET[m.metric_id].name)}<div class="mono muted">${m.metric_id}</div></td><td>${esc(m.as_named)}</td><td>${esc(m.source)}</td><td><div class="chips">${(p.report_coverage[m.metric_id] || []).map(rchip).join('') || '<span class="muted">none yet</span>'}</div></td></tr>`).join('')}</tbody></table></div>`;
+    const map = `<div class="tw"><table><thead><tr><th>Reason pattern</th><th>Usually means</th><th>Lead with</th></tr></thead><tbody>${p.reason_treatment_map.map(r => `<tr>${r.map(v => `<td class="wrap">${esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    const deliv = `<div class="two">${p.deliverable.tabs.map(t => `<div class="card"><h3>Tab: ${esc(t.name)}</h3><ol class="steps">${t.blocks.map(b => `<li>${esc(b)}</li>`).join('')}</ol></div>`).join('')}</div><dl class="kv"><dt>Reason table</dt><dd>${p.deliverable.columns.reason_table.map(esc).join(' · ')}</dd><dt>Treatment table</dt><dd>${p.deliverable.columns.treatment_table.map(esc).join(' · ')}</dd><dt>Format</dt><dd>${esc(p.deliverable.format)}</dd></dl>`;
+    const rub = `<div class="tw"><table><thead><tr><th>Dimension</th><th>Score</th><th>Evidence</th></tr></thead><tbody>${se.rubric.map(r => `<tr><td>${esc((RUB[r.id]||{}).name || r.id)}<div class="muted" style="font-size:12px">${esc((RUB[r.id]||{}).question || '')}</div></td><td style="white-space:nowrap">${meter(r.score)}</td><td class="wrap">${esc(r.evidence)}</td></tr>`).join('')}</tbody></table></div>`;
+    const sc = `<div class="tw"><table><thead><tr><th>Check against the skill's own promise</th><th>Result</th><th>Evidence</th></tr></thead><tbody>${se.script_checks.map(c => `<tr><td class="wrap">${esc(c.text)}</td><td>${pf(c.passed)}</td><td class="wrap mono">${esc(c.evidence)}</td></tr>`).join('')}</tbody></table></div>`;
+    let beh = '<p class="muted">Behaviour tests have not been graded yet.</p>';
+    if (bh){
+      const sum = `<div class="stats">${bh.configs.map(c => `<div class="stat"><b>${nf(100 * c.pass_rate, 0)}%</b><span>${esc(c.label)} · ${c.passed} of ${c.total} assertions · ${nf(c.mean_seconds, 0)} s avg · ${nf(c.mean_tokens / 1000, 0)}K tokens avg</span></div>`).join('')}</div>`;
+      const per = bh.evals.map(e => `<details><summary><b>${esc(e.name)}</b> · with skill ${e.with_skill.passed}/${e.total} · without ${e.without_skill.passed}/${e.total}</summary><div style="padding:12px;display:flex;flex-direction:column;gap:10px"><p style="margin:0"><b>Prompt.</b> ${esc(e.prompt)}</p><div class="tw"><table><thead><tr><th>Assertion</th><th>With skill</th><th>Without skill</th></tr></thead><tbody>${e.rows.map(r => `<tr><td class="wrap">${esc(r.text)}</td><td>${pf(r.with.passed)}<div class="muted" style="font-size:12px">${esc(r.with.evidence)}</div></td><td>${pf(r.without.passed)}<div class="muted" style="font-size:12px">${esc(r.without.evidence)}</div></td></tr>`).join('')}</tbody></table></div></div></details>`).join('');
+      const obs = (bh.observations || []).map(o => `<li>${esc(o)}</li>`).join('');
+      beh = sum + per + (obs ? `<div class="block"><h3>What the numbers hide</h3><ul class="steps">${obs}</ul></div>` : '');
+    }
+    const fnd = qaTable(se.findings.map(f => Object.assign({report: f.where}, f)), true).replace('<th>Reports</th>', '<th>Where</th>');
+    const deps = `<div class="tw"><table><thead><tr><th>Dependency</th><th>Status</th></tr></thead><tbody>${p.dependencies.map(d => `<tr><td>${esc(d.name)}</td><td class="wrap">${esc(d.status)}</td></tr>`).join('')}</tbody></table></div>`;
+    const nxt = `<div class="grid">${p.next_phases.map(n => `<article class="card"><h3>${esc(n.name)}</h3><p style="margin:0">${esc(n.what)}</p></article>`).join('')}</div>`;
+    return `<div class="block"><span class="eyebrow">Playbook ${p.playbook_id} · ${esc(p.kind)}</span><h1>${esc(p.name)}</h1><p class="lede">${esc(p.purpose)}</p></div>
+      <div class="block"><h2>Files</h2>${files}${p.attachments ? `<p class="muted" style="margin:0">Attached to this page: ${p.attachments.map(a => `<a href="${esc(a.href)}" target="_blank" rel="noopener">${esc(a.label)}</a>`).join(' · ')}</p>` : ''}</div>
+      <div class="block"><h2>When it triggers</h2><p style="margin:0">${esc(p.trigger.claims)}. Description is ${p.trigger.description_words} words.</p><div class="chips">${p.trigger.phrases.map(x => `<span class="chip">${esc(x)}</span>`).join('')}</div></div>
+      <div class="block"><h2>Workflow, distilled</h2><div class="grid">${phases}</div></div>
+      <div class="block"><h2>Data sources</h2><div class="grid">${srcs}</div></div>
+      <div class="block"><h2>Metrics the skill requires</h2><p class="muted" style="margin:0">Mapped to the canonical dictionary. The last column lists which catalogued reports measure the same metric, as input for the cross-check phase.</p>${mreq}</div>
+      <div class="block"><h2>Reason-to-treatment map</h2>${map}</div>
+      <div class="block"><h2>Deliverable</h2>${deliv}</div>
+      <div class="block"><h2>Self-evaluation: rubric</h2><p class="muted" style="margin:0">Scored against the skill-creator framework's criteria, using only the skill's own files as evidence.</p>${rub}</div>
+      <div class="block"><h2>Self-evaluation: bundled script</h2><p class="muted" style="margin:0">The script was run with a fully populated config and its workbook checked against what SKILL.md promises.</p>${sc}</div>
+      <div class="block"><h2>Self-evaluation: behaviour tests</h2><p class="muted" style="margin:0">Three test prompts built on synthetic stores, each run once with the skill and once without. Assertions are the skill's own rules.</p>${beh}</div>
+      <div class="block"><h2>Findings</h2>${fnd}</div>
+      <div class="block"><h2>Dependencies</h2>${deps}</div>
+      <div class="block"><h2>Next phases</h2>${nxt}</div>`;
+  }).join('');
 },
 charts(){
   const pats = [...new Set(R.flatMap(r => r.charts.map(c => c.pattern)))];
