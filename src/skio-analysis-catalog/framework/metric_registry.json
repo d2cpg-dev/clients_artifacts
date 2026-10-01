@@ -1915,6 +1915,22 @@
    ]
   },
   {
+   "id": "cxl.save_rate_per_visit",
+   "name": "Save rate per visit",
+   "domain": "CXL",
+   "sub": "repeat",
+   "definition": "Share of cancel-flow visits that ended saved, where sessions on the same subscription that start less than 10 minutes apart are one visit, judged by how its last session ended. A skip followed by a cancellation seconds later counts as one cancelled visit, not a save and a cancellation.",
+   "formula": "visits ending saved / visits (sessions < 10 min apart on one subscription = one visit)",
+   "unit": "pct",
+   "grain": "subscriber",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "Save rate, each visit counted once",
+    "Deduplicated save rate"
+   ]
+  },
+  {
    "id": "eng.skips_per_skip_user",
    "name": "Skips per skip user",
    "domain": "ENG",
