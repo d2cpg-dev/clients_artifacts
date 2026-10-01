@@ -1,0 +1,285 @@
+{
+ "version": "1.0",
+ "chart_patterns": [
+  {
+   "id": "viz.kpi_tile",
+   "name": "KPI tile",
+   "family": "stat",
+   "encodes": "one value with label and context note",
+   "best_for": "Headline numbers",
+   "watch_out": "A row of tiles with no comparison says nothing about direction."
+  },
+  {
+   "id": "viz.kpi_tile_delta",
+   "name": "KPI tile with delta badge",
+   "family": "stat",
+   "encodes": "value plus period-over-period change, colour by polarity",
+   "best_for": "Pulse reports",
+   "watch_out": "State whether the delta is percent or percentage points, and colour by whether the move is good, not by its sign."
+  },
+  {
+   "id": "viz.hbar_ranked",
+   "name": "Ranked horizontal bar",
+   "family": "comparison",
+   "encodes": "category on y, value on x, sorted",
+   "best_for": "Long category labels such as cancel reasons or products",
+   "watch_out": "Show the volume behind each rate or small groups look as important as large ones."
+  },
+  {
+   "id": "viz.vbar_simple",
+   "name": "Vertical bar",
+   "family": "comparison",
+   "encodes": "few categories, one measure",
+   "best_for": "Three to six groups",
+   "watch_out": "Needs a zero baseline."
+  },
+  {
+   "id": "viz.grouped_bar",
+   "name": "Grouped bar",
+   "family": "comparison",
+   "encodes": "categories by series side by side",
+   "best_for": "Comparing periods per product or month",
+   "watch_out": "More than three series becomes hard to read."
+  },
+  {
+   "id": "viz.grouped_bar_dual_axis",
+   "name": "Grouped bar, dual axis",
+   "family": "comparison",
+   "encodes": "two measures with different units per category",
+   "best_for": "Cycles and cancel share by group",
+   "watch_out": "Two axes invite false visual comparisons between series."
+  },
+  {
+   "id": "viz.combo_bar_line",
+   "name": "Bar and line combo, dual axis",
+   "family": "trend",
+   "encodes": "volume as bars, rate as line on second axis",
+   "best_for": "Save rate against session volume",
+   "watch_out": "Axis ranges set the apparent relationship between the two series."
+  },
+  {
+   "id": "viz.stacked_bar",
+   "name": "Stacked bar",
+   "family": "composition",
+   "encodes": "parts of a total per category",
+   "best_for": "Recovered vs lost, recurring vs one-time",
+   "watch_out": "Only the bottom segment has a common baseline."
+  },
+  {
+   "id": "viz.stacked_bar_100",
+   "name": "100% stacked bar",
+   "family": "composition",
+   "encodes": "share mix per category",
+   "best_for": "Interval mix by category",
+   "watch_out": "Hides the size of each category."
+  },
+  {
+   "id": "viz.stacked_bar_time",
+   "name": "Stacked bar over time",
+   "family": "composition",
+   "encodes": "category contribution per period",
+   "best_for": "New lines by category per month",
+   "watch_out": "Middle segments are hard to track over time."
+  },
+  {
+   "id": "viz.diverging_bar",
+   "name": "Positive and negative bar",
+   "family": "trend",
+   "encodes": "net change coloured by sign",
+   "best_for": "Net subscriber change by month",
+   "watch_out": "Needs a clear zero line."
+  },
+  {
+   "id": "viz.doughnut",
+   "name": "Doughnut",
+   "family": "composition",
+   "encodes": "few shares of one whole",
+   "best_for": "Two or three parts",
+   "watch_out": "Small slices are unreadable, so label values."
+  },
+  {
+   "id": "viz.multi_line_cohort",
+   "name": "Cohort retention curves",
+   "family": "trend",
+   "encodes": "one line per cohort over checkpoints",
+   "best_for": "Retention by signup cohort",
+   "watch_out": "A truncated y-axis exaggerates small gaps."
+  },
+  {
+   "id": "viz.line_area",
+   "name": "Line with area fill",
+   "family": "trend",
+   "encodes": "one measure over time",
+   "best_for": "Active base, share trends",
+   "watch_out": "Area fill implies a zero baseline."
+  },
+  {
+   "id": "viz.small_multiples",
+   "name": "Small-multiple trend grid",
+   "family": "trend",
+   "encodes": "several KPIs on matching mini charts",
+   "best_for": "Pulse overviews",
+   "watch_out": "Independent y-axes on each tile."
+  },
+  {
+   "id": "viz.cumulative_bar",
+   "name": "Cumulative threshold bar",
+   "family": "distribution",
+   "encodes": "share reached by each threshold",
+   "best_for": "Post-event cancellation windows",
+   "watch_out": "Do not mix cumulative bars with incremental or state bars on one axis."
+  },
+  {
+   "id": "viz.particle_replay",
+   "name": "Particle replay with diverging stacked area",
+   "family": "narrative",
+   "encodes": "one particle per session falling to an exit line, saves stacked above by treatment, losses below, daily rate pulse strip",
+   "best_for": "Emotional storytelling of a month of cancel sessions",
+   "watch_out": "Non-linear pacing and no axes, so it cannot be read for exact values."
+  },
+  {
+   "id": "viz.table_verdict",
+   "name": "Table with verdict pills",
+   "family": "table",
+   "encodes": "rows of metrics with a Read column",
+   "best_for": "Decision lists",
+   "watch_out": "Rubric thresholds are rarely written down."
+  },
+  {
+   "id": "viz.table_period_compare",
+   "name": "Period comparison table",
+   "family": "table",
+   "encodes": "metric rows by period columns with change columns",
+   "best_for": "Quarter-over-quarter reviews",
+   "watch_out": "Label partial periods."
+  },
+  {
+   "id": "viz.table_inline_share",
+   "name": "Table with inline share bars",
+   "family": "table",
+   "encodes": "rows with a small bar showing share",
+   "best_for": "Variant mix",
+   "watch_out": "Bars must share one scale."
+  },
+  {
+   "id": "viz.split_gauge",
+   "name": "Vertical split gauge",
+   "family": "stat",
+   "encodes": "thin bar filled to a share beside a value",
+   "best_for": "Revenue split cards",
+   "watch_out": "Too small to compare more than two values."
+  }
+ ],
+ "ui_patterns": [
+  {
+   "id": "ui.exec_summary",
+   "name": "Executive summary",
+   "description": "Opening block of headline findings."
+  },
+  {
+   "id": "ui.takeaway_strip",
+   "name": "Takeaway strip",
+   "description": "One-paragraph summary above the KPI grid."
+  },
+  {
+   "id": "ui.kpi_grid",
+   "name": "KPI grid",
+   "description": "Row or grid of stat tiles."
+  },
+  {
+   "id": "ui.question_sections",
+   "name": "Question-led sections",
+   "description": "Each section is framed as a numbered analytical question."
+  },
+  {
+   "id": "ui.insight_callout",
+   "name": "Typed insight callout",
+   "description": "Coloured callout for a finding, risk or watch item."
+  },
+  {
+   "id": "ui.data_warning",
+   "name": "Data-quality warning",
+   "description": "Inline note that flags a confound, subset or caveat."
+  },
+  {
+   "id": "ui.pattern_cards",
+   "name": "Numbered pattern cards with fix",
+   "description": "Pattern statement, evidence and a boxed fix."
+  },
+  {
+   "id": "ui.action_list",
+   "name": "Recommended actions list",
+   "description": "Numbered list of proposed actions."
+  },
+  {
+   "id": "ui.topic_cards",
+   "name": "Discussion topic cards with status",
+   "description": "Agenda items tagged planned, live or proposed."
+  },
+  {
+   "id": "ui.tabs",
+   "name": "Tabbed panels",
+   "description": "Sections split into tabs with lazy chart loading."
+  },
+  {
+   "id": "ui.collapsible_reveal",
+   "name": "Collapsible reveal",
+   "description": "Headline that expands to supporting stats on click."
+  },
+  {
+   "id": "ui.method_panel",
+   "name": "Methodology panel",
+   "description": "Dedicated section on scope, definitions, exclusions and limits."
+  },
+  {
+   "id": "ui.provenance_footer",
+   "name": "Provenance footer",
+   "description": "Source, store, period and preparer."
+  },
+  {
+   "id": "ui.product_spotlight",
+   "name": "Product spotlight cards",
+   "description": "Per-product card with stats and variant table."
+  },
+  {
+   "id": "ui.start_end_cards",
+   "name": "Start and end cards",
+   "description": "Overlay cards that open and close an animated story with totals."
+  },
+  {
+   "id": "ui.live_scoreboard",
+   "name": "Live scoreboard",
+   "description": "Running totals that update as an animation plays."
+  },
+  {
+   "id": "ui.confetti",
+   "name": "Celebration effect",
+   "description": "Confetti on first reveal."
+  },
+  {
+   "id": "ui.hover_tooltips",
+   "name": "Hover tooltips and legend toggles",
+   "description": "Interactive chart details."
+  },
+  {
+   "id": "ui.roadmap_rows",
+   "name": "Ranked roadmap rows",
+   "description": "Numbered initiatives with body text and an impact tag."
+  },
+  {
+   "id": "ui.action_matrix",
+   "name": "Action matrix with effort",
+   "description": "Table of actions with why, where in the build and effort."
+  },
+  {
+   "id": "ui.scope_sheet",
+   "name": "Scope and definitions sheet",
+   "description": "Key-value sheet naming the data source, definitions and caveats for a workbook."
+  },
+  {
+   "id": "ui.methodology_footnote",
+   "name": "Methodology footnote",
+   "description": "Short note under a table explaining a method change or source choice."
+  }
+ ]
+}

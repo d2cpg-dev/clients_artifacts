@@ -1,0 +1,621 @@
+{
+ "version": "1.0",
+ "kinds": {
+  "method": "An analysis technique",
+  "definition": "A choice about how a metric is defined or which grain it uses",
+  "control": "A step that removes a bias or distortion",
+  "caveat": "A stated limit on what the numbers can show",
+  "segmentation": "A way of cutting the population",
+  "presentation": "A storytelling or layout technique that shapes how numbers are read"
+ },
+ "concepts": [
+  {
+   "id": "mth.save_rate_denominator",
+   "name": "Save-rate denominator choice",
+   "kind": "definition",
+   "domain": "CXL",
+   "description": "Save rate is computed over all sessions or over resolved sessions only. The two differ by the no-outcome share, which can be close to half of sessions.",
+   "why": "Save rates from different reports are not comparable until the denominator is known."
+  },
+  {
+   "id": "mth.counterfactual_uplift",
+   "name": "Counterfactual uplift at prior rate",
+   "kind": "method",
+   "domain": "CXL",
+   "description": "Apply the earlier period's rate to the current period's volume and report the difference as incremental outcomes.",
+   "why": "Turns a rate change into a count the business can value."
+  },
+  {
+   "id": "mth.matched_window",
+   "name": "Matched-length window",
+   "kind": "control",
+   "domain": "MTH",
+   "description": "Compare a partial period only against the same number of days at the start of the prior period.",
+   "why": "Stops a partial quarter from looking like a decline."
+  },
+  {
+   "id": "mth.period_over_period",
+   "name": "Period-over-period delta",
+   "kind": "method",
+   "domain": "MTH",
+   "description": "Show each KPI with its change against the prior equal window, as a percent or percentage-point badge.",
+   "why": "The standard read for pulse reports."
+  },
+  {
+   "id": "mth.trailing_window",
+   "name": "Trailing window snapshot",
+   "kind": "method",
+   "domain": "MTH",
+   "description": "Report the last 30 or 60 days against the 30 or 60 days before.",
+   "why": "Keeps a recurring report current without waiting for calendar periods to close."
+  },
+  {
+   "id": "mth.full_weeks_only",
+   "name": "Full weeks only",
+   "kind": "control",
+   "domain": "MTH",
+   "description": "Weekly trends drop the current partial week.",
+   "why": "A partial week reads as a false drop at the right edge of a chart."
+  },
+  {
+   "id": "mth.store_timezone",
+   "name": "Store-timezone bucketing",
+   "kind": "definition",
+   "domain": "MTH",
+   "description": "All dates are bucketed in the store's timezone.",
+   "why": "UTC bucketing shifts late-evening orders into the next day and breaks reconciliation with Shopify."
+  },
+  {
+   "id": "mth.bulk_op_exclusion",
+   "name": "Bulk-operation exclusion",
+   "kind": "control",
+   "domain": "GRW",
+   "description": "Identify merchant bulk cancellations per subscription from the audit log and remove them, keeping organic cancellations on the same days.",
+   "why": "Administrative clean-ups otherwise read as churn spikes."
+  },
+  {
+   "id": "mth.organic_vs_reported",
+   "name": "Organic vs reported pairing",
+   "kind": "presentation",
+   "domain": "GRW",
+   "description": "Show every growth figure twice, as reported and with administrative events removed.",
+   "why": "Lets the reader see both the platform number and the business number."
+  },
+  {
+   "id": "mth.event_anomaly_check",
+   "name": "Event anomaly check",
+   "kind": "control",
+   "domain": "GRW",
+   "description": "State whether bulk actions or one-off events appear in the trend window before calling growth organic.",
+   "why": "Stops a one-off event being read as a trend."
+  },
+  {
+   "id": "mth.cohort_own_start",
+   "name": "Retention from own start date",
+   "kind": "definition",
+   "domain": "RET",
+   "description": "Measure each subscriber's retention from their own start date rather than from a calendar date.",
+   "why": "Makes cohorts of different sizes and timing comparable."
+  },
+  {
+   "id": "mth.observability_truncation",
+   "name": "Observability truncation",
+   "kind": "control",
+   "domain": "RET",
+   "description": "Cut the cohort window so every member can be observed for the full checkpoint length.",
+   "why": "Keeps denominators complete at each checkpoint."
+  },
+  {
+   "id": "mth.maturity_filter",
+   "name": "Maturity filter",
+   "kind": "control",
+   "domain": "RET",
+   "description": "Restrict to subscriptions at least 90 days old before comparing cancellation shares.",
+   "why": "Young groups have not had time to churn."
+  },
+  {
+   "id": "mth.youth_bias",
+   "name": "Youth bias",
+   "kind": "caveat",
+   "domain": "RET",
+   "description": "New products, intervals or offers show low cancellation because their subscribers are young.",
+   "why": "Share-still-active flatters anything launched recently."
+  },
+  {
+   "id": "mth.survivorship_bias",
+   "name": "Survivorship bias",
+   "kind": "caveat",
+   "domain": "RET",
+   "description": "A group defined by a later action, such as changing interval or skipping, is pre-filtered for people who stayed long enough to act.",
+   "why": "Makes the action look causal for retention when it is not."
+  },
+  {
+   "id": "mth.admin_cancel_as_survivor",
+   "name": "Administrative cancels treated as survivors",
+   "kind": "control",
+   "domain": "RET",
+   "description": "Bulk-cancelled subscriptions count as surviving in retention curves because the customer did not cancel.",
+   "why": "Stops clean-ups from lowering measured retention."
+  },
+  {
+   "id": "mth.in_flight_exclusion",
+   "name": "In-flight cohort exclusion",
+   "kind": "control",
+   "domain": "DUN",
+   "description": "Exclude dunning entry cohorts that still have many open cases, because fast recoveries resolve first.",
+   "why": "Open cohorts flatter the recovery rate."
+  },
+  {
+   "id": "mth.dunning_entry_cohort",
+   "name": "Dunning by entry cohort",
+   "kind": "method",
+   "domain": "DUN",
+   "description": "Group dunning windows by the quarter they opened in and report outcomes once resolved.",
+   "why": "Links recovery to the period the failures happened."
+  },
+  {
+   "id": "mth.subscriber_level_recovery",
+   "name": "Subscriber-level recovery",
+   "kind": "definition",
+   "domain": "DUN",
+   "description": "Count recovery once per subscriber rather than per dunning window.",
+   "why": "Gives a different rate from window-level counting."
+  },
+  {
+   "id": "mth.tenure_segmentation",
+   "name": "Tenure segmentation",
+   "kind": "segmentation",
+   "domain": "CXL",
+   "description": "Cut cancel-flow outcomes by the billing cycle the subscriber was on, or by grouped tenure bands.",
+   "why": "Save receptiveness changes sharply with tenure."
+  },
+  {
+   "id": "mth.reason_segmentation",
+   "name": "Reason segmentation",
+   "kind": "segmentation",
+   "domain": "CXL",
+   "description": "Cut save rate by the cancel-survey reason.",
+   "why": "Shows which reasons an offer can address."
+  },
+  {
+   "id": "mth.treatment_attribution",
+   "name": "Treatment attribution",
+   "kind": "segmentation",
+   "domain": "CXL",
+   "description": "Attribute each save to the offer that closed it, such as skip or discount.",
+   "why": "Shows which offers do the work and at what cost."
+  },
+  {
+   "id": "mth.repeat_attempt_analysis",
+   "name": "Repeat-attempt analysis",
+   "kind": "segmentation",
+   "domain": "CXL",
+   "description": "Count how many subscribers enter the cancel flow more than once.",
+   "why": "A save that is followed by a second attempt did not stick."
+  },
+  {
+   "id": "mth.mrr_run_rate_valuation",
+   "name": "MRR run-rate valuation",
+   "kind": "definition",
+   "domain": "CXL",
+   "description": "Value sessions at the subscription's monthly run-rate at the moment of the session. The June page states this is velocity, not lifetime damage.",
+   "why": "MRR at risk is not revenue lost; realised revenue after save is the complement."
+  },
+  {
+   "id": "mth.baseline_lift",
+   "name": "Baseline lift index",
+   "kind": "method",
+   "domain": "EVT",
+   "description": "Divide event-window revenue by the baseline daily rate times the event length.",
+   "why": "Compares products of different size on the same scale."
+  },
+  {
+   "id": "mth.run_rate_per_day",
+   "name": "Per-day run-rate",
+   "kind": "method",
+   "domain": "MTH",
+   "description": "Divide counts by days so windows of different length compare.",
+   "why": "Needed for event windows and partial periods."
+  },
+  {
+   "id": "mth.classification_rubric",
+   "name": "Classification rubric",
+   "kind": "presentation",
+   "domain": "MTH",
+   "description": "Label each row with a verdict pill such as winner, sleeper, underperformer, anchor or too new to call.",
+   "why": "Turns a table into a decision list. The rubric's thresholds are rarely stated."
+  },
+  {
+   "id": "mth.offer_cohorting",
+   "name": "Offer cohorting",
+   "kind": "segmentation",
+   "domain": "OFR",
+   "description": "Group subscriptions by the discount code or offer they started on, with the offer's active window.",
+   "why": "Links acquisition offers to retention quality."
+  },
+  {
+   "id": "mth.pack_size_economics",
+   "name": "Pack-size economics",
+   "kind": "segmentation",
+   "domain": "PRD",
+   "description": "Compare cycles, cancellation and lifetime revenue by quantity per line.",
+   "why": "Tests whether larger packs are worth steering toward."
+  },
+  {
+   "id": "mth.interval_economics",
+   "name": "Interval economics",
+   "kind": "segmentation",
+   "domain": "CAD",
+   "description": "Compare cycles, cancellation and lifetime revenue by delivery interval.",
+   "why": "More cycles on a short interval can still mean less value."
+  },
+  {
+   "id": "mth.interval_migration",
+   "name": "Interval migration matrix",
+   "kind": "method",
+   "domain": "CAD",
+   "description": "Cross opt-in interval with current interval to see who changes cadence and in which direction.",
+   "why": "Shows whether the signup choice is permanent."
+  },
+  {
+   "id": "mth.optin_from_selling_plan",
+   "name": "Opt-in interval from selling plan",
+   "kind": "definition",
+   "domain": "CAD",
+   "description": "Take opt-in interval from the selling plan on the earliest line and current interval from the live delivery policy, normalised to days.",
+   "why": "Skio stores the two in different places."
+  },
+  {
+   "id": "mth.category_from_titles",
+   "name": "Category from titles and tags",
+   "kind": "definition",
+   "domain": "PRD",
+   "description": "Derive product category by parsing product titles or tags.",
+   "why": "Skio has no category field, so every report builds its own."
+  },
+  {
+   "id": "mth.post_event_hazard",
+   "name": "Post-event cumulative cancellation",
+   "kind": "method",
+   "domain": "RET",
+   "description": "Track the share cancelled by 7, 14, 30, 60 and 180 days after a trigger event.",
+   "why": "Finds the window where an intervention should land."
+  },
+  {
+   "id": "mth.dose_response",
+   "name": "Frequency dose-response",
+   "kind": "segmentation",
+   "domain": "ENG",
+   "description": "Bucket subscribers by how often they used a feature and compare outcomes across buckets.",
+   "why": "A monotone pattern suggests, but does not prove, a real effect."
+  },
+  {
+   "id": "mth.recurring_via_billing_attempts",
+   "name": "Recurring orders via billing attempts",
+   "kind": "definition",
+   "domain": "REV",
+   "description": "Identify recurring orders from successful billing attempts (errorCode IS NULL) linked to the store's subscriptions, because Order.subscriptionId is empty.",
+   "why": "Recurring revenue cannot be read from the order table directly."
+  },
+  {
+   "id": "mth.revenue_exclusions",
+   "name": "Revenue exclusions",
+   "kind": "definition",
+   "domain": "REV",
+   "description": "Exclude cancelled and deleted orders from revenue.",
+   "why": "Keeps revenue in line with Shopify net figures."
+  },
+  {
+   "id": "mth.revenue_mix",
+   "name": "Revenue-mix decomposition",
+   "kind": "method",
+   "domain": "REV",
+   "description": "Split revenue into first-time, recurring and one-time and show each as a share of total.",
+   "why": "Shows whether subscription is gaining share, independent of total growth."
+  },
+  {
+   "id": "mth.variant_decomposition",
+   "name": "Variant decomposition",
+   "kind": "method",
+   "domain": "PRD",
+   "description": "Break a product's revenue and activations down by plan length or variant with share bars.",
+   "why": "Shows whether prepaid plans or monthly plans carry the product."
+  },
+  {
+   "id": "mth.launch_window",
+   "name": "Launch-window snapshot",
+   "kind": "method",
+   "domain": "EVT",
+   "description": "Report a short launch window day by day with store totals and product spotlights.",
+   "why": "Gives a fast read before cohorts mature."
+  },
+  {
+   "id": "mth.external_benchmark",
+   "name": "External benchmark reference",
+   "kind": "caveat",
+   "domain": "MTH",
+   "description": "Compare a rate against an industry range.",
+   "why": "None of the catalogued reports cite a source for their benchmark ranges."
+  },
+  {
+   "id": "mth.subset_reconciliation",
+   "name": "Subset reconciliation note",
+   "kind": "control",
+   "domain": "MTH",
+   "description": "Flag when a breakdown covers a different population from the headline total.",
+   "why": "Stops a subset from being read as the whole."
+  },
+  {
+   "id": "mth.data_hygiene_check",
+   "name": "Data-hygiene check",
+   "kind": "control",
+   "domain": "MTH",
+   "description": "Check for migration or import artefacts, for example by confirming every subscription has a completed cycle and one-day mortality is normal.",
+   "why": "Imported or purged subscriptions distort every rate."
+  },
+  {
+   "id": "mth.causal_limits",
+   "name": "Causal-limits statement",
+   "kind": "caveat",
+   "domain": "MTH",
+   "description": "State that nothing was randomised and period differences reflect everything that changed.",
+   "why": "Stops before-and-after comparisons being read as proof."
+  },
+  {
+   "id": "mth.holdout_test",
+   "name": "Holdout test recommendation",
+   "kind": "method",
+   "domain": "MTH",
+   "description": "Recommend a randomised slice with a control group before shipping a change suggested by observational data.",
+   "why": "The only way past survivorship and confounding."
+  },
+  {
+   "id": "mth.grain_choice",
+   "name": "Grain choice",
+   "kind": "definition",
+   "domain": "MTH",
+   "description": "Counts are taken at the subscription, subscriber, line or session grain.",
+   "why": "Totals at different grains do not reconcile, for example line counts exceed subscription counts."
+  },
+  {
+   "id": "mth.recheck_schedule",
+   "name": "Re-check schedule",
+   "kind": "method",
+   "domain": "MTH",
+   "description": "List what to re-pull and when, such as after quarter close or once cohorts mature.",
+   "why": "Turns open questions into a follow-up plan."
+  },
+  {
+   "id": "mth.animated_replay",
+   "name": "Animated replay",
+   "kind": "presentation",
+   "domain": "MTH",
+   "description": "Replay a month day by day with one particle per session, order faithful and pacing dramatised, with heavier days slowed down.",
+   "why": "High emotional impact. Pacing is not proportional to time, which the page discloses."
+  },
+  {
+   "id": "mth.single_cycle_hazard",
+   "name": "Single-cycle hazard",
+   "kind": "method",
+   "domain": "RET",
+   "description": "For each cycle, divide cancellations during that cycle by everyone who reached it.",
+   "why": "Unlike active vs cumulative cancelled counts, it is not distorted by how fast the base has grown."
+  },
+  {
+   "id": "mth.stock_vs_flow_mixing",
+   "name": "Stock vs cumulative-flow mixing",
+   "kind": "caveat",
+   "domain": "RET",
+   "description": "Comparing today's active count in a bucket against all-time cancellations from that bucket.",
+   "why": "In a growing account the newest buckets hold people too new to cancel, so their cancel rate looks low and later buckets look worse. Seen in a first draft that a later version corrected."
+  },
+  {
+   "id": "mth.right_censoring",
+   "name": "Right-censoring",
+   "kind": "caveat",
+   "domain": "RET",
+   "description": "Subscribers still inside a window have not had the chance to reach the outcome. Their buckets are incomplete, not zero.",
+   "why": "Young flows and young cohorts under-report later-stage outcomes."
+  },
+  {
+   "id": "mth.pacing_projection",
+   "name": "Pacing projection",
+   "kind": "method",
+   "domain": "MTH",
+   "description": "Scale a partial-period total by total days over elapsed days.",
+   "why": "Gives a quick full-period read. Seasonality inside the period makes it biased."
+  },
+  {
+   "id": "mth.source_cross_check",
+   "name": "Source cross-check",
+   "kind": "control",
+   "domain": "MTH",
+   "description": "Check a warehouse field against raw orders and switch source when it fails.",
+   "why": "A warehouse revenue field can disagree with raw orders for some merchants; switching source avoids false spikes."
+  },
+  {
+   "id": "mth.price_driver_check",
+   "name": "Price-driver check",
+   "kind": "control",
+   "domain": "REV",
+   "description": "Check average price by cycle to rule out a post-intro price step before blaming churn on product fit.",
+   "why": "Rules out the most common mechanical cause of a cycle-2 cliff."
+  },
+  {
+   "id": "mth.basket_pairing",
+   "name": "Basket pairing",
+   "kind": "method",
+   "domain": "PRD",
+   "description": "Count subscribers holding each pair of products.",
+   "why": "Reveals variety-stacking behaviour a bundle could formalise."
+  },
+  {
+   "id": "mth.reason_capture_audit",
+   "name": "Reason-capture audit",
+   "kind": "control",
+   "domain": "CXL",
+   "description": "Measure how many sessions actually record a reason before trusting reason breakdowns.",
+   "why": "A 5% capture sample cannot support reason-level decisions."
+  },
+  {
+   "id": "mth.report_versioning",
+   "name": "Versioned correction",
+   "kind": "presentation",
+   "domain": "MTH",
+   "description": "Reissue a report with a corrected method and a footnote that explains what the earlier draft got wrong.",
+   "why": "Keeps the audit trail visible to the reader."
+  },
+  {
+   "id": "mth.flow_structure_audit",
+   "name": "Flow-structure audit",
+   "kind": "method",
+   "domain": "CXL",
+   "description": "Map each reason to its treatment steps and check for dead ends, mismatched reasons and missing actions such as pause or delay.",
+   "why": "A flow with one offer per reason cannot save people the first offer does not fit."
+  },
+  {
+   "id": "mth.save_durability",
+   "name": "Save durability",
+   "kind": "definition",
+   "domain": "CXL",
+   "description": "Track whether a saved subscription is still active N days after the save.",
+   "why": "A save that reverses in 30 days is a delayed cancellation."
+  },
+  {
+   "id": "mth.splash_intervention",
+   "name": "Splash-screen intervention",
+   "kind": "definition",
+   "domain": "CXL",
+   "description": "An offer shown before the reason step, usually skip next order.",
+   "why": "Can dominate save counts while producing low-durability saves."
+  },
+  {
+   "id": "mth.treatment_type_scoping",
+   "name": "Treatment-type scoping",
+   "kind": "definition",
+   "domain": "CXL",
+   "description": "Define the analysis by Skio session status such as SAVED_BY_SKIP or SAVED_BY_PAUSE, and confirm each exists before analysing it.",
+   "why": "A treatment that is not configured returns zero sessions, which is a setup fact, not a result."
+  },
+  {
+   "id": "mth.reorder_attribution",
+   "name": "Reorder attribution via line items",
+   "kind": "definition",
+   "domain": "ENG",
+   "description": "Count a recurring order after a skip only when it is tied to the same subscription line through OrderLineItem to SubscriptionLine.",
+   "why": "Order-level joins attribute unrelated orders to the skip."
+  },
+  {
+   "id": "mth.filter_verification",
+   "name": "Filter verification",
+   "kind": "control",
+   "domain": "MTH",
+   "description": "Before trusting a filtered breakdown, run it with two different filter values and confirm the outputs differ and the parts sum to the unfiltered total.",
+   "why": "Some chart filters silently return unfiltered data with no error."
+  },
+  {
+   "id": "mth.trusted_chart_control",
+   "name": "Trusted-chart control",
+   "kind": "control",
+   "domain": "MTH",
+   "description": "When a chart returns zero rows, re-run a chart you trust over the identical window before concluding anything.",
+   "why": "Separates a broken query or wrong merchant from a real instrumentation gap or a later data start date."
+  },
+  {
+   "id": "mth.no_forced_reconciliation",
+   "name": "No forced reconciliation",
+   "kind": "control",
+   "domain": "MTH",
+   "description": "Show each source's number labelled by source and name the disagreement instead of picking one.",
+   "why": "Disagreements between tools, or between widgets in one dashboard, usually reveal a definition or instrumentation gap."
+  },
+  {
+   "id": "mth.cost_ordered_treatments",
+   "name": "Cost-ordered treatment ladder",
+   "kind": "method",
+   "domain": "CXL",
+   "description": "Order each reason's treatments from free and low-friction (skip, pause, frequency, education) to swap to paid discount.",
+   "why": "Most reasons are not price objections, so discount-first flows spend margin on saves a free option would catch."
+  },
+  {
+   "id": "mth.reason_treatment_mapping",
+   "name": "Reason-to-treatment mapping",
+   "kind": "method",
+   "domain": "CXL",
+   "description": "Map each cancel-reason pattern to what it usually means and which treatment should lead.",
+   "why": "Makes the recommended flow consistent across clients and explains each choice."
+  },
+  {
+   "id": "mth.save_mechanism_split",
+   "name": "Save-mechanism split",
+   "kind": "definition",
+   "domain": "CXL",
+   "description": "Split saves into offer-claimed and abandonment.",
+   "why": "Shows whether offers are doing any work or subscribers are just walking away."
+  },
+  {
+   "id": "mth.claim_rate_diagnosis",
+   "name": "Claim-rate diagnosis",
+   "kind": "method",
+   "domain": "CXL",
+   "description": "Read per-offer claim rates; a very low rate across offers argues for leaning on free soft-saves.",
+   "why": "Stops a recommendation from adding more of what is not converting."
+  },
+  {
+   "id": "mth.black_box_bucket",
+   "name": "Black-box reason bucket",
+   "kind": "caveat",
+   "domain": "CXL",
+   "description": "Flag the largest unclassified reason, such as 'Other', and fix classification before building treatments on it.",
+   "why": "It distorts every other share and is usually the top fix."
+  },
+  {
+   "id": "mth.replace_not_update",
+   "name": "Replace instead of update",
+   "kind": "caveat",
+   "domain": "MTH",
+   "description": "Where a connector cannot edit a file's contents, publish a new file and retire the old one.",
+   "why": "A new file has a new link, so bookmarks and shared links to the old one stop working."
+  },
+  {
+   "id": "mth.next_session_classification",
+   "name": "Next-session classification",
+   "kind": "method",
+   "domain": "CXL",
+   "description": "Classify each saved subscriber by their next cancel-flow session after the save: re-cancel (with time since the save), repeat save by the same treatment, save by another treatment, or no return.",
+   "why": "Shows whether a save held, was repeated or was reversed, which a save count alone hides."
+  },
+  {
+   "id": "mth.same_visit_window",
+   "name": "Same-visit window",
+   "kind": "definition",
+   "domain": "CXL",
+   "description": "A cancellation within 10 minutes of a save counts as the same visit: the save never held.",
+   "why": "Separates saves that reversed on the spot from later churn, so durability is not overstated by minutes-long saves."
+  },
+  {
+   "id": "mth.event_age_bucketing",
+   "name": "Event-age bucketing",
+   "kind": "control",
+   "domain": "RET",
+   "description": "Bucket a cohort by how long ago its trigger event happened and read each bucket separately; old buckets that cannot exist yet are shown as not measurable.",
+   "why": "An alternative to a maturity filter: keeps every member but stops young members from diluting older buckets."
+  },
+  {
+   "id": "mth.first_event_cohort",
+   "name": "First-event cohort",
+   "kind": "definition",
+   "domain": "ENG",
+   "description": "Build the cohort from each subscriber's first qualifying event, such as the first skip, so repeat events do not enter the cohort twice.",
+   "why": "Keeps subscriber counts distinct and makes later repeat behaviour an outcome, not a cohort member."
+  },
+  {
+   "id": "mth.order_line_dedup",
+   "name": "Order-line de-duplication",
+   "kind": "caveat",
+   "domain": "CXL",
+   "description": "Linking orders to a subscription through order lines can count one multi-line order several times. Count distinct orders per subscription.",
+   "why": "Without it, reorder counts and reorder timing are inflated, and a second order can appear zero days after the first."
+  }
+ ]
+}

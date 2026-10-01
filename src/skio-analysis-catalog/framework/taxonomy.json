@@ -1,0 +1,296 @@
+{
+ "version": "1.0",
+ "description": "Shared categorisation base for every Skio analysis catalogued. Every metric, dimension, chart, insight and recommendation is tagged with exactly one domain. Domains mirror the Skio analytics sections (overview, cancel_flow, cohort, dunning, products, segments, forecast) plus the lenses the reports add on top (cadence, offers, engagement, events, method).",
+ "domains": [
+  {
+   "id": "GRW",
+   "name": "Subscriber base & growth",
+   "question": "How big is the base and how is it moving?",
+   "skio_sections": [
+    "overview"
+   ],
+   "subdomains": {
+    "stock": "Point-in-time counts of active subscriptions and subscribers",
+    "flow": "New, cancelled, reactivated and net change over a window",
+    "adjust": "Adjustments that separate organic movement from administrative events"
+   }
+  },
+  {
+   "id": "REV",
+   "name": "Revenue & order economics",
+   "question": "How much money does the programme make and from which order types?",
+   "skio_sections": [
+    "overview"
+   ],
+   "subdomains": {
+    "total": "Revenue and order totals",
+    "mix": "Split between first-time, recurring and one-time revenue",
+    "unit": "Per-order and per-day economics such as AOV"
+   }
+  },
+  {
+   "id": "CXL",
+   "name": "Cancel flow & saves",
+   "question": "When people try to leave, how many are kept and with what?",
+   "skio_sections": [
+    "cancel_flow"
+   ],
+   "subdomains": {
+    "volume": "Sessions and outcomes",
+    "rate": "Save rate and its variants",
+    "reason": "Why people cancel",
+    "treatment": "Which offer kept them",
+    "value": "Monthly recurring revenue at risk, saved and lost",
+    "repeat": "Repeat cancel attempts"
+   }
+  },
+  {
+   "id": "RET",
+   "name": "Retention & lifetime value",
+   "question": "How long do subscribers stay and what are they worth?",
+   "skio_sections": [
+    "cohort",
+    "segments"
+   ],
+   "subdomains": {
+    "curve": "Retention measured from each subscriber's own start",
+    "survival": "Share still active or already cancelled",
+    "depth": "Billing cycles completed",
+    "value": "Lifetime revenue per subscriber",
+    "timing": "When cancellations happen after an event"
+   }
+  },
+  {
+   "id": "DUN",
+   "name": "Payments & dunning",
+   "question": "How much failed-payment churn is recovered?",
+   "skio_sections": [
+    "dunning"
+   ],
+   "subdomains": {
+    "outcome": "Recovered, lost and open dunning cases",
+    "prevention": "Safeguards such as backup payment methods"
+   }
+  },
+  {
+   "id": "PRD",
+   "name": "Products & merchandising",
+   "question": "Which products, variants and categories carry the programme?",
+   "skio_sections": [
+    "products",
+    "segments"
+   ],
+   "subdomains": {
+    "product": "Product and variant level results",
+    "category": "Category roll-ups",
+    "pack": "Quantity and pack size",
+    "launch": "New and collaboration launches"
+   }
+  },
+  {
+   "id": "CAD",
+   "name": "Cadence & plans",
+   "question": "Which delivery intervals do people pick, keep and retain on?",
+   "skio_sections": [
+    "products"
+   ],
+   "subdomains": {
+    "mix": "Opt-in interval mix",
+    "stickiness": "Whether subscribers change interval",
+    "economics": "Retention and value by interval"
+   }
+  },
+  {
+   "id": "OFR",
+   "name": "Offers & discounts",
+   "question": "Which discounts attract subscribers who stay?",
+   "skio_sections": [
+    "segments"
+   ],
+   "subdomains": {
+    "cohort": "Results by discount code or offer structure",
+    "attribution": "Which offers drive new subscriptions now"
+   }
+  },
+  {
+   "id": "ENG",
+   "name": "Engagement & self-service",
+   "question": "Do subscribers manage their subscription instead of cancelling?",
+   "skio_sections": [
+    "segments",
+    "subscribers"
+   ],
+   "subdomains": {
+    "skip": "Skip usage and its effect",
+    "portal": "Customer portal logins",
+    "edit": "Interval and order edits"
+   }
+  },
+  {
+   "id": "EVT",
+   "name": "Events & seasonality",
+   "question": "What happens around launches and peak sales periods?",
+   "skio_sections": [
+    "overview"
+   ],
+   "subdomains": {
+    "launch": "Product launch windows",
+    "peak": "BFCM and other peak periods",
+    "lift": "Lift against an expected baseline"
+   }
+  },
+  {
+   "id": "FCT",
+   "name": "Forecasting",
+   "question": "What is queued and projected for upcoming periods?",
+   "skio_sections": [
+    "forecast"
+   ],
+   "subdomains": {
+    "queued": "Orders and revenue already scheduled",
+    "projected": "Modelled projections and error"
+   }
+  },
+  {
+   "id": "MTH",
+   "name": "Method & data quality",
+   "question": "How were the numbers built and can they be trusted?",
+   "skio_sections": [],
+   "subdomains": {
+    "window": "Time-window construction",
+    "cohort": "Cohort construction and bias controls",
+    "definition": "Metric definitions and grain",
+    "hygiene": "Data-quality checks and caveats"
+   }
+  }
+ ],
+ "grains": {
+  "subscription": "One subscription contract. A customer can hold several.",
+  "subscriber": "One customer with at least one subscription.",
+  "subscription_line": "One product line inside a subscription. Category and pack analyses often use this grain.",
+  "session": "One cancel-flow session. A subscriber can open several.",
+  "order": "One Shopify order.",
+  "dunning_window": "One period a subscription spends in failed-payment retry.",
+  "store": "Whole-store aggregate."
+ },
+ "entity_kinds": {
+  "metric": "A number with a canonical definition in metric_registry.json",
+  "dimension": "A slicing axis in dimension_registry.json",
+  "concept": "An analysis method, definition choice or caveat in concept_registry.json",
+  "chart": "A visual encoding described against chart_patterns.json",
+  "ui": "A report anatomy element in chart_patterns.json under ui_patterns",
+  "insight": "A claim the report makes, typed as finding, risk, opportunity or watch",
+  "recommendation": "An action the report proposes, tagged with the lever domain it pulls",
+  "qa_flag": "A problem found while reverse-engineering the report",
+  "playbook": "A skill or analysis playbook that prescribes how to produce reports, filed on the same base as the reports it would produce"
+ },
+ "insight_types": {
+  "finding": "A result stated as true",
+  "risk": "A result that threatens a KPI",
+  "opportunity": "A result that suggests upside",
+  "watch": "A trend to monitor before acting"
+ },
+ "qa_severity": {
+  "high": "Changes the conclusion or makes a headline number unreliable",
+  "medium": "Makes a number hard to reproduce or compare",
+  "low": "Cosmetic, rounding or labelling"
+ },
+ "qa_types": {
+  "internal_inconsistency": "Two numbers in the same report disagree",
+  "arithmetic": "A stated figure cannot be reproduced from its own inputs",
+  "definition": "A metric is defined differently from the canonical or from other reports",
+  "method": "A bias or construction problem in the analysis",
+  "chart": "A chart encodes data misleadingly",
+  "unsourced_claim": "A benchmark or causal claim with no evidence shown",
+  "labelling": "A label, count or name is wrong"
+ },
+ "report_archetypes": [
+  {
+   "id": "A1",
+   "name": "Cancel-flow deep dive",
+   "description": "Question-led analysis of one domain with a recommended-actions list."
+  },
+  {
+   "id": "A2",
+   "name": "Animated narrative replay",
+   "description": "A single month replayed as motion for impact, with totals on an end card."
+  },
+  {
+   "id": "A3",
+   "name": "Launch one-pager",
+   "description": "Print-ready snapshot of a short launch window with product spotlights."
+  },
+  {
+   "id": "A4",
+   "name": "Quarterly account review",
+   "description": "Multi-tab quarter-over-quarter review with patterns, method notes and matched windows."
+  },
+  {
+   "id": "A5",
+   "name": "Trailing-30 pulse with deep dives",
+   "description": "Ten-KPI pulse with weekly trend tiles, meeting topics and topic tabs."
+  },
+  {
+   "id": "A6",
+   "name": "Strategic insight report",
+   "description": "Quarter review with a ranked priorities roadmap, issued in corrected versions."
+  },
+  {
+   "id": "A7",
+   "name": "Workbook scope sheet",
+   "description": "Cover sheet of an analysis workbook: data source, definitions, headline counts, caveats."
+  },
+  {
+   "id": "A8",
+   "name": "Cancel-flow audit build doc",
+   "description": "Action list with effort and build location, backed by flow data."
+  }
+ ],
+ "playbook_rubric": [
+  {
+   "id": "trigger",
+   "name": "Triggering description",
+   "question": "Does the description say what the skill does and name the contexts and phrasings that should trigger it?"
+  },
+  {
+   "id": "contract",
+   "name": "Output contract",
+   "question": "Is the deliverable specified precisely enough to check?"
+  },
+  {
+   "id": "why",
+   "name": "Explains the why",
+   "question": "Does each instruction carry its reason instead of bare rules?"
+  },
+  {
+   "id": "disclosure",
+   "name": "Progressive disclosure",
+   "question": "Is the body lean, with references loaded only when needed and clearly pointed to?"
+  },
+  {
+   "id": "resources",
+   "name": "Bundled resources",
+   "question": "Do scripts run as shipped, take their inputs cleanly and produce what the skill promises?"
+  },
+  {
+   "id": "consistency",
+   "name": "Internal consistency",
+   "question": "Do SKILL.md, references and scripts agree with each other?"
+  },
+  {
+   "id": "safety",
+   "name": "Safe actions",
+   "question": "Are destructive or outward actions confirmed and are dependencies available?"
+  },
+  {
+   "id": "testability",
+   "name": "Testability",
+   "question": "Does the skill ship test prompts, fixtures or checks?"
+  },
+  {
+   "id": "coverage",
+   "name": "Stated platform coverage",
+   "question": "Does the skill give concrete guidance for every platform it claims to support?"
+  }
+ ]
+}

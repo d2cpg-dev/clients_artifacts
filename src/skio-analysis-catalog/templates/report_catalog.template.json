@@ -1,0 +1,42 @@
+{
+  "report_id": "R10",
+  "source_file": "<file name as received>",
+  "title_as_shown": "<title exactly as the report shows it>",
+  "client_label": "<store name, or 'inferred: ...' with the evidence>",
+  "archetype": "<A1-A8 from framework/taxonomy.json report_archetypes, or add a new one>",
+  "supersedes": "<optional: report_id this version replaces>",
+  "partial": false,
+  "profile": {
+    "period": {"start": "YYYY-MM-DD", "end": "YYYY-MM-DD", "label": "<period in words>"},
+    "granularity": ["<day | week | month | quarter | cohort | product ...>"],
+    "comparison_basis": ["<what each number is compared against>"],
+    "data_source": "<Skio UI export | Skio BigQuery | Shopify | ...>",
+    "prepared_by": "<role, not a personal name unless shown>",
+    "generated": "YYYY-MM-DD",
+    "currency": "USD",
+    "timezone": "<store timezone or 'Not stated'>",
+    "audience": "<who reads it>",
+    "purpose": "<the report's single job>"
+  },
+  "build": {"libraries": [], "fonts": [], "theme": "light | dark", "palette": {}, "layout": "", "interactivity": [], "size_kb": 0},
+  "structure": [
+    {"id": "<section id>", "title": "<section title>", "question": "<question it answers>", "ui": ["<ui.* id from framework/chart_patterns.json>"]}
+  ],
+  "metrics": [
+    {"mid": "R10-M01", "metric_id": "<canonical id from framework/metric_registry.json>", "label": "<label exactly as shown>", "value": 0, "unit": "count | pct | pp | usd | ratio | days | cycles | multiple", "window": "<window>",
+     "slice": {"<dim.* id>": "<value>"}, "compare": {"value": 0, "basis": "<prior period>", "delta": 0, "delta_unit": "pct | pp | multiple"},
+     "section": "<section id>", "derived": false, "note": "", "qa": "<optional QA flag id>"}
+  ],
+  "charts": [
+    {"chart_id": "R10-C1", "section": "<section id>", "title": "", "pattern": "<viz.* id>", "library": "", "x": "<dim.* or metric id>", "y": "<metric id (axis range)>", "y2": "<optional second axis>",
+     "question": "", "interaction": [], "data": {"labels": [], "datasets": [{"label": "", "values": []}]}, "notes": ""}
+  ],
+  "tables": [
+    {"table_id": "R10-T1", "section": "", "title": "", "pattern": "<viz.* id>", "dims": [], "metrics": [], "columns": [], "rows": [[]]}
+  ],
+  "methods": [{"concept_id": "<mth.* id from framework/concept_registry.json>", "how": "<how this report applies it>"}],
+  "insights": [{"id": "R10-I1", "type": "finding | risk | opportunity | watch", "domain": "<domain id>", "headline": "", "evidence": ["R10-M01"]}],
+  "recommendations": [{"id": "R10-A1", "action": "", "domain": "<lever domain id>", "target_metric": "<metric id>"}],
+  "qa_flags": [{"id": "R10-F01", "severity": "high | medium | low", "type": "<qa_types key in taxonomy.json>", "detail": "", "evidence": ["R10-M01"]}],
+  "ui_patterns": ["<ui.* ids>"]
+}

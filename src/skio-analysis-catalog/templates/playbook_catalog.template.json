@@ -1,0 +1,110 @@
+{
+ "playbook_id": "P02",
+ "name": "<skill folder name>",
+ "kind": "skill",
+ "owner": "<team or person role>",
+ "received": "YYYY-MM-DD",
+ "files": [
+  {
+   "path": "<skill>/SKILL.md",
+   "lines": 0,
+   "words": 0,
+   "role": ""
+  }
+ ],
+ "trigger": {
+  "description_words": 0,
+  "phrases": [
+   "<phrases the description lists>"
+  ],
+  "claims": ""
+ },
+ "purpose": "",
+ "platforms": [],
+ "data_sources": [
+  {
+   "id": "",
+   "role": "",
+   "tools": [],
+   "charts": [],
+   "gotchas": [],
+   "limits": ""
+  }
+ ],
+ "phases": [
+  {
+   "id": "",
+   "name": "",
+   "steps": [
+    {
+     "n": 1,
+     "action": "",
+     "concepts": [
+      "<mth.* id>"
+     ]
+    }
+   ]
+  }
+ ],
+ "metrics_required": [
+  {
+   "metric_id": "<canonical id>",
+   "as_named": "",
+   "source": ""
+  }
+ ],
+ "dimensions": [
+  "<dim.* id>"
+ ],
+ "concepts": [
+  "<mth.* id>"
+ ],
+ "deliverable": {
+  "format": "",
+  "tabs": [
+   {
+    "name": "",
+    "blocks": []
+   }
+  ],
+  "columns": {},
+  "ui_patterns": [
+   "<ui.* id>"
+  ]
+ },
+ "reason_treatment_map": [],
+ "dependencies": [
+  {
+   "name": "",
+   "status": ""
+  }
+ ],
+ "self_eval": {
+  "rubric": [
+   {
+    "id": "<playbook_rubric id in taxonomy.json>",
+    "score": 0,
+    "evidence": ""
+   }
+  ],
+  "script_checks": [],
+  "findings": [
+   {
+    "id": "P02-F01",
+    "severity": "high | medium | low",
+    "type": "<qa_types key>",
+    "detail": "",
+    "where": ""
+   }
+  ],
+  "behaviour": null
+ },
+ "next_phases": [
+  {
+   "id": "",
+   "name": "",
+   "what": ""
+  }
+ ],
+ "attachments": []
+}
