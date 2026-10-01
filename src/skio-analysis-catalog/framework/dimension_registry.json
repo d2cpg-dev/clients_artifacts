@@ -296,6 +296,48 @@
    "domain": "MTH",
    "values_hint": "low, medium, high",
    "skio": []
+  },
+  {
+   "id": "dim.elapsed_bucket",
+   "name": "Time since the event",
+   "domain": "MTH",
+   "values_hint": "within 10 min, 10-60 min, 1-24 h, 1-7 d, 7-30 d, 30-90 d, 90+ d",
+   "skio": []
+  },
+  {
+   "id": "dim.event_age_cohort",
+   "name": "Event-age cohort",
+   "domain": "RET",
+   "values_hint": "how long ago the trigger event happened, as of the report date: 0-30, 30-60, 60-90, 90-180, 180+ days",
+   "skio": []
+  },
+  {
+   "id": "dim.subscription_status",
+   "name": "Current subscription status",
+   "domain": "RET",
+   "values_hint": "active, cancelled, failed (dunning), paused",
+   "skio": []
+  },
+  {
+   "id": "dim.skip_sequence",
+   "name": "Skip sequence step",
+   "domain": "ENG",
+   "values_hint": "skip #1 -> #2, #2 -> #3, ...",
+   "skio": []
+  },
+  {
+   "id": "dim.reorder_milestone",
+   "name": "Reorder milestone",
+   "domain": "RET",
+   "values_hint": "1st, 2nd, 3rd recurring order after the event",
+   "skio": []
+  },
+  {
+   "id": "dim.post_save_path",
+   "name": "Path after a save",
+   "domain": "CXL",
+   "values_hint": "re-cancelled (by time since the save), saved again by the same treatment, saved by another treatment, never returned",
+   "skio": []
   }
  ]
 }

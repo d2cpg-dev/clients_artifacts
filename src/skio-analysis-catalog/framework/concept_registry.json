@@ -576,6 +576,46 @@
    "domain": "MTH",
    "description": "Where a connector cannot edit a file's contents, publish a new file and retire the old one.",
    "why": "A new file has a new link, so bookmarks and shared links to the old one stop working."
+  },
+  {
+   "id": "mth.next_session_classification",
+   "name": "Next-session classification",
+   "kind": "method",
+   "domain": "CXL",
+   "description": "Classify each saved subscriber by their next cancel-flow session after the save: re-cancel (with time since the save), repeat save by the same treatment, save by another treatment, or no return.",
+   "why": "Shows whether a save held, was repeated or was reversed, which a save count alone hides."
+  },
+  {
+   "id": "mth.same_visit_window",
+   "name": "Same-visit window",
+   "kind": "definition",
+   "domain": "CXL",
+   "description": "A cancellation within 10 minutes of a save counts as the same visit: the save never held.",
+   "why": "Separates saves that reversed on the spot from later churn, so durability is not overstated by minutes-long saves."
+  },
+  {
+   "id": "mth.event_age_bucketing",
+   "name": "Event-age bucketing",
+   "kind": "control",
+   "domain": "RET",
+   "description": "Bucket a cohort by how long ago its trigger event happened and read each bucket separately; old buckets that cannot exist yet are shown as not measurable.",
+   "why": "An alternative to a maturity filter: keeps every member but stops young members from diluting older buckets."
+  },
+  {
+   "id": "mth.first_event_cohort",
+   "name": "First-event cohort",
+   "kind": "definition",
+   "domain": "ENG",
+   "description": "Build the cohort from each subscriber's first qualifying event, such as the first skip, so repeat events do not enter the cohort twice.",
+   "why": "Keeps subscriber counts distinct and makes later repeat behaviour an outcome, not a cohort member."
+  },
+  {
+   "id": "mth.order_line_dedup",
+   "name": "Order-line de-duplication",
+   "kind": "caveat",
+   "domain": "CXL",
+   "description": "Linking orders to a subscription through order lines can count one multi-line order several times. Count distinct orders per subscription.",
+   "why": "Without it, reorder counts and reorder timing are inflated, and a second order can appear zero days after the first."
   }
  ]
 }

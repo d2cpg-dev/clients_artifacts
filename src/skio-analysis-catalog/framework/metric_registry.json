@@ -892,7 +892,7 @@
    "skio": [],
    "aliases": [
     "% Cancelled",
-    "Cancel Rate \u2014 Skippers"
+    "Cancel Rate — Skippers"
    ]
   },
   {
@@ -1878,6 +1878,188 @@
    ],
    "aliases": [
     "offer-claimed vs abandonment saves"
+   ]
+  },
+  {
+   "id": "cxl.post_save_next_outcome",
+   "name": "Next outcome after a save",
+   "domain": "CXL",
+   "sub": "repeat",
+   "definition": "Share of saved subscribers by what their next cancel-flow session did and how soon: cancelled (by time since the save), saved again by the same treatment, saved by another treatment, or never returned.",
+   "formula": "subscribers in outcome bucket / saved subscribers (first save per subscriber)",
+   "unit": "pct",
+   "grain": "subscriber",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": [
+    "What Happens After First Skip",
+    "Outcome measured as the next cancel-flow session",
+    "Never returned to cancel flow",
+    "Skipped again (repeat skip)",
+    "Later saved by a different action"
+   ]
+  },
+  {
+   "id": "cxl.same_visit_reversal",
+   "name": "Same-visit save reversal",
+   "domain": "CXL",
+   "sub": "repeat",
+   "definition": "Share of saves followed by a cancellation within 10 minutes of the save, in the same visit. The save did not hold even for the session.",
+   "formula": "saves re-entered and cancelled within 10 min / saves",
+   "unit": "pct",
+   "grain": "subscriber",
+   "polarity": "down_good",
+   "skio": [],
+   "aliases": [
+    "Re-entered flow and cancelled within 10 min (same visit)"
+   ]
+  },
+  {
+   "id": "eng.skips_per_skip_user",
+   "name": "Skips per skip user",
+   "domain": "ENG",
+   "sub": "skip",
+   "definition": "Average number of skips per subscriber who skipped at least once.",
+   "formula": "skip events / skip users",
+   "unit": "ratio",
+   "grain": "subscriber",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": [
+    "Avg Times Skipped",
+    "Total Skips Used"
+   ]
+  },
+  {
+   "id": "eng.inter_skip_interval",
+   "name": "Time between consecutive skips",
+   "domain": "ENG",
+   "sub": "skip",
+   "definition": "Time from one skip to the next by the same subscriber, as a distribution over time buckets, restricted to subscribers who skipped at least that many times.",
+   "formula": "COUNT subscribers by elapsed bucket between skip k and skip k+1",
+   "unit": "count",
+   "grain": "subscriber",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": [
+    "Time Interval Between Consecutive Skips",
+    "Skip #1 -> #2"
+   ]
+  },
+  {
+   "id": "cxl.orders_after_save",
+   "name": "Recurring orders after a save",
+   "domain": "CXL",
+   "sub": "value",
+   "definition": "Recurring orders on the saved subscription after the save, as a mean or a distribution (0, 1, 2, 3+), counted only through the same subscription line.",
+   "formula": "COUNT DISTINCT orders on the same line after the save / saved subscribers",
+   "unit": "ratio",
+   "grain": "subscriber",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "Avg Recurring Orders After Skip",
+    "Recurring Orders Placed After First Skip",
+    "0 Orders",
+    "1 Order",
+    "2 Orders",
+    "3+ Orders",
+    "Orders per save"
+   ]
+  },
+  {
+   "id": "cxl.reorder_milestone_rate",
+   "name": "Reorder milestone rate after a save",
+   "domain": "CXL",
+   "sub": "value",
+   "definition": "Share of saved subscribers who reach their 1st, 2nd or 3rd recurring order after the save.",
+   "formula": "subscribers reaching milestone N / saved subscribers",
+   "unit": "pct",
+   "grain": "subscriber",
+   "polarity": "up_good",
+   "skio": [],
+   "aliases": [
+    "Reorder Funnel After First Skip",
+    "Placed 1st recurring order after skip",
+    "% of All Skippers"
+   ]
+  },
+  {
+   "id": "cxl.days_to_reorder_after_save",
+   "name": "Time to reorder after a save",
+   "domain": "CXL",
+   "sub": "value",
+   "definition": "Median days from the save to the next recurring order, or between reorder milestones.",
+   "formula": "MEDIAN days(save or prior milestone -> next recurring order)",
+   "unit": "days",
+   "grain": "subscriber",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": [
+    "Typical Time to Reach (from prior milestone)",
+    "Median days to next order"
+   ]
+  },
+  {
+   "id": "ret.status_share",
+   "name": "Share by current status",
+   "domain": "RET",
+   "sub": "survival",
+   "definition": "Share of a group in each current subscription status: active, cancelled, failed payment (dunning) or paused.",
+   "formula": "subscriptions in status / group size",
+   "unit": "pct",
+   "grain": "subscription",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": [
+    "Current Subscription Status",
+    "% of Cohort"
+   ]
+  },
+  {
+   "id": "ret.median_time_to_cancel_after_event",
+   "name": "Median time to cancel after an event",
+   "domain": "RET",
+   "sub": "timing",
+   "definition": "Median time from a trigger event, such as a first skip, to cancellation, among those who cancelled.",
+   "formula": "MEDIAN days(event -> cancelledAt) among cancelled",
+   "unit": "days",
+   "grain": "subscription",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": [
+    "Median time from skip to cancellation"
+   ]
+  },
+  {
+   "id": "ret.avg_days_since_event",
+   "name": "Average days since the event",
+   "domain": "RET",
+   "sub": "timing",
+   "definition": "Mean age of a cohort measured from its trigger event to the report date. Shows how much time the cohort has had to reach an outcome.",
+   "formula": "AVG days(event -> report date)",
+   "unit": "days",
+   "grain": "subscriber",
+   "polarity": "neutral",
+   "skio": [],
+   "aliases": [
+    "Avg Days Since First Skip"
+   ]
+  },
+  {
+   "id": "cxl.merchant_cancellations",
+   "name": "Merchant cancellations",
+   "domain": "CXL",
+   "sub": "volume",
+   "definition": "Cancellations entered by the merchant team from the platform dashboard, which never show the customer an offer.",
+   "formula": "COUNT session WHERE status = CANCELLED_BY_MERCHANT",
+   "unit": "count",
+   "grain": "session",
+   "polarity": "down_good",
+   "skio": [],
+   "aliases": [
+    "CANCELLED_BY_MERCHANT",
+    "Dashboard cancellations"
    ]
   }
  ]
