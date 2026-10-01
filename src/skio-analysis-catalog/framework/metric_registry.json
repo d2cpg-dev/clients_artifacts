@@ -1332,6 +1332,23 @@
    ]
   },
   {
+   "id": "cad.order_stretch",
+   "name": "Order stretch (late orders)",
+   "domain": "CAD",
+   "sub": "stickiness",
+   "definition": "Share of consecutive order pairs on a subscription where the later order came at least 25% later than the cadence in force at the earlier order (a skip, delay or date move). Each pair is compared with its own cadence; pairs under 3 days apart, too recent to show a late order (earlier order within 2.5 cycles of the data date), or with a cadence change or a payment failure between the orders are not counted. Read by product next to the \"too much product\" cancel reason as a sign that supply runs ahead of use.",
+   "formula": "order pairs WHERE gap_days / cadence_days_at_earlier_order >= 1.25 / order pairs counted",
+   "unit": "pct",
+   "grain": "order",
+   "polarity": "down_good",
+   "skio": [],
+   "aliases": [
+    "Late orders",
+    "Orders pushed back past the cadence",
+    "Oversupply signal"
+   ]
+  },
+  {
    "id": "cad.cadences_offered",
    "name": "Cadences offered",
    "domain": "CAD",
